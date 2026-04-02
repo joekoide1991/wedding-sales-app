@@ -198,7 +198,15 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 </style>
 </head>
 <body>
+  
+<div id="login-screen" style="padding:40px;">
+  <h2>ログイン</h2>
+  <input id="email" type="email" placeholder="メール"><br><br>
+  <input id="password" type="password" placeholder="パスワード"><br><br>
+  <button onclick="login()">ログイン</button>
+</div>
 
+<div id="app" style="display:none;">
 <nav class="nav">
   <div class="nav-inner">
     <div class="nav-logo">WSM</div>
@@ -1431,5 +1439,53 @@ function renderSalonInvoice(){
 document.querySelectorAll('input[type="date"]').forEach(el=>el.value=new Date().toISOString().slice(0,10));
 initDB();
 </script>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+  // Firebase設定（あなたのFirebase情報）
+  const firebaseConfig = {
+    apiKey: "ここにAPIキー",
+    authDomain: "ここにauthDomain",
+    projectId: "my-sale-site",
+    storageBucket: "ここにstorageBucket",
+    messagingSenderId: "ここにmessagingSenderId",
+    appId: "ここにappId"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  // ログイン状態チェック
+  auth.onAuthStateChanged(function(user) {
+    if (user) {
+      document.getElementById("login-screen").style.display = "none";
+      document.getElementById("app").style.display = "block";
+    } else {
+      document.getElementById("login-screen").style.display = "block";
+      document.getElementById("app").style.display = "none";
+    }
+  });
+
+  // ログイン
+  function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    auth.signInWithEmailAndPassword(email, password)
+      .catch((error) => {
+        alert("ログイン失敗");
+      });
+  }
+
+  // ログアウト
+  function logout() {
+    auth.signOut();
+  }
+</script>
+
 </body>
 </html>
