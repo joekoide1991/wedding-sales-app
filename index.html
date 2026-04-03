@@ -270,6 +270,12 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 
   <div class="card">
     <div class="card-title">全案件一覧</div>
+      <!-- CSVボタン -->
+  <div style="margin:10px 0 15px 0;">
+    <button onclick="downloadCSV('mine')">ONE SHOT CSV</button>
+    <button onclick="downloadCSV('friend')">Massu CSV</button>
+    <button onclick="downloadCSV('salon')">AKKA CSV</button>
+  </div>
     <div class="table-wrap">
       <table>
         <thead><tr><th>日付</th><th>窓口</th><th>お客様</th><th style="text-align:right;">売上</th><th style="text-align:right;">手取り</th><th>入金</th></tr></thead>
@@ -1444,6 +1450,7 @@ function renderSalonInvoice(){
 // ========== INIT ==========
 document.querySelectorAll('input[type="date"]').forEach(el=>el.value=new Date().toISOString().slice(0,10));
 initDB();
+  
 </script>
 
 <!-- Firebase SDK -->
@@ -1490,6 +1497,29 @@ const db = firebase.firestore();
   function logout() {
     auth.signOut();
   }
+  function downloadCSV(type) {
+  const rows = window.allData || [];
+
+  let filtered = rows.filter(r => r.type === type);
+
+  if (filtered.length === 0) {
+    alert("データがありません");
+    return;
+  }
+
+  let csv = "日付,ブランド,顧客名,売上,手取り,入金状況\n";
+
+  filtered.forEach(r => {
+    csv += `${r.date},${r.type},${r.customer},${r.sales},${r.profit},${r.payment}\n`;
+  });
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = type + ".csv";
+  a.click();
+}
 </script>
 
 </body>
