@@ -1512,11 +1512,11 @@ const db = firebase.firestore();
     return;
   }
 
-  let csv = "日付,ブランド,顧客名,売上,手取り,入金状況\n";
+ let csv = "日付,ブランド,顧客名,プラン,オプション,売上,紹介料,手取り,入金状況,支払い方法,メモ\n";
 
-  filtered.forEach(r => {
-    csv += `${r.date},${r.type},${r.customer},${r.sales},${r.profit},${r.payment}\n`;
-  });
+ filtered.forEach(r => {
+  csv += `${r.date},${r.type},${r.customer},${r.plan || ""},${r.option || ""},${r.sales},${r.referral || ""},${r.profit},${r.payment},${r.payMethod || ""},${r.memo || ""}\n`;
+});
 
   const blob = new Blob([csv], { type: "text/csv" });
   const url = URL.createObjectURL(blob);
