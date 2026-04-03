@@ -1507,9 +1507,9 @@ const db = firebase.firestore();
 
 let filtered = rows.filter(r => {
   const brand = r.type || r.madoguchi || r.pay || "";
-  if (type === "mine") return brand === "自分" || brand === "ONE SHOT" || brand === "mine";
-  if (type === "friend") return brand === "友人" || brand === "Massu" || brand === "friend";
-  if (type === "salon") return brand === "サロン" || brand === "AKKA" || brand === "salon";
+if (type === "mine") return brand === "自分";
+if (type === "friend") return brand === "友人";
+if (type === "salon") return brand === "サロン";
   return false;
 });
 
@@ -1521,8 +1521,13 @@ let filtered = rows.filter(r => {
  let csv = "日付,ブランド,顧客名,プラン,オプション,売上,紹介料,手取り,入金状況,支払い方法,メモ\n";
 
  filtered.forEach(r => {
-  csv += `${r.date},${r.type},${r.customer},${r.plan || ""},${r.option || ""},${r.sales},${r.referral || ""},${r.profit},${r.payment},${r.payMethod || ""},${r.memo || ""}\n`;
-});
+let brandName = "";
+if (r.type === "自分") brandName = "ONE SHOT";
+if (r.type === "友人") brandName = "Massu photo studio";
+if (r.type === "サロン") brandName = "AKKA HAKKA";
+
+csv += `${r.date},${brandName},${r.customer || ""},${r.plan || ""},${r.option || ""},${r.sales},${r.referral || ""},${r.profit},${r.payment},${r.payMethod || ""},${r.memo || ""}\n`;
+   
 
   const blob = new Blob([csv], { type: "text/csv" });
   const url = URL.createObjectURL(blob);
