@@ -1505,7 +1505,13 @@ const db = firebase.firestore();
   function downloadCSV(type) {
   const rows = window.allData || [];
 
-  let filtered = rows.filter(r => r.type === type);
+let filtered = rows.filter(r => {
+  const brand = r.type || r.madoguchi || r.pay || "";
+  if (type === "mine") return brand === "自分" || brand === "ONE SHOT" || brand === "mine";
+  if (type === "friend") return brand === "友人" || brand === "Massu" || brand === "friend";
+  if (type === "salon") return brand === "サロン" || brand === "AKKA" || brand === "salon";
+  return false;
+});
 
   if (filtered.length === 0) {
     alert("データがありません");
