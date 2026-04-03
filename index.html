@@ -1455,10 +1455,9 @@ const firebaseConfig = {
   messagingSenderId: "389648038190",
   appId: "1:389648038190:web:3679305098afb3677562bf"
   };
-
   firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+const auth = firebase.auth();
+const db = firebase.firestore();
 
   // ログイン状態チェック
   auth.onAuthStateChanged(function(user) {
