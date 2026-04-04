@@ -755,7 +755,7 @@ function setMonthLabels() {
 }
 
 // ========== FIRESTORE ==========
-function initDB() {
+window.initDB = function() {
   const collections = ['friend-recs','my-recs','salon-recs'];
   onSnapshot(query(collection(db,'friend-recs'),orderBy('date','desc')), snap => {
    friendRecs = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
