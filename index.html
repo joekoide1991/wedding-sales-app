@@ -960,9 +960,9 @@ window.submitFriend = async () => {
     updatedAt:new Date().toISOString()
   };
 if (fEditId) {
-  await db.collection('friend-recs').doc(fEditId).update(data);
+  await updateDoc(doc(db, 'friend-recs', fEditId), data);
 } else {
-  await db.collection('friend-recs').add(data);
+  await addDoc(collection(db, 'friend-recs'), data);
 }
   fResetForm(); document.getElementById('friend-form').style.display='none';
 };
@@ -985,7 +985,7 @@ window.fEdit = (id) => {
 };
 window.fDel = async (id) => {
   if (!confirm('削除しますか？')) return;
-  await db.collection('friend-recs').doc(id).delete();
+  await deleteDoc(doc(db, 'friend-recs', id));
 };
 
 function renderFriendList() {
@@ -1234,9 +1234,9 @@ window.submitMine = async () => {
     updatedAt:new Date().toISOString()
   };
 if (mEditId) {
-  await db.collection('my-recs').doc(mEditId).update(data);
+  await updateDoc(doc(db, 'my-recs', mEditId), data);
 } else {
-  await db.collection('my-recs').add(data);
+  await addDoc(collection(db, 'my-recs'), data);
 }
   mResetForm(); document.getElementById('mine-form').style.display='none';
 };
@@ -1258,7 +1258,7 @@ window.mEdit = (id) => {
 };
 window.mDel = async (id) => {
   if (!confirm('削除しますか？')) return;
-  await db.collection('my-recs').doc(id).delete();
+  await deleteDoc(doc(db, 'my-recs', id));
 };
 
 function renderMineList() {
@@ -1364,10 +1364,10 @@ window.submitSalon=async()=>{
     totalEx:a.totalEx,totalInc:a.totalInc,totalRef:a.totalRef,cardFee:a.cardFee,salonRecv:a.salonRecv,
     updatedAt:new Date().toISOString()
   };
- if (sEditId) {
-  await db.collection('salon-recs').doc(sEditId).update(data);
+if (sEditId) {
+  await updateDoc(doc(db, 'salon-recs', sEditId), data);
 } else {
-  await db.collection('salon-recs').add(data);
+  await addDoc(collection(db, 'salon-recs'), data);
 }
   sResetForm(); document.getElementById('salon-form').style.display='none';
 };
@@ -1400,7 +1400,7 @@ window.sEdit=(id)=>{
 };
 window.sDel = async (id) => {
   if (!confirm('削除しますか？')) return;
-  await db.collection('salon-recs').doc(id).delete();
+  await deleteDoc(doc(db, 'salon-recs', id));
 };
 
 function renderSalonList(){
