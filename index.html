@@ -1500,7 +1500,7 @@ auth.onAuthStateChanged(function(user) {
   if (user) {
     document.getElementById("login-screen").style.display = "none";
     document.getElementById("app").style.display = "block";
-    if (typeof initDB === "function") initDB();
+    initDB();
   } else {
     document.getElementById("login-screen").style.display = "block";
     document.getElementById("app").style.display = "none";
