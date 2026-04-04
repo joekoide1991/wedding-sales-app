@@ -752,9 +752,9 @@ function setMonthLabels() {
 function initDB() {
   const collections = ['friend-recs','my-recs','salon-recs'];
   onSnapshot(query(collection(db,'friend-recs'),orderBy('date','desc')), snap => {
-    friendRecs = snap.docs.map(d=>({...d.data(), _id:d.id}));
-    renderAll();
-    document.getElementById('sync-status').textContent = '同期済 ✓';
+   friendRecs = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
+myRecs = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
+salonRecs = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
   });
   onSnapshot(query(collection(db,'my-recs'),orderBy('date','desc')), snap => {
     myRecs = snap.docs.map(d=>({...d.data(), _id:d.id}));
@@ -765,7 +765,10 @@ function initDB() {
     renderAll();
   });
   // Load salon settings from localStorage
-  try { const s=JSON.parse(localStorage.getItem('sCamSettings')||'{}'); sCamSettings={...sCamSettings,...s}; } catch(e){}
+try {
+  const s = JSON.parse(localStorage.getItem('sCamSettings') || '{}');
+  sCamSettings = { ...sCamSettings, ...s };
+} catch(e) {}
   document.getElementById('s-cam-name').value = sCamSettings.camName||'';
   document.getElementById('s-cam-rate').value = sCamSettings.rate||20;
   document.getElementById('s-cam-tax').value = sCamSettings.taxRate||8;
@@ -1462,7 +1465,6 @@ document.querySelectorAll('input[type="date"]').forEach(el=>el.value=new Date().
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <script>
-  // Firebase設定（あなたのFirebase情報）
 const firebaseConfig = {
   apiKey: "AIzaSyDxFECYZ4VFQuNHyDy1sKgjasxep-qVzBo",
   authDomain: "my-sale-site.firebaseapp.com",
@@ -1470,36 +1472,23 @@ const firebaseConfig = {
   storageBucket: "my-sale-site.firebasestorage.app",
   messagingSenderId: "389648038190",
   appId: "1:389648038190:web:3679305098afb3677562bf"
-  };
-  firebase.initializeApp(firebaseConfig);
+};
+
+firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
-  auth.onAuthStateChanged(function(user) {
+
+auth.onAuthStateChanged(function(user) {
   if (user) {
-    // ログインしている
     document.getElementById("login-screen").style.display = "none";
     document.getElementById("app").style.display = "block";
-
-    initDB(); // ← ここでDB読み込み
+    if (typeof initDB === "function") initDB();
   } else {
-    // ログインしていない
     document.getElementById("login-screen").style.display = "block";
     document.getElementById("app").style.display = "none";
   }
 });
 
-  // ログイン状態チェック
-  auth.onAuthStateChanged(function(user) {
-    if (user) {
-      document.getElementById("login-screen").style.display = "none";
-      document.getElementById("app").style.display = "block";
-    } else {
-      document.getElementById("login-screen").style.display = "block";
-      document.getElementById("app").style.display = "none";
-    }
-  });
-
-  // ログイン
 function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -1514,32 +1503,14 @@ function login() {
     });
 }
 
-  // ログアウト
-  function logout() {
-    auth.signOut();
-  }
-  function downloadCSV(type) {
-  const rows = window.allData || [];
-
-let filtered = rows.filter(r => {
-  const brand = r.type || r.madoguchi || r.pay || "";
-if (type === "mine") return brand === "自分";
-if (type === "friend") return brand === "友人";
-if (type === "salon") return brand === "サロン";
-  return false;
-});
-
-  if (filtered.length === 0) {
-    alert("データがありません");
-    return;
-  }
-
- let csv = "日付,ブランド,顧客名,プラン,オプション,売上,紹介料,手取り,入金状況,支払い方法,メモ\n";
+function logout() {
+  auth.signOut();
+}
 
 function downloadCSV(type) {
   const rows = window.allData || [];
 
-  let filtered = rows.filter(r => {
+  const filtered = rows.filter(r => {
     const brand = r.type || r.madoguchi || r.pay || "";
     if (type === "mine") return brand === "自分";
     if (type === "friend") return brand === "友人";
@@ -1563,7 +1534,7 @@ function downloadCSV(type) {
     csv += `${r.date || ""},${brandName},${r.customer || ""},${r.plan || ""},${r.option || ""},${r.sales || ""},${r.referral || ""},${r.profit || ""},${r.payment || ""},${r.payMethod || ""},${r.memo || ""}\n`;
   });
 
-  const blob = new Blob([csv], { type: "text/csv" });
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
