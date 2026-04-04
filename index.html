@@ -30,7 +30,6 @@
   --red: #EF4444;
   --yellow: #B8962E;
 }
-}
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Hiragino Kaku Gothic Pro', 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; min-height: 100vh; }
 
@@ -1454,7 +1453,6 @@ function renderSalonInvoice(){
 
 // ========== INIT ==========
 document.querySelectorAll('input[type="date"]').forEach(el=>el.value=new Date().toISOString().slice(0,10));
-initDB();
   
 </script>
 
@@ -1476,6 +1474,19 @@ const firebaseConfig = {
   firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
+  auth.onAuthStateChanged(function(user) {
+  if (user) {
+    // ログインしている
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("app").style.display = "block";
+
+    initDB(); // ← ここでDB読み込み
+  } else {
+    // ログインしていない
+    document.getElementById("login-screen").style.display = "block";
+    document.getElementById("app").style.display = "none";
+  }
+});
 
   // ログイン状態チェック
   auth.onAuthStateChanged(function(user) {
