@@ -953,8 +953,11 @@ window.submitFriend = async () => {
     sOpts:Object.keys(fSelSO).map(i=>SOPTS[i].name),
     updatedAt:new Date().toISOString()
   };
-  if(fEditId){await updateDoc(doc(db,'friend-recs',fEditId),data);}
-  else{await addDoc(collection(db,'friend-recs'),data);}
+if (fEditId) {
+  await db.collection('friend-recs').doc(fEditId).update(data);
+} else {
+  await db.collection('friend-recs').add(data);
+}
   fResetForm(); document.getElementById('friend-form').style.display='none';
 };
 
@@ -975,8 +978,8 @@ window.fEdit = (id) => {
   fRecalc();
 };
 window.fDel = async (id) => {
-  if(!confirm('削除しますか？'))return;
-  await deleteDoc(doc(db,'friend-recs',id));
+  if (!confirm('削除しますか？')) return;
+  await db.collection('friend-recs').doc(id).delete();
 };
 
 function renderFriendList() {
@@ -1224,8 +1227,11 @@ window.submitMine = async () => {
     salonFeeShare:a.totalSalonFee,shootIncome:a.shootIncome,otherExp:a.otherExp,profit:a.profit,
     updatedAt:new Date().toISOString()
   };
-  if(mEditId){await updateDoc(doc(db,'my-recs',mEditId),data);}
-  else{await addDoc(collection(db,'my-recs'),data);}
+if (mEditId) {
+  await db.collection('my-recs').doc(mEditId).update(data);
+} else {
+  await db.collection('my-recs').add(data);
+}
   mResetForm(); document.getElementById('mine-form').style.display='none';
 };
 
@@ -1245,8 +1251,8 @@ window.mEdit = (id) => {
   mRecalc();
 };
 window.mDel = async (id) => {
-  if(!confirm('削除しますか？'))return;
-  await deleteDoc(doc(db,'my-recs',id));
+  if (!confirm('削除しますか？')) return;
+  await db.collection('my-recs').doc(id).delete();
 };
 
 function renderMineList() {
@@ -1352,8 +1358,11 @@ window.submitSalon=async()=>{
     totalEx:a.totalEx,totalInc:a.totalInc,totalRef:a.totalRef,cardFee:a.cardFee,salonRecv:a.salonRecv,
     updatedAt:new Date().toISOString()
   };
-  if(sEditId){await updateDoc(doc(db,'salon-recs',sEditId),data);}
-  else{await addDoc(collection(db,'salon-recs'),data);}
+ if (sEditId) {
+  await db.collection('salon-recs').doc(sEditId).update(data);
+} else {
+  await db.collection('salon-recs').add(data);
+}
   sResetForm(); document.getElementById('salon-form').style.display='none';
 };
 
@@ -1383,7 +1392,10 @@ window.sEdit=(id)=>{
   document.getElementById('salon-form').scrollIntoView({behavior:'smooth'});
   sRecalc();
 };
-window.sDel=async(id)=>{if(!confirm('削除しますか？'))return;await deleteDoc(doc(db,'salon-recs',id));};
+window.sDel = async (id) => {
+  if (!confirm('削除しますか？')) return;
+  await db.collection('salon-recs').doc(id).delete();
+};
 
 function renderSalonList(){
   const {y,m}=getTabYM('salon');
