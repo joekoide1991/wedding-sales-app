@@ -1526,30 +1526,65 @@ function logout() {
 }
 
 function downloadCSV(type) {
-  const rows = window.allData || [];
+  let rows = [];
 
-  const filtered = rows.filter(r => {
-    const brand = r.type || r.madoguchi || r.pay || "";
-    if (type === "mine") return brand === "自分";
-    if (type === "friend") return brand === "友人";
-    if (type === "salon") return brand === "サロン";
-    return false;
-  });
+  if (type === "mine") {
+    rows = (myRecs || []).map(r => ({
+      date: r.date || "",
+      brand: "ONE SHOT",
+      customer: r.name || "",
+      plan: (r.plans || []).join(" / "),
+      option: "",
+      sales: r.totalCustomer || 0,
+      referral: r.referral || 0,
+      profit: r.profit || 0,
+      payment: r.paid || "",
+      payMethod: r.pay || "",
+      memo: r.memo || ""
+    }));
+  }
 
-  if (filtered.length === 0) {
+  if (type === "friend") {
+    rows = (friendRecs || []).map(r => ({
+      date: r.date || "",
+      brand: "Massu photo studio",
+      customer: r.name || "",
+      plan: [...(r.wPlans || []), ...(r.sPlans || [])].join(" / "),
+      option: [...(r.wOpts || []), ...(r.sOpts || [])].join(" / "),
+      sales: r.totalCustomer || 0,
+      referral: 0,
+      profit: r.myReward || 0,
+      payment: r.paid || "",
+      payMethod: r.pay || "",
+      memo: r.memo || ""
+    }));
+  }
+
+  if (type === "salon") {
+    rows = (salonRecs || []).map(r => ({
+      date: r.date || "",
+      brand: "AKKA HAKKA",
+      customer: r.name || "",
+      plan: "",
+      option: (r.items || []).map(x => x.name).join(" / "),
+      sales: r.totalInc || 0,
+      referral: r.totalRef || 0,
+      profit: r.totalRef || 0,
+      payment: "—",
+      payMethod: r.pay || "",
+      memo: r.memo || ""
+    }));
+  }
+
+  if (!rows.length) {
     alert("データがありません");
     return;
   }
 
   let csv = "日付,ブランド,顧客名,プラン,オプション,売上,紹介料,手取り,入金状況,支払い方法,メモ\n";
 
-  filtered.forEach(r => {
-    let brandName = "";
-    if (r.type === "自分") brandName = "ONE SHOT";
-    if (r.type === "友人") brandName = "Massu photo studio";
-    if (r.type === "サロン") brandName = "AKKA HAKKA";
-
-    csv += `${r.date || ""},${brandName},${r.customer || ""},${r.plan || ""},${r.option || ""},${r.sales || ""},${r.referral || ""},${r.profit || ""},${r.payment || ""},${r.payMethod || ""},${r.memo || ""}\n`;
+  rows.forEach(r => {
+    csv += `${r.date},${r.brand},${r.customer},${r.plan},${r.option},${r.sales},${r.referral},${r.profit},${r.payment},${r.payMethod},${r.memo}\n`;
   });
 
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
