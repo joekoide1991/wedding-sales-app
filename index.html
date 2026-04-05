@@ -603,7 +603,7 @@ window.login = async function () {
     console.error(e);
 };
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -618,6 +618,16 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 window.auth = auth;
+  onAuthStateChanged(auth, (user) => {
+  if (user) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initDB();
+  } else {
+    document.getElementById('login-screen').style.display = 'block';
+    document.getElementById('app').style.display = 'none';
+  }
+});
 const db = getFirestore(app);
   window.db = db;
 window.collection = collection;
@@ -625,6 +635,27 @@ window.addDoc = addDoc;
 window.updateDoc = updateDoc;
 window.deleteDoc = deleteDoc;
 window.doc = doc;
+  let friendRecs = [];
+let myRecs = [];
+let salonRecs = [];
+let sCamSettings = { camName: '', rate: 20, taxRate: 8 };
+
+function initDB() {
+  onSnapshot(query(collection(db, 'friend-recs'), orderBy('date', 'desc')), snap => {
+    friendRecs = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
+    renderAll();
+  });
+
+  onSnapshot(query(collection(db, 'my-recs'), orderBy('date', 'desc')), snap => {
+    myRecs = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
+    renderAll();
+  });
+
+  onSnapshot(query(collection(db, 'salon-recs'), orderBy('date', 'desc')), snap => {
+    salonRecs = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
+    renderAll();
+  });
+}
 
 // ========== DATA ==========
 const WPLANS=[
@@ -1543,6 +1574,73 @@ function logout() {
 }
 
 function downloadCSV(type) {
+  let rows = [];
+
+  if (type === 'mine') {
+    rows = (myRecs || []).map(r => ({
+      date: r.date || '',
+      brand: 'ONE SHOT',
+      customer: r.name || '',
+      plan: (r.plans || []).join(' / '),
+      option: '',
+      sales: r.totalCustomer || 0,
+      referral: r.referral || 0,
+      profit: r.profit || 0,
+      payment: r.paid || '',
+      payMethod: r.pay || '',
+      memo: r.memo || ''
+    }));
+  } else if (type === 'friend') {
+    rows = (friendRecs || []).map(r => ({
+      date: r.date || '',
+      brand: 'Massu photo studio',
+      customer: r.name || '',
+      plan: [...(r.wPlans || []), ...(r.sPlans || [])].join(' / '),
+      option: [...(r.wOpts || []), ...(r.sOpts || [])].join(' / '),
+      sales: r.totalCustomer || 0,
+      referral: 0,
+      profit: r.myReward || 0,
+      payment: r.paid || '',
+      payMethod: r.pay || '',
+      memo: r.memo || ''
+    }));
+  } else if (type === 'salon') {
+    rows = (salonRecs || []).map(r => ({
+      date: r.date || '',
+      brand: 'AKKA HAKKA',
+      customer: r.name || '',
+      plan: '',
+      option: (r.items || []).map(x => x.name || '').join(' / '),
+      sales: r.totalInc || 0,
+      referral: r.totalRef || 0,
+      profit: r.totalRef || 0,
+      payment: '—',
+      payMethod: r.pay || '',
+      memo: r.memo || ''
+    }));
+  }
+
+  if (!rows.length) {
+    alert('データがありません');
+    return;
+  }
+
+  let csv = '日付,ブランド,顧客名,プラン,オプション,売上,紹介料,手取り,入金状況,支払い方法,メモ\n';
+
+  rows.forEach(r => {
+    csv += `${r.date},${r.brand},${r.customer},${r.plan},${r.option},${r.sales},${r.referral},${r.profit},${r.payment},${r.payMethod},${r.memo}\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = type + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
   let rows = [];
 
   if (type === "mine") {
