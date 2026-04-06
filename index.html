@@ -602,17 +602,6 @@ const firebaseConfig = {
   messagingSenderId: "389648038190",
   appId: "1:389648038190:web:3679305098afb3677562bf"
 };
-  const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-window.db = db;
-window.collection = collection;
-window.addDoc = addDoc;
-window.updateDoc = updateDoc;
-window.deleteDoc = deleteDoc;
-window.doc = doc;
-};
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -646,13 +635,6 @@ window.login = async function () {
     console.error(e);
   }
 });
-const db = getFirestore(app);
-  window.db = db;
-window.collection = collection;
-window.addDoc = addDoc;
-window.updateDoc = updateDoc;
-window.deleteDoc = deleteDoc;
-window.doc = doc;
   let friendRecs = [];
 let myRecs = [];
 let salonRecs = [];
