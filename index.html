@@ -589,6 +589,22 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 <!-- Firebase SDK -->
 <script type="module">
   // ログイン処理
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// ログイン処理
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+window.db = db;
+window.collection = collection;
+window.addDoc = addDoc;
+window.updateDoc = updateDoc;
+window.deleteDoc = deleteDoc;
+window.doc = doc;
+
+// ログイン処理
 window.login = async function () {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
@@ -601,11 +617,8 @@ window.login = async function () {
   } catch (e) {
     alert('ログイン失敗');
     console.error(e);
+  }
 };
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
 const firebaseConfig = {
   apiKey: "AIzaSyDxFECYZ4VFQuNHyDy1sKgjasxep-qVzBo",
   authDomain: "my-sale-site.firebaseapp.com",
