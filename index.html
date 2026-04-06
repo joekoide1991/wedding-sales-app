@@ -612,26 +612,19 @@ window.addDoc = addDoc;
 window.updateDoc = updateDoc;
 window.deleteDoc = deleteDoc;
 window.doc = doc;
-
-window.login = async function () {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    initDB();
-  } catch (e) {
-    alert('ログイン失敗');
-    console.error(e);
-  }
 };
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-window.auth = auth;
-  onAuthStateChanged(auth, (user) => {
+const db = getFirestore(app);
+
+window.db = db;
+window.collection = collection;
+window.addDoc = addDoc;
+window.updateDoc = updateDoc;
+window.deleteDoc = deleteDoc;
+window.doc = doc;
+
+onAuthStateChanged(auth, (user) => {
   if (user) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
@@ -639,6 +632,18 @@ window.auth = auth;
   } else {
     document.getElementById('login-screen').style.display = 'block';
     document.getElementById('app').style.display = 'none';
+  }
+});
+
+window.login = async function () {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (e) {
+    alert('ログイン失敗');
+    console.error(e);
   }
 });
 const db = getFirestore(app);
