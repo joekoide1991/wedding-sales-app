@@ -11,29 +11,24 @@
   --bg3: #f0f0f0;
   --border: #dddddd;
   --border2: #cccccc;
-
-  /* 文字色 */
   --text: #2B2B2B;
   --text2: #666666;
   --text3: #999999;
-
-  /* ブランド色 */
-  --mine: #B8962E;     /* ONE SHOT（ゴールド） */
-  --friend: #2C4A73;   /* Massu（ネイビー） */
-  --salon: #7A2633;    /* AKKA（ボルドー） */
-
-  /* 合計 */
-  --green: #6C8FA3;    /* 合計手取り（くすみブルー） */
-
-  /* その他 */
+  --mine: #B8962E;
+  --friend: #2C4A73;
+  --salon: #7A2633;
+  --green: #6C8FA3;
   --orange: #FB923C;
   --red: #EF4444;
   --yellow: #B8962E;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --friend-bg: rgba(44, 74, 115, 0.08);
+  --mine-bg: rgba(184, 150, 46, 0.08);
+  --salon-bg: rgba(122, 38, 51, 0.08);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Hiragino Kaku Gothic Pro', 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; min-height: 100vh; }
-
-/* NAV */
 .nav { background: var(--bg2); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
 .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; gap: 0; padding: 0 16px; overflow-x: auto; }
 .nav-logo { font-size: 13px; font-weight: 700; color: var(--text2); padding: 14px 16px 14px 0; white-space: nowrap; border-right: 1px solid var(--border); margin-right: 8px; letter-spacing: .05em; }
@@ -41,31 +36,22 @@ body { font-family: 'Hiragino Kaku Gothic Pro', 'Noto Sans JP', sans-serif; back
 .nav-tab:hover { color: var(--text2); }
 .nav-tab.active { color: var(--text); border-bottom-color: var(--friend); }
 .nav-tab.active.t-mine { border-bottom-color: var(--mine); }
+.nav-tab.active.t-friend { border-bottom-color: var(--friend); }
 .nav-tab.active.t-salon { border-bottom-color: var(--salon); }
 .nav-tab.active.t-dash { border-bottom-color: var(--yellow); }
-
-/* LAYOUT */
 .page { display: none; max-width: 900px; margin: 0 auto; padding: 20px 16px; }
 .page.active { display: block; }
-
-/* MONTH NAV */
 .month-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
 .mnbtn { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); width: 30px; height: 30px; cursor: pointer; color: var(--text2); font-size: 16px; display: flex; align-items: center; justify-content: center; }
 .mnbtn:hover { border-color: var(--border2); color: var(--text); }
 .month-label { font-size: 16px; font-weight: 600; min-width: 120px; text-align: center; }
-
-/* CARDS */
 .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 14px; }
 .card-title { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 14px; }
-
-/* METRICS */
 .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
 @media (max-width: 600px) { .metrics { grid-template-columns: repeat(2, 1fr); } }
 .metric { background: var(--bg3); border-radius: var(--radius-sm); padding: 14px; }
 .metric-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
 .metric-value { font-size: 18px; font-weight: 700; }
-
-/* FORM ELEMENTS */
 label { font-size: 12px; color: var(--text3); display: block; margin-bottom: 5px; }
 input, select, textarea { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 9px 12px; color: var(--text); font-size: 13px; font-family: inherit; }
 input:focus, select:focus { outline: none; border-color: var(--border2); }
@@ -73,8 +59,6 @@ select option { background: var(--bg3); }
 .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 @media (max-width: 500px) { .g2, .g3 { grid-template-columns: 1fr; } }
-
-/* BUTTONS */
 .btn { background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius-sm); padding: 9px 16px; font-size: 13px; cursor: pointer; color: var(--text); font-family: inherit; transition: all .15s; }
 .btn:hover { border-color: var(--border2); background: var(--bg2); }
 .btn-primary { background: var(--friend-bg); border-color: rgba(74,158,255,0.3); color: var(--friend); }
@@ -83,8 +67,6 @@ select option { background: var(--bg3); }
 .btn-block { width: 100%; margin-top: 12px; }
 .btn-sm { padding: 5px 10px; font-size: 12px; }
 .btn-danger { color: var(--red); border-color: rgba(248,113,113,0.2); background: rgba(248,113,113,0.05); }
-
-/* MENU GRID */
 .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
 .menu-item { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; cursor: pointer; transition: all .15s; }
 .menu-item:hover { border-color: var(--border2); }
@@ -105,16 +87,12 @@ select option { background: var(--bg3); }
 .qty-btn { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; width: 20px; height: 20px; cursor: pointer; color: var(--text2); font-size: 13px; line-height: 1; }
 .est-input { display: none; width: 100%; margin-top: 6px; background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; font-size: 12px; color: var(--text); }
 .menu-item.sel-f .est-input, .menu-item.sel-m .est-input { display: block; }
-
-/* SUMMARY BOX */
 .sbox { background: var(--bg3); border-radius: var(--radius-sm); padding: 14px; margin-top: 10px; }
 .sbox-title { font-size: 11px; color: var(--text3); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
 .s-row { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; }
 .s-row.sub { color: var(--text2); font-size: 12px; }
 .s-row.total { font-weight: 600; border-top: 1px solid var(--border); margin-top: 6px; padding-top: 8px; }
 .s-row.grand { font-weight: 700; font-size: 15px; border-top: 1px solid var(--border2); margin-top: 6px; padding-top: 10px; }
-
-/* TABLE */
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
 th { text-align: left; font-size: 11px; color: var(--text3); padding: 6px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; font-weight: 600; letter-spacing: .04em; }
@@ -131,19 +109,13 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 .tag-f { background: var(--friend-bg); color: var(--friend); }
 .tag-m { background: var(--mine-bg); color: var(--mine); }
 .tag-s { background: var(--salon-bg); color: var(--salon); }
-
-/* CHIPS */
 .chips { display: flex; flex-wrap: wrap; gap: 4px; }
 .chip { font-size: 11px; padding: 2px 8px; border-radius: 99px; border: 1px solid var(--border); color: var(--text2); white-space: nowrap; }
 .chip-f { border-color: rgba(74,158,255,0.3); color: var(--friend); }
 .chip-m { border-color: rgba(167,139,250,0.3); color: var(--mine); }
 .chip-s { border-color: rgba(52,211,153,0.3); color: var(--salon); }
-
-/* ICON BTNS */
 .icon-btn { background: none; border: none; cursor: pointer; padding: 4px 6px; border-radius: 4px; color: var(--text2); font-size: 14px; }
 .icon-btn:hover { background: var(--bg3); color: var(--text); }
-
-/* DASHBOARD */
 .brand-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
 @media (max-width: 600px) { .brand-cards { grid-template-columns: 1fr; } }
 .brand-card { border-radius: var(--radius); padding: 16px; border: 1px solid var(--border); background: var(--bg2); }
@@ -154,35 +126,15 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 .brand-name.f { color: var(--friend); }
 .brand-name.m { color: var(--mine); }
 .brand-name.s { color: var(--salon); }
-
-/* SALON INC PANEL */
 .si-panel { background: rgba(52,211,153,0.05); border: 1px solid rgba(52,211,153,0.2); border-radius: var(--radius-sm); padding: 14px; margin-top: 12px; }
 .si-title { font-size: 11px; color: var(--salon); font-weight: 600; margin-bottom: 8px; }
-
-/* EXP ROW */
 .exp-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
 .exp-del { background: none; border: none; color: var(--red); cursor: pointer; font-size: 16px; padding: 0 4px; }
-
-/* DIVIDER */
 .divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
-
-/* LOADING */
-.loading { display: flex; align-items: center; justify-content: center; padding: 40px; color: var(--text3); font-size: 13px; gap: 8px; }
-.spinner { width: 16px; height: 16px; border: 2px solid var(--border2); border-top-color: var(--friend); border-radius: 50%; animation: spin .6s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* EMPTY */
 .empty { text-align: center; color: var(--text3); padding: 32px; font-size: 13px; }
-
-/* INVOICE */
 .invoice { background: #fff; color: #000; padding: 32px; border-radius: var(--radius); }
 .inv-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
 .inv-meta { font-size: 12px; color: #666; margin-bottom: 20px; }
-.inv-parties { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-.inv-party { border: 1px solid #ddd; border-radius: 6px; padding: 12px; }
-.inv-party-label { font-size: 10px; color: #999; text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
-.inv-party-name { font-size: 14px; font-weight: 700; }
-.inv-party-sub { font-size: 12px; color: #666; }
 .inv-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 16px; }
 .inv-table th { border-bottom: 2px solid #000; padding: 6px 8px; text-align: left; font-size: 10px; text-transform: uppercase; color: #666; }
 .inv-table td { border-bottom: 1px solid #eee; padding: 7px 8px; color: #000; }
@@ -191,8 +143,6 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 .inv-total-row { display: flex; justify-content: space-between; font-size: 13px; padding: 3px 0; color: #444; }
 .inv-total-row.big { font-size: 16px; font-weight: 700; color: #000; border-top: 2px solid #000; margin-top: 8px; padding-top: 8px; }
 .inv-note { font-size: 11px; color: #888; border-top: 1px solid #eee; padding-top: 10px; line-height: 1.6; }
-
-/* PRINT */
 @media print {
   .nav, .month-nav, .card:not(.invoice-card), .btn { display: none !important; }
   .invoice-card { display: block !important; }
@@ -201,80 +151,72 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 </style>
 </head>
 <body>
-  
-<div id="login-screen" style="padding:40px;">
-  <h2>ログイン</h2>
+<div id="login-screen" style="padding:40px; max-width:420px; margin:0 auto;">
+  <h2 style="margin-bottom:20px;">ログイン</h2>
   <input id="email" type="email" placeholder="メール"><br><br>
   <input id="password" type="password" placeholder="パスワード"><br><br>
-  <button onclick="login()">ログイン</button>
+  <button class="btn btn-primary" id="login-btn" onclick="login()">ログイン</button>
+  <div id="login-error" style="margin-top:12px;color:var(--red);font-size:12px;display:none;"></div>
 </div>
 
 <div id="app" style="display:none;">
 <nav class="nav">
   <div class="nav-inner">
     <div class="nav-logo">WSM</div>
-   <button class="nav-tab active" onclick="switchTab('dash')">ダッシュボード</button>
-<button class="nav-tab t-mine" onclick="switchTab('mine')">ONE SHOT</button>
-<button class="nav-tab t-friend" onclick="switchTab('friend')">Massu photo studio</button>
-<button class="nav-tab t-salon" onclick="switchTab('salon')">AKKA HAKKA</button>
+    <button class="nav-tab t-dash active" onclick="switchTab('dash')">ダッシュボード</button>
+    <button class="nav-tab t-mine" onclick="switchTab('mine')">ONE SHOT</button>
+    <button class="nav-tab t-friend" onclick="switchTab('friend')">Massu photo studio</button>
+    <button class="nav-tab t-salon" onclick="switchTab('salon')">AKKA HAKKA</button>
   </div>
 </nav>
 
-<!-- ========== DASHBOARD ========== -->
 <div class="page active" id="page-dash">
   <div class="month-nav">
     <button class="mnbtn" onclick="chM('dash',-1)">‹</button>
     <div class="month-label" id="dash-month"></div>
     <button class="mnbtn" onclick="chM('dash',1)">›</button>
-    <div style="margin-left:auto;font-size:12px;color:var(--text3);" id="sync-status">同期中...</div>
+    <div style="margin-left:auto;font-size:12px;color:var(--text3);" id="sync-status">待機中...</div>
   </div>
-
   <div class="metrics" id="dash-metrics">
     <div class="metric"><div class="metric-label">総売上（税込）</div><div class="metric-value" id="d-total-sales">¥0</div></div>
     <div class="metric"><div class="metric-label">手取り収入合計</div><div class="metric-value" style="color:var(--green);" id="d-total-profit">¥0</div></div>
     <div class="metric"><div class="metric-label">総案件数</div><div class="metric-value" id="d-total-count">0件</div></div>
     <div class="metric"><div class="metric-label">未入金</div><div class="metric-value" style="color:var(--orange);" id="d-unpaid">0件</div></div>
   </div>
-
- <div class="brand-cards">
-  <div class="brand-card m">
-    <div class="brand-name m">ONE SHOT</div>
-    <div class="s-row sub"><span>案件数</span><span id="d-m-count">0件</span></div>
-    <div class="s-row sub"><span>売上</span><span id="d-m-sales">¥0</span></div>
-    <div class="s-row sub"><span>利益</span><span style="color:var(--mine);" id="d-m-profit">¥0</span></div>
+  <div class="brand-cards">
+    <div class="brand-card m">
+      <div class="brand-name m">ONE SHOT</div>
+      <div class="s-row sub"><span>案件数</span><span id="d-m-count">0件</span></div>
+      <div class="s-row sub"><span>売上</span><span id="d-m-sales">¥0</span></div>
+      <div class="s-row sub"><span>利益</span><span style="color:var(--mine);" id="d-m-profit">¥0</span></div>
+    </div>
+    <div class="brand-card f">
+      <div class="brand-name f">Massu photo studio</div>
+      <div class="s-row sub"><span>案件数</span><span id="d-f-count">0件</span></div>
+      <div class="s-row sub"><span>売上</span><span id="d-f-sales">¥0</span></div>
+      <div class="s-row sub"><span>報酬</span><span style="color:var(--friend);" id="d-f-reward">¥0</span></div>
+    </div>
+    <div class="brand-card s">
+      <div class="brand-name s">AKKA HAKKA</div>
+      <div class="s-row sub"><span>案件数</span><span id="d-s-count">0件</span></div>
+      <div class="s-row sub"><span>売上</span><span id="d-s-sales">¥0</span></div>
+      <div class="s-row sub"><span>紹介料</span><span style="color:var(--salon);" id="d-s-ref">¥0</span></div>
+    </div>
   </div>
-
-  <div class="brand-card f">
-    <div class="brand-name f">Massu photo studio</div>
-    <div class="s-row sub"><span>案件数</span><span id="d-f-count">0件</span></div>
-    <div class="s-row sub"><span>売上</span><span id="d-f-sales">¥0</span></div>
-    <div class="s-row sub"><span>報酬</span><span style="color:var(--friend);" id="d-f-reward">¥0</span></div>
-  </div>
-
-  <div class="brand-card s">
-    <div class="brand-name s">AKKA HAKKA</div>
-    <div class="s-row sub"><span>案件数</span><span id="d-s-count">0件</span></div>
-    <div class="s-row sub"><span>売上</span><span id="d-s-sales">¥0</span></div>
-    <div class="s-row sub"><span>紹介料</span><span style="color:var(--salon);" id="d-s-ref">¥0</span></div>
-  </div>
-</div>
-
   <div class="card">
     <div class="card-title">手取り収入内訳</div>
- <div class="s-row sub"><span>ONE SHOT 利益</span><span style="color:var(--mine);" id="d-inc-m">¥0</span></div>
-<div class="s-row sub"><span>Massu photo studio 報酬</span><span style="color:var(--friend);" id="d-inc-f">¥0</span></div>
-<div class="s-row sub"><span>AKKA HAKKA 紹介料</span><span style="color:var(--salon);" id="d-inc-s">¥0</span></div>
+    <div class="s-row sub"><span>ONE SHOT 利益</span><span style="color:var(--mine);" id="d-inc-m">¥0</span></div>
+    <div class="s-row sub"><span>Massu photo studio 報酬</span><span style="color:var(--friend);" id="d-inc-f">¥0</span></div>
+    <div class="s-row sub"><span>AKKA HAKKA 紹介料</span><span style="color:var(--salon);" id="d-inc-s">¥0</span></div>
     <div class="s-row total"><span>合計手取り</span><span style="color:var(--green);" id="d-inc-total">¥0</span></div>
   </div>
-
   <div class="card">
     <div class="card-title">全案件一覧</div>
-      <!-- CSVボタン -->
-  <div style="margin:10px 0 15px 0;">
-    <button onclick="downloadCSV('mine')">ONE SHOT CSV</button>
-    <button onclick="downloadCSV('friend')">Massu CSV</button>
-    <button onclick="downloadCSV('salon')">AKKA CSV</button>
-  </div>
+    <div style="margin:10px 0 15px 0;">
+      <button class="btn btn-sm" onclick="downloadCSV('mine')">ONE SHOT CSV</button>
+      <button class="btn btn-sm" onclick="downloadCSV('friend')">Massu CSV</button>
+      <button class="btn btn-sm" onclick="downloadCSV('salon')">AKKA CSV</button>
+    </div>
     <div class="table-wrap">
       <table>
         <thead><tr><th>日付</th><th>窓口</th><th>お客様</th><th style="text-align:right;">売上</th><th style="text-align:right;">手取り</th><th>入金</th></tr></thead>
@@ -284,7 +226,6 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   </div>
 </div>
 
-<!-- ========== FRIEND BRAND ========== -->
 <div class="page" id="page-friend">
   <div class="month-nav">
     <button class="mnbtn" onclick="chM('friend',-1)">‹</button>
@@ -294,20 +235,17 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       <button class="btn btn-sm" onclick="showFriendForm()">＋ 新規案件</button>
     </div>
   </div>
-
   <div class="metrics">
     <div class="metric"><div class="metric-label">案件数</div><div class="metric-value" id="f-count">0件</div></div>
     <div class="metric"><div class="metric-label">売上（税込）</div><div class="metric-value" id="f-sales">¥0</div></div>
     <div class="metric"><div class="metric-label">自分の報酬</div><div class="metric-value" style="color:var(--friend);" id="f-reward">¥0</div></div>
     <div class="metric"><div class="metric-label">現金差引</div><div class="metric-value" id="f-cash">¥0</div></div>
   </div>
-
-  <!-- Friend Form -->
   <div class="card" id="friend-form" style="display:none;">
     <div class="card-title" id="f-form-title">新規案件 — 友人ブランド</div>
     <div class="g3" style="margin-bottom:12px;">
-      <div><label>お客様名</label><input type="text" id="f-name" placeholder="山田 太郎 様"/></div>
-      <div><label>撮影日</label><input type="date" id="f-date"/></div>
+      <div><label>お客様名</label><input type="text" id="f-name" placeholder="山田 太郎 様"></div>
+      <div><label>撮影日</label><input type="date" id="f-date"></div>
       <div><label>支払い方法</label>
         <select id="f-pay" onchange="fRecalc()">
           <option value="振込">銀行振込（友人受取→振込）</option>
@@ -326,9 +264,8 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       <div><label>入金状況</label>
         <select id="f-paid"><option value="未入金">未入金</option><option value="入金済">入金済</option></select>
       </div>
-      <div><label>メモ</label><input type="text" id="f-memo" placeholder="備考"/></div>
+      <div><label>メモ</label><input type="text" id="f-memo" placeholder="備考"></div>
     </div>
-
     <div class="card-title" style="margin-top:4px;">ウェディング系プラン</div>
     <div class="menu-grid" id="f-wplan-grid" style="margin-bottom:12px;"></div>
     <div class="card-title">星空系プラン <span class="badge badge-est">報酬50%</span></div>
@@ -337,7 +274,6 @@ tr:hover td { background: rgba(255,255,255,0.02); }
     <div class="menu-grid" id="f-wopt-grid" style="margin-bottom:12px;"></div>
     <div class="card-title">星空系オプション <span class="badge badge-est">報酬50%</span></div>
     <div class="menu-grid" id="f-sopt-grid" style="margin-bottom:12px;"></div>
-
     <div class="sbox">
       <div class="sbox-title">サマリー</div>
       <div class="s-row sub"><span>税抜額</span><span id="fs-ex">¥0</span></div>
@@ -351,14 +287,11 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       <div class="s-row sub"><span id="fs-friend-label">友人への手渡し</span><span style="color:var(--orange);" id="fs-friend">—</span></div>
       <div style="font-size:12px;color:var(--text3);margin-top:8px;background:var(--bg2);border-radius:4px;padding:8px;" id="fs-note"></div>
     </div>
-
     <div style="display:flex;gap:8px;margin-top:12px;">
       <button class="btn btn-primary btn-block" id="f-submit" onclick="submitFriend()">この案件を登録する</button>
       <button class="btn" id="f-cancel" style="display:none;" onclick="cancelFriend()">キャンセル</button>
     </div>
   </div>
-
-  <!-- Friend List -->
   <div class="card">
     <div class="card-title">案件一覧</div>
     <div class="table-wrap">
@@ -368,8 +301,6 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       </table>
     </div>
   </div>
-
-  <!-- Friend Settle -->
   <div class="card">
     <div class="card-title">月末精算</div>
     <div class="g2">
@@ -388,7 +319,6 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   </div>
 </div>
 
-<!-- ========== MY BRAND ========== -->
 <div class="page" id="page-mine">
   <div class="month-nav">
     <button class="mnbtn" onclick="chM('mine',-1)">‹</button>
@@ -398,19 +328,17 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       <button class="btn btn-sm" onclick="showMineForm()">＋ 新規案件</button>
     </div>
   </div>
-
   <div class="metrics">
     <div class="metric"><div class="metric-label">案件数</div><div class="metric-value" id="m-count">0件</div></div>
     <div class="metric"><div class="metric-label">売上（税込）</div><div class="metric-value" id="m-sales">¥0</div></div>
     <div class="metric"><div class="metric-label">自分の利益</div><div class="metric-value" style="color:var(--mine);" id="m-profit">¥0</div></div>
     <div class="metric"><div class="metric-label">経費合計</div><div class="metric-value" style="color:var(--orange);" id="m-exp">¥0</div></div>
   </div>
-
   <div class="card" id="mine-form" style="display:none;">
     <div class="card-title" id="m-form-title">新規案件 — 自分ブランド</div>
     <div class="g3" style="margin-bottom:12px;">
-      <div><label>お客様名</label><input type="text" id="m-name" placeholder="山田 太郎 様"/></div>
-      <div><label>撮影日</label><input type="date" id="m-date"/></div>
+      <div><label>お客様名</label><input type="text" id="m-name" placeholder="山田 太郎 様"></div>
+      <div><label>撮影日</label><input type="date" id="m-date"></div>
       <div><label>入金状況</label><select id="m-paid"><option value="未入金">未入金</option><option value="入金済">入金済</option></select></div>
     </div>
     <div class="g2" style="margin-bottom:12px;">
@@ -422,14 +350,12 @@ tr:hover td { background: rgba(255,255,255,0.02); }
           <option value="PayPay">PayPay（1.98%）</option>
         </select>
       </div>
-      <div><label>メモ</label><input type="text" id="m-memo" placeholder="備考"/></div>
+      <div><label>メモ</label><input type="text" id="m-memo" placeholder="備考"></div>
     </div>
-
     <div class="card-title">撮影プラン</div>
     <div class="menu-grid" id="m-plan-grid" style="margin-bottom:12px;"></div>
     <div class="card-title">オプション</div>
     <div class="menu-grid" id="m-opt-grid" style="margin-bottom:12px;"></div>
-
     <div id="m-salon-inc-section" style="display:none;">
       <div class="card-title">サロン込みプラン設定</div>
       <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">基準セット：ドレスC・メンズC・ヘアメイク・ブーケ（選択）が自動適用されます。</div>
@@ -445,7 +371,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       <div class="card-title">追加サロンメニュー</div>
       <div class="menu-grid" id="m-extra-grid" style="margin-bottom:10px;"></div>
       <div><label>その他サロン費用（税抜・報酬なし）</label>
-        <div class="g2" style="margin-top:6px;"><input type="text" id="m-so-name" placeholder="内容"/><input type="number" id="m-so-val" placeholder="税抜金額" oninput="mRecalc()"/></div>
+        <div class="g2" style="margin-top:6px;"><input type="text" id="m-so-name" placeholder="内容"><input type="number" id="m-so-val" placeholder="税抜金額" oninput="mRecalc()"></div>
       </div>
       <div class="si-panel" style="margin-top:10px;">
         <div class="si-title">サロン込み計算内訳</div>
@@ -461,19 +387,16 @@ tr:hover td { background: rgba(255,255,255,0.02); }
         <div class="s-row total" style="color:var(--mine);"><span>自分の利益</span><span id="msi-profit">¥0</span></div>
       </div>
     </div>
-
     <div id="m-salon-normal-section">
       <div class="card-title">サロンメニュー</div>
       <div class="menu-grid" id="m-salon-grid" style="margin-bottom:10px;"></div>
       <div><label>その他サロン費用（税抜・報酬なし）</label>
-        <div class="g2" style="margin-top:6px;"><input type="text" id="m-so-name2" placeholder="内容"/><input type="number" id="m-so-val2" placeholder="税抜金額" oninput="mRecalc()"/></div>
+        <div class="g2" style="margin-top:6px;"><input type="text" id="m-so-name2" placeholder="内容"><input type="number" id="m-so-val2" placeholder="税抜金額" oninput="mRecalc()"></div>
       </div>
     </div>
-
     <div class="card-title" style="margin-top:12px;">追加経費</div>
     <div id="m-exp-list"></div>
     <button class="btn btn-sm" onclick="addMExp()" style="margin-top:6px;">＋ 経費追加</button>
-
     <div class="sbox" style="margin-top:12px;">
       <div class="sbox-title">料金サマリー</div>
       <div class="s-row sub"><span>税抜額</span><span id="ms-ex">¥0</span></div>
@@ -483,16 +406,14 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       <div class="s-row sub"><span id="ms-fee-label">決済手数料</span><span style="color:var(--red);" id="ms-fee">¥0</span></div>
       <div class="s-row sub"><span>サロンへ戻す額</span><span style="color:var(--orange);" id="ms-salon-back">¥0</span></div>
       <div class="s-row sub" style="color:var(--salon);"><span>紹介報酬</span><span id="ms-ref">¥0</span></div>
-      <div class="s-row sub" style="color:var(--red);" id="ms-exp-rows"></div>
+      <div id="ms-exp-rows"></div>
       <div class="s-row grand"><span>自分の利益</span><span style="color:var(--mine);" id="ms-profit">¥0</span></div>
     </div>
-
     <div style="display:flex;gap:8px;margin-top:12px;">
       <button class="btn btn-primary mine btn-block" id="m-submit" onclick="submitMine()">この案件を登録する</button>
       <button class="btn" id="m-cancel" style="display:none;" onclick="cancelMine()">キャンセル</button>
     </div>
   </div>
-
   <div class="card">
     <div class="card-title">案件一覧</div>
     <div class="table-wrap">
@@ -504,7 +425,6 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   </div>
 </div>
 
-<!-- ========== SALON ========== -->
 <div class="page" id="page-salon">
   <div class="month-nav">
     <button class="mnbtn" onclick="chM('salon',-1)">‹</button>
@@ -516,28 +436,25 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       <button class="btn btn-sm" onclick="showSalonInvoice()">請求書</button>
     </div>
   </div>
-
   <div class="metrics">
     <div class="metric"><div class="metric-label">案件数</div><div class="metric-value" id="s-count">0件</div></div>
     <div class="metric"><div class="metric-label">売上（税込）</div><div class="metric-value" id="s-sales">¥0</div></div>
     <div class="metric"><div class="metric-label">紹介料合計</div><div class="metric-value" style="color:var(--salon);" id="s-ref">¥0</div></div>
     <div class="metric"><div class="metric-label">サロン受取</div><div class="metric-value" id="s-recv">¥0</div></div>
   </div>
-
   <div class="card" id="salon-settings" style="display:none;">
     <div class="card-title">カメラマン設定</div>
     <div class="g3">
-      <div><label>カメラマン名</label><input type="text" id="s-cam-name" placeholder="田中 一郎" oninput="saveSalonSettings()"/></div>
-      <div><label>紹介料割合（%）</label><input type="number" id="s-cam-rate" value="20" oninput="saveSalonSettings()"/></div>
-      <div><label>消費税率（%）</label><input type="number" id="s-cam-tax" value="8" oninput="saveSalonSettings()"/></div>
+      <div><label>カメラマン名</label><input type="text" id="s-cam-name" placeholder="田中 一郎" oninput="saveSalonSettings()"></div>
+      <div><label>紹介料割合（%）</label><input type="number" id="s-cam-rate" value="20" oninput="saveSalonSettings()"></div>
+      <div><label>消費税率（%）</label><input type="number" id="s-cam-tax" value="8" oninput="saveSalonSettings()"></div>
     </div>
   </div>
-
   <div class="card" id="salon-form" style="display:none;">
     <div class="card-title" id="s-form-title">案件情報</div>
     <div class="g3" style="margin-bottom:12px;">
-      <div><label>お客様名</label><input type="text" id="s-name" placeholder="山田 太郎 様"/></div>
-      <div><label>撮影日</label><input type="date" id="s-date"/></div>
+      <div><label>お客様名</label><input type="text" id="s-name" placeholder="山田 太郎 様"></div>
+      <div><label>撮影日</label><input type="date" id="s-date"></div>
       <div><label>支払い方法</label>
         <select id="s-pay" onchange="sRecalc()">
           <option value="現金">現金</option>
@@ -545,11 +462,11 @@ tr:hover td { background: rgba(255,255,255,0.02); }
         </select>
       </div>
     </div>
-    <div><label>メモ</label><input type="text" id="s-memo" placeholder="備考" style="margin-bottom:12px;"/></div>
+    <div><label>メモ</label><input type="text" id="s-memo" placeholder="備考" style="margin-bottom:12px;"></div>
     <div class="card-title">サロンメニュー（税抜）<span class="badge badge-ref">緑＝紹介料あり</span></div>
     <div class="menu-grid" id="s-menu-grid" style="margin-bottom:12px;"></div>
     <div><label>その他（税抜・紹介料なし）</label>
-      <div class="g2" style="margin-top:6px;"><input type="text" id="s-other-name" placeholder="内容"/><input type="number" id="s-other-val" placeholder="税抜金額" oninput="sRecalc()"/></div>
+      <div class="g2" style="margin-top:6px;"><input type="text" id="s-other-name" placeholder="内容"><input type="number" id="s-other-val" placeholder="税抜金額" oninput="sRecalc()"></div>
     </div>
     <div class="sbox" style="margin-top:12px;">
       <div class="sbox-title">サマリー</div>
@@ -566,15 +483,13 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       <button class="btn" id="s-cancel" style="display:none;" onclick="cancelSalon()">キャンセル</button>
     </div>
   </div>
-
-  <div class="card" id="salon-invoice-card" style="display:none;">
+  <div class="card invoice-card" id="salon-invoice-card" style="display:none;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
       <div class="card-title" style="margin:0;">月次請求書</div>
       <button class="btn btn-sm" onclick="window.print()">印刷 / PDF</button>
     </div>
     <div id="salon-invoice-body"></div>
   </div>
-
   <div class="card">
     <div class="card-title">案件一覧</div>
     <div class="table-wrap">
@@ -585,11 +500,11 @@ tr:hover td { background: rgba(255,255,255,0.02); }
     </div>
   </div>
 </div>
+</div>
 
-<!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -601,28 +516,164 @@ const firebaseConfig = {
   appId: "1:389648038190:web:3679305098afb3677562bf"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
 
-window.db = db;
-window.collection = collection;
-window.addDoc = addDoc;
-window.updateDoc = updateDoc;
-window.deleteDoc = deleteDoc;
-window.doc = doc;
+const WPLANS = [
+  { name:'ウェディングショート', price:34800 }, { name:'ウェディングショート送迎', price:36800 },
+  { name:'ウェディングスタンダード', price:54800 }, { name:'ウェディングプレミアム', price:98000 },
+  { name:'ウェディングサンセット', price:54800 }, { name:'ウェディングスタ＆サン', price:106600 },
+  { name:'ウェディングプレ＆サン', price:149800 }, { name:'カジュアル', price:27800 },
+  { name:'カジュアル送迎', price:29800 }, { name:'チャペル単体', price:34800 }, { name:'プロポーズ', price:44800 },
+];
+const SPLANS = [
+  { name:'星空ウェディング', price:62800 }, { name:'星空プロポーズ', price:44800 }, { name:'星空カジュアル', price:34800 },
+];
+const WOPTS = [
+  { name:'ドローン', price:24800, reward:true }, { name:'チャペル', price:15800, reward:true },
+  { name:'スリム美肌補正', price:24800, reward:true }, { name:'スリム美肌補正(歯)', price:36600, reward:true },
+  { name:'動画撮影', price:34800, reward:true }, { name:'動画撮制', price:51800, reward:true },
+  { name:'動画撮制＋サン', price:71600, reward:true }, { name:'離島出張4-10', price:14800, reward:true },
+  { name:'離島出張11-3', price:9800, reward:true }, { name:'お急ぎ21', price:5000, reward:true },
+  { name:'お急ぎ7', price:10000, reward:true }, { name:'サロンスタジオ', price:26800, rewardBase:24800, reward:true, special:true },
+  { name:'花束代行', price:5000, reward:true }, { name:'アテンド1ロケ', price:6800, reward:false },
+  { name:'アテンド2ロケ', price:13600, reward:false }, { name:'ブーケA', price:5000, reward:false },
+  { name:'ブーケB', price:3500, reward:false }, { name:'アルバムA', price:29800, reward:false },
+  { name:'アルバムA増刷', price:19370, reward:false, qty:true }, { name:'アルバムB', price:49800, reward:false },
+  { name:'アルバムB増刷', price:32370, reward:false, qty:true }, { name:'アルバムC', price:59800, reward:false },
+  { name:'アルバムC増刷', price:38870, reward:false, qty:true },
+];
+const SOPTS = [
+  { name:'星空動画', price:9800, reward:true }, { name:'星空スリム美肌補正', price:15800, reward:true },
+  { name:'星空プレミアム', price:34800, reward:true },
+];
+const MPLANS = [
+  { name:'ウェディングライト', ex:40000, est:false, hasSalon:false, shootEx:40000 },
+  { name:'ウェディングベーシック', ex:60000, est:false, hasSalon:false, shootEx:60000 },
+  { name:'ウェディングサンセット', ex:55000, est:false, hasSalon:false, shootEx:55000 },
+  { name:'ウェディング1Day', ex:90000, est:false, hasSalon:false, shootEx:90000 },
+  { name:'カジュアル1ロケ', ex:30000, est:false, hasSalon:false, shootEx:30000 },
+  { name:'カジュアル2ロケ', ex:36000, est:false, hasSalon:false, shootEx:36000 },
+  { name:'カジュアルカスタムロケ', ex:0, est:true, hasSalon:false, shootEx:0 },
+  { name:'プロポーズ', ex:40000, est:false, hasSalon:false, shootEx:40000 },
+  { name:'業務撮影', ex:0, est:true, hasSalon:false, shootEx:0 },
+  { name:'ウェディングライト【サロン込】', priceInc:140000, est:false, hasSalon:true, shootEx:40000 },
+  { name:'ウェディングベーシック【サロン込】', priceInc:160000, est:false, hasSalon:true, shootEx:60000 },
+  { name:'ウェディングサンセット【サロン込】', priceInc:155000, est:false, hasSalon:true, shootEx:55000 },
+  { name:'ウェディング1Day【サロン込】', priceInc:198000, est:false, hasSalon:true, shootEx:90000 },
+  { name:'ウェディング中国ベーシック', priceInc:330000, est:false, hasSalon:true, shootEx:60000 },
+  { name:'ウェディング中国1Day', priceInc:396000, est:false, hasSalon:true, shootEx:90000 },
+];
+const MOPTS = [
+  { name:'ドローン A', ex:20000, qty:false }, { name:'ドローン B', ex:12000, qty:false },
+  { name:'動画撮影', ex:35000, qty:false }, { name:'動画撮制', ex:60000, qty:false },
+  { name:'ビューティー補正', ex:35000, qty:false }, { name:'ビューティー補正単枚', ex:3500, qty:true },
+  { name:'チャペル撮影', ex:15000, qty:false }, { name:'離島出張4-10', ex:15000, qty:false },
+  { name:'離島出張11-3', ex:10000, qty:false }, { name:'予備日確保', ex:0, est:true, qty:false },
+  { name:'アルバム制作', ex:50000, qty:false }, { name:'アルバム増刷', ex:32500, qty:true },
+];
+const MSALON = [
+  { name:'ドレス C', ex:30000, hasRef:true }, { name:'ドレス C5', ex:50000, hasRef:true },
+  { name:'ドレス B', ex:80000, hasRef:true }, { name:'ドレス A', ex:130000, hasRef:true },
+  { name:'ドレス S15', ex:150000, hasRef:true }, { name:'ドレス S18', ex:180000, hasRef:true },
+  { name:'ドレス S30', ex:300000, hasRef:true }, { name:'メンズ C', ex:30000, hasRef:true },
+  { name:'メンズ B', ex:50000, hasRef:true }, { name:'メンズ A', ex:80000, hasRef:true },
+  { name:'ヘアメイク', ex:25000, hasRef:true }, { name:'ヘアセット着付', ex:13000, hasRef:true },
+  { name:'ヘアセット', ex:6000, hasRef:false }, { name:'ドライフラワー', ex:3500, hasRef:true },
+  { name:'アーティシャルフラワー', ex:5000, hasRef:true }, { name:'ヌーブラ', ex:2000, hasRef:false },
+  { name:'ドレス保険 A', ex:5000, hasRef:false }, { name:'ドレス保険 B', ex:3000, hasRef:false },
+  { name:'ドレス保険 C5', ex:2000, hasRef:false }, { name:'ドレス保険 C', ex:1000, hasRef:false },
+  { name:'メンズ保険 A', ex:2000, hasRef:false }, { name:'メンズ保険 B', ex:1500, hasRef:false },
+  { name:'メンズ保険 C', ex:1000, hasRef:false }, { name:'アテンド1H', ex:3000, hasRef:false },
+  { name:'アテンド5H', ex:15000, hasRef:false }, { name:'アテンド8H', ex:24000, hasRef:false },
+];
+const MDRESS_UP = [
+  { name:'ドレス C5', ex:50000, hasRef:true }, { name:'ドレス B', ex:80000, hasRef:true },
+  { name:'ドレス A', ex:130000, hasRef:true }, { name:'ドレス S15', ex:150000, hasRef:true },
+  { name:'ドレス S18', ex:180000, hasRef:true }, { name:'ドレス S30', ex:300000, hasRef:true },
+];
+const MMENS_UP = [
+  { name:'メンズ B', ex:50000, hasRef:true }, { name:'メンズ A', ex:80000, hasRef:true }
+];
+const MEXTRA = [
+  { name:'ヌーブラ', ex:2000, hasRef:false }, { name:'ヘアセット着付', ex:13000, hasRef:true },
+  { name:'ヘアセット', ex:6000, hasRef:false }, { name:'ドレス保険 A', ex:5000, hasRef:false },
+  { name:'ドレス保険 B', ex:3000, hasRef:false }, { name:'ドレス保険 C5', ex:2000, hasRef:false },
+  { name:'ドレス保険 C', ex:1000, hasRef:false }, { name:'メンズ保険 A', ex:2000, hasRef:false },
+  { name:'メンズ保険 B', ex:1500, hasRef:false }, { name:'メンズ保険 C', ex:1000, hasRef:false },
+  { name:'アテンド1H', ex:3000, hasRef:false }, { name:'アテンド5H', ex:15000, hasRef:false }, { name:'アテンド8H', ex:24000, hasRef:false },
+];
+
+let months = { dash:0, friend:0, mine:0, salon:0 };
+let curY = new Date().getFullYear();
+let curM = new Date().getMonth();
+const MN = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 
 let friendRecs = [];
 let myRecs = [];
 let salonRecs = [];
-let sCamSettings = { camName: '', rate: 20, taxRate: 8 };
+let sCamSettings = { camName:'', rate:20, taxRate:8 };
+
+let fSelWP = {}, fSelSP = {}, fSelWO = {}, fSelSO = {}, fOQty = {}, fEditId = null;
+let mSelP = {}, mSelO = {}, mSelS = {}, mSelDressUp = null, mSelMensUp = null, mBouquet = 'dry', mSelExtra = {}, mOQty = {}, mEstP = {}, mExps = [], mEditId = null;
+let sSelMenu = {}, sMenuQty = {}, sEditId = null;
+
+const fmt = n => '¥' + Math.round(Number(n) || 0).toLocaleString('ja-JP');
+const getLoginError = () => document.getElementById('login-error');
+
+function getYM(offset = 0) {
+  let m = curM + offset;
+  let y = curY;
+  while (m > 11) { m -= 12; y += 1; }
+  while (m < 0) { m += 12; y -= 1; }
+  return { y, m };
+}
+
+function filterMonth(recs, y, m) {
+  return recs.filter(r => {
+    const d = new Date(r.date);
+    return d.getFullYear() === y && d.getMonth() === m;
+  });
+}
+
+window.switchTab = (tab) => {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(`page-${tab}`)?.classList.add('active');
+  document.querySelector(`.nav-tab.t-${tab}`)?.classList.add('active');
+  renderAll();
+};
+
+window.chM = (tab, d) => {
+  months[tab] = (months[tab] || 0) + d;
+  renderAll();
+};
+
+function getTabYM(tab) {
+  return getYM(months[tab] || 0);
+}
+
+function setMonthLabels() {
+  ['dash', 'friend', 'mine', 'salon'].forEach(tab => {
+    const { y, m } = getTabYM(tab);
+    const el = document.getElementById(`${tab}-month`);
+    if (el) el.textContent = `${y}年 ${MN[m]}`;
+  });
+}
+
+function setSyncStatus(text) {
+  const sync = document.getElementById('sync-status');
+  if (sync) sync.textContent = text;
+}
 
 function initDB() {
+  setSyncStatus('同期中...');
+
   onSnapshot(query(collection(db, 'friend-recs'), orderBy('date', 'desc')), snap => {
     friendRecs = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
     renderAll();
-    const sync = document.getElementById('sync-status');
-    if (sync) sync.textContent = '同期済 ✓';
+    setSyncStatus('同期済 ✓');
   });
 
   onSnapshot(query(collection(db, 'my-recs'), orderBy('date', 'desc')), snap => {
@@ -634,204 +685,70 @@ function initDB() {
     salonRecs = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
     renderAll();
   });
+
+  try {
+    const localSettings = JSON.parse(localStorage.getItem('sCamSettings') || '{}');
+    sCamSettings = { ...sCamSettings, ...localSettings };
+  } catch (error) {
+    console.warn('failed to read local salon settings', error);
+  }
+
+  const camNameEl = document.getElementById('s-cam-name');
+  const camRateEl = document.getElementById('s-cam-rate');
+  const camTaxEl = document.getElementById('s-cam-tax');
+  if (camNameEl) camNameEl.value = sCamSettings.camName || '';
+  if (camRateEl) camRateEl.value = sCamSettings.rate || 20;
+  if (camTaxEl) camTaxEl.value = sCamSettings.taxRate || 8;
 }
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, user => {
+  const loginScreen = document.getElementById('login-screen');
+  const appEl = document.getElementById('app');
   if (user) {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
+    loginScreen.style.display = 'none';
+    appEl.style.display = 'block';
+    getLoginError().style.display = 'none';
     initDB();
   } else {
-    document.getElementById('login-screen').style.display = 'block';
-    document.getElementById('app').style.display = 'none';
+    loginScreen.style.display = 'block';
+    appEl.style.display = 'none';
   }
 });
 
-window.login = async function () {
+window.login = async () => {
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
+  const loginBtn = document.getElementById('login-btn');
+  const errorEl = getLoginError();
+
+  errorEl.style.display = 'none';
+  errorEl.textContent = '';
+
+  if (!email || !password) {
+    errorEl.textContent = 'メールアドレスとパスワードを入力してください。';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  loginBtn.disabled = true;
+  loginBtn.textContent = 'ログイン中...';
 
   try {
-    const result = await signInWithEmailAndPassword(auth, email, password);
-    console.log('login ok', result.user.email);
-  } catch (e) {
-    console.error('LOGIN ERROR:', e);
-    alert((e.code || 'error') + ' / ' + (e.message || 'ログイン失敗'));
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (error) {
+    console.error('LOGIN ERROR:', error);
+    errorEl.textContent = `${error.code || 'error'} / ${error.message || 'ログイン失敗'}`;
+    errorEl.style.display = 'block';
+  } finally {
+    loginBtn.disabled = false;
+    loginBtn.textContent = 'ログイン';
   }
 };
-  
-// ========== DATA ==========
-const WPLANS=[
-  {name:'ウェディングショート',price:34800},{name:'ウェディングショート送迎',price:36800},
-  {name:'ウェディングスタンダード',price:54800},{name:'ウェディングプレミアム',price:98000},
-  {name:'ウェディングサンセット',price:54800},{name:'ウェディングスタ＆サン',price:106600},
-  {name:'ウェディングプレ＆サン',price:149800},{name:'カジュアル',price:27800},
-  {name:'カジュアル送迎',price:29800},{name:'チャペル単体',price:34800},{name:'プロポーズ',price:44800},
-];
-const SPLANS=[
-  {name:'星空ウェディング',price:62800},{name:'星空プロポーズ',price:44800},{name:'星空カジュアル',price:34800},
-];
-const WOPTS=[
-  {name:'ドローン',price:24800,reward:true},{name:'チャペル',price:15800,reward:true},
-  {name:'スリム美肌補正',price:24800,reward:true},{name:'スリム美肌補正(歯)',price:36600,reward:true},
-  {name:'動画撮影',price:34800,reward:true},{name:'動画撮制',price:51800,reward:true},
-  {name:'動画撮制＋サン',price:71600,reward:true},{name:'離島出張4-10',price:14800,reward:true},
-  {name:'離島出張11-3',price:9800,reward:true},{name:'お急ぎ21',price:5000,reward:true},
-  {name:'お急ぎ7',price:10000,reward:true},{name:'サロンスタジオ',price:26800,rewardBase:24800,reward:true,special:true},
-  {name:'花束代行',price:5000,reward:true},{name:'アテンド1ロケ',price:6800,reward:false},
-  {name:'アテンド2ロケ',price:13600,reward:false},{name:'ブーケA',price:5000,reward:false},
-  {name:'ブーケB',price:3500,reward:false},{name:'アルバムA',price:29800,reward:false},
-  {name:'アルバムA増刷',price:19370,reward:false,qty:true},{name:'アルバムB',price:49800,reward:false},
-  {name:'アルバムB増刷',price:32370,reward:false,qty:true},{name:'アルバムC',price:59800,reward:false},
-  {name:'アルバムC増刷',price:38870,reward:false,qty:true},
-];
-const SOPTS=[
-  {name:'星空動画',price:9800,reward:true},{name:'星空スリム美肌補正',price:15800,reward:true},
-  {name:'星空プレミアム',price:34800,reward:true},
-];
-const MPLANS=[
-  {name:'ウェディングライト',ex:40000,est:false,hasSalon:false,shootEx:40000},
-  {name:'ウェディングベーシック',ex:60000,est:false,hasSalon:false,shootEx:60000},
-  {name:'ウェディングサンセット',ex:55000,est:false,hasSalon:false,shootEx:55000},
-  {name:'ウェディング1Day',ex:90000,est:false,hasSalon:false,shootEx:90000},
-  {name:'カジュアル1ロケ',ex:30000,est:false,hasSalon:false,shootEx:30000},
-  {name:'カジュアル2ロケ',ex:36000,est:false,hasSalon:false,shootEx:36000},
-  {name:'カジュアルカスタムロケ',ex:0,est:true,hasSalon:false,shootEx:0},
-  {name:'プロポーズ',ex:40000,est:false,hasSalon:false,shootEx:40000},
-  {name:'業務撮影',ex:0,est:true,hasSalon:false,shootEx:0},
-  {name:'ウェディングライト【サロン込】',priceInc:140000,est:false,hasSalon:true,shootEx:40000},
-  {name:'ウェディングベーシック【サロン込】',priceInc:160000,est:false,hasSalon:true,shootEx:60000},
-  {name:'ウェディングサンセット【サロン込】',priceInc:155000,est:false,hasSalon:true,shootEx:55000},
-  {name:'ウェディング1Day【サロン込】',priceInc:198000,est:false,hasSalon:true,shootEx:90000},
-  {name:'ウェディング中国ベーシック',priceInc:330000,est:false,hasSalon:true,shootEx:60000},
-  {name:'ウェディング中国1Day',priceInc:396000,est:false,hasSalon:true,shootEx:90000},
-];
-const MOPTS=[
-  {name:'ドローン A',ex:20000,qty:false},{name:'ドローン B',ex:12000,qty:false},
-  {name:'動画撮影',ex:35000,qty:false},{name:'動画撮制',ex:60000,qty:false},
-  {name:'ビューティー補正',ex:35000,qty:false},{name:'ビューティー補正単枚',ex:3500,qty:true},
-  {name:'チャペル撮影',ex:15000,qty:false},{name:'離島出張4-10',ex:15000,qty:false},
-  {name:'離島出張11-3',ex:10000,qty:false},{name:'予備日確保',ex:0,est:true,qty:false},
-  {name:'アルバム制作',ex:50000,qty:false},{name:'アルバム増刷',ex:32500,qty:true},
-];
-const MSALON=[
-  {name:'ドレス C',ex:30000,hasRef:true},{name:'ドレス C5',ex:50000,hasRef:true},
-  {name:'ドレス B',ex:80000,hasRef:true},{name:'ドレス A',ex:130000,hasRef:true},
-  {name:'ドレス S15',ex:150000,hasRef:true},{name:'ドレス S18',ex:180000,hasRef:true},
-  {name:'ドレス S30',ex:300000,hasRef:true},{name:'メンズ C',ex:30000,hasRef:true},
-  {name:'メンズ B',ex:50000,hasRef:true},{name:'メンズ A',ex:80000,hasRef:true},
-  {name:'ヘアメイク',ex:25000,hasRef:true},{name:'ヘアセット着付',ex:13000,hasRef:true},
-  {name:'ヘアセット',ex:6000,hasRef:false},{name:'ドライフラワー',ex:3500,hasRef:true},
-  {name:'アーティシャルフラワー',ex:5000,hasRef:true},{name:'ヌーブラ',ex:2000,hasRef:false},
-  {name:'ドレス保険 A',ex:5000,hasRef:false},{name:'ドレス保険 B',ex:3000,hasRef:false},
-  {name:'ドレス保険 C5',ex:2000,hasRef:false},{name:'ドレス保険 C',ex:1000,hasRef:false},
-  {name:'メンズ保険 A',ex:2000,hasRef:false},{name:'メンズ保険 B',ex:1500,hasRef:false},
-  {name:'メンズ保険 C',ex:1000,hasRef:false},{name:'アテンド1H',ex:3000,hasRef:false},
-  {name:'アテンド5H',ex:15000,hasRef:false},{name:'アテンド8H',ex:24000,hasRef:false},
-];
-const MDRESS_UP=[
-  {name:'ドレス C5',ex:50000,hasRef:true},{name:'ドレス B',ex:80000,hasRef:true},
-  {name:'ドレス A',ex:130000,hasRef:true},{name:'ドレス S15',ex:150000,hasRef:true},
-  {name:'ドレス S18',ex:180000,hasRef:true},{name:'ドレス S30',ex:300000,hasRef:true},
-];
-const MMENS_UP=[{name:'メンズ B',ex:50000,hasRef:true},{name:'メンズ A',ex:80000,hasRef:true}];
-const MEXTRA=[
-  {name:'ヌーブラ',ex:2000,hasRef:false},{name:'ヘアセット着付',ex:13000,hasRef:true},
-  {name:'ヘアセット',ex:6000,hasRef:false},{name:'ドレス保険 A',ex:5000,hasRef:false},
-  {name:'ドレス保険 B',ex:3000,hasRef:false},{name:'ドレス保険 C5',ex:2000,hasRef:false},
-  {name:'ドレス保険 C',ex:1000,hasRef:false},{name:'メンズ保険 A',ex:2000,hasRef:false},
-  {name:'メンズ保険 B',ex:1500,hasRef:false},{name:'メンズ保険 C',ex:1000,hasRef:false},
-  {name:'アテンド1H',ex:3000,hasRef:false},{name:'アテンド5H',ex:15000,hasRef:false},{name:'アテンド8H',ex:24000,hasRef:false},
-];
 
-// ========== STATE ==========
-let months = {dash:0,friend:0,mine:0,salon:0};
-let curY = new Date().getFullYear(), curM = new Date().getMonth();
-const MN = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-
-// Friend state
-let fSelWP={},fSelSP={},fSelWO={},fSelSO={},fOQty={},fEditId=null;
-// Mine state
-let mSelP={},mSelO={},mSelS={},mSelDressUp=null,mSelMensUp=null,mBouquet='dry',mSelExtra={},mOQty={},mEstP={},mEstO={},mExps=[],mEditId=null;
-// Salon state
-let sSelMenu={},sMenuQty={},sEditId=null,sCamSettings={camName:'',rate:20,taxRate:8};
-
-// DB data
-let friendRecs=[],myRecs=[],salonRecs=[];
-
-// ========== HELPERS ==========
-const fmt = n => '¥' + Math.round(n).toLocaleString('ja-JP');
-const pct = (a,t) => t>0 ? Math.round(a/t*100)+'%' : '0%';
-function getYM(offset=0) {
-  let m = curM + offset;
-  let y = curY;
-  while(m>11){m-=12;y++;}
-  while(m<0){m+=12;y--;}
-  return {y,m};
-}
-function filterMonth(recs, y, m) {
-  return recs.filter(r => { const d=new Date(r.date); return d.getFullYear()===y && d.getMonth()===m; });
-}
-
-// ========== NAV ==========
-window.switchTab = (tab) => {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-
-  const page = document.getElementById('page-' + tab);
-  if (page) page.classList.add('active');
-
-  const tabBtn = document.querySelector('.nav-tab.t-' + tab);
-  if (tabBtn) tabBtn.classList.add('active');
-
-  renderAll();
+window.logout = async () => {
+  await signOut(auth);
 };
 
-window.chM = (tab, d) => {
-  months[tab] = (months[tab]||0) + d;
-  renderAll();
-};
-
-function getTabYM(tab) {
-  const off = months[tab]||0;
-  return getYM(off);
-}
-
-function setMonthLabels() {
-  ['dash','friend','mine','salon'].forEach(tab => {
-    const {y,m} = getTabYM(tab);
-    const el = document.getElementById(tab+'-month');
-    if(el) el.textContent = y+'年 '+MN[m];
-  });
-}
-
-// ========== FIRESTORE ==========
-window.initDB = function() {
-  const collections = ['friend-recs','my-recs','salon-recs'];
-  onSnapshot(query(collection(db,'friend-recs'),orderBy('date','desc')), snap => {
-   friendRecs = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
-myRecs = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
-salonRecs = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
-  });
-  onSnapshot(query(collection(db,'my-recs'),orderBy('date','desc')), snap => {
-    myRecs = snap.docs.map(d=>({...d.data(), _id:d.id}));
-    renderAll();
-  });
-  onSnapshot(query(collection(db,'salon-recs'),orderBy('date','desc')), snap => {
-    salonRecs = snap.docs.map(d=>({...d.data(), _id:d.id}));
-    renderAll();
-  });
-  // Load salon settings from localStorage
-try {
-  const s = JSON.parse(localStorage.getItem('sCamSettings') || '{}');
-  sCamSettings = { ...sCamSettings, ...s };
-} catch(e) {}
-  document.getElementById('s-cam-name').value = sCamSettings.camName||'';
-  document.getElementById('s-cam-rate').value = sCamSettings.rate||20;
-  document.getElementById('s-cam-tax').value = sCamSettings.taxRate||8;
-}
-
-// ========== RENDER ALL ==========
 function renderAll() {
   setMonthLabels();
   renderDash();
@@ -844,674 +761,1031 @@ function renderAll() {
   renderSalonMetrics();
 }
 
-// ========== DASHBOARD ==========
 function renderDash() {
-  const {y,m} = getTabYM('dash');
-  const ff = filterMonth(friendRecs,y,m);
-  const fm = filterMonth(myRecs,y,m);
-  const fs = filterMonth(salonRecs,y,m);
-  const fSales=ff.reduce((s,r)=>s+(r.totalCustomer||0),0);
-  const fReward=ff.reduce((s,r)=>s+(r.myReward||0),0);
-  const mSales=fm.reduce((s,r)=>s+(r.totalCustomer||0),0);
-  const mProfit=fm.reduce((s,r)=>s+(r.profit||0),0);
-  const sSales=fs.reduce((s,r)=>s+(r.totalInc||0),0);
-  const sRef=fs.reduce((s,r)=>s+(r.totalRef||0),0);
-  const totalSales=fSales+mSales+sSales;
-  const totalProfit=fReward+mProfit+sRef;
-  const unpaid=ff.filter(r=>r.paid==='未入金').length+fm.filter(r=>r.paid==='未入金').length;
-  document.getElementById('d-total-sales').textContent=fmt(totalSales);
-  document.getElementById('d-total-profit').textContent=fmt(totalProfit);
-  document.getElementById('d-total-count').textContent=(ff.length+fm.length+fs.length)+'件';
-  document.getElementById('d-unpaid').textContent=unpaid+'件';
-  document.getElementById('d-f-count').textContent=ff.length+'件';
-  document.getElementById('d-f-sales').textContent=fmt(fSales);
-  document.getElementById('d-f-reward').textContent=fmt(fReward);
-  document.getElementById('d-m-count').textContent=fm.length+'件';
-  document.getElementById('d-m-sales').textContent=fmt(mSales);
-  document.getElementById('d-m-profit').textContent=fmt(mProfit);
-  document.getElementById('d-s-count').textContent=fs.length+'件';
-  document.getElementById('d-s-sales').textContent=fmt(sSales);
-  document.getElementById('d-s-ref').textContent=fmt(sRef);
-  document.getElementById('d-inc-f').textContent=fmt(fReward);
-  document.getElementById('d-inc-m').textContent=fmt(mProfit);
-  document.getElementById('d-inc-s').textContent=fmt(sRef);
-  document.getElementById('d-inc-total').textContent=fmt(totalProfit);
-  const all=[
-    ...ff.map(r=>({date:r.date,brand:'f',name:r.name,sales:r.totalCustomer||0,income:r.myReward||0,paid:r.paid})),
-    ...fm.map(r=>({date:r.date,brand:'m',name:r.name,sales:r.totalCustomer||0,income:r.profit||0,paid:r.paid})),
-    ...fs.map(r=>({date:r.date,brand:'s',name:r.name,sales:r.totalInc||0,income:r.totalRef||0,paid:'—'})),
-  ].sort((a,b)=>a.date.localeCompare(b.date));
-  const tbody=document.getElementById('d-all-tbody');
-  if(!all.length){tbody.innerHTML='<tr><td colspan="6" class="empty">この月の案件はありません</td></tr>';return;}
-  const BL={f:'友人',m:'自分',s:'サロン'};
-  tbody.innerHTML=all.map(r=>`<tr>
-    <td style="white-space:nowrap;">${r.date.slice(5).replace('-','/')}</td>
-    <td><span class="tag tag-${r.brand}">${BL[r.brand]}</span></td>
-    <td>${r.name}</td>
-    <td style="text-align:right;">${fmt(r.sales)}</td>
-    <td style="text-align:right;color:${r.income>=0?'var(--green)':'var(--red)'};">${fmt(r.income)}</td>
-    <td>${r.paid==='入金済'?'✓':r.paid==='未入金'?'<span style="color:var(--orange);">未</span>':'—'}</td>
-  </tr>`).join('');
+  const { y, m } = getTabYM('dash');
+  const ff = filterMonth(friendRecs, y, m);
+  const fm = filterMonth(myRecs, y, m);
+  const fs = filterMonth(salonRecs, y, m);
+  const fSales = ff.reduce((s, r) => s + (r.totalCustomer || 0), 0);
+  const fReward = ff.reduce((s, r) => s + (r.myReward || 0), 0);
+  const mSales = fm.reduce((s, r) => s + (r.totalCustomer || 0), 0);
+  const mProfit = fm.reduce((s, r) => s + (r.profit || 0), 0);
+  const sSales = fs.reduce((s, r) => s + (r.totalInc || 0), 0);
+  const sRef = fs.reduce((s, r) => s + (r.totalRef || 0), 0);
+  const totalSales = fSales + mSales + sSales;
+  const totalProfit = fReward + mProfit + sRef;
+  const unpaid = ff.filter(r => r.paid === '未入金').length + fm.filter(r => r.paid === '未入金').length;
+
+  document.getElementById('d-total-sales').textContent = fmt(totalSales);
+  document.getElementById('d-total-profit').textContent = fmt(totalProfit);
+  document.getElementById('d-total-count').textContent = `${ff.length + fm.length + fs.length}件`;
+  document.getElementById('d-unpaid').textContent = `${unpaid}件`;
+  document.getElementById('d-f-count').textContent = `${ff.length}件`;
+  document.getElementById('d-f-sales').textContent = fmt(fSales);
+  document.getElementById('d-f-reward').textContent = fmt(fReward);
+  document.getElementById('d-m-count').textContent = `${fm.length}件`;
+  document.getElementById('d-m-sales').textContent = fmt(mSales);
+  document.getElementById('d-m-profit').textContent = fmt(mProfit);
+  document.getElementById('d-s-count').textContent = `${fs.length}件`;
+  document.getElementById('d-s-sales').textContent = fmt(sSales);
+  document.getElementById('d-s-ref').textContent = fmt(sRef);
+  document.getElementById('d-inc-f').textContent = fmt(fReward);
+  document.getElementById('d-inc-m').textContent = fmt(mProfit);
+  document.getElementById('d-inc-s').textContent = fmt(sRef);
+  document.getElementById('d-inc-total').textContent = fmt(totalProfit);
+
+  const all = [
+    ...ff.map(r => ({ date:r.date, brand:'f', name:r.name, sales:r.totalCustomer || 0, income:r.myReward || 0, paid:r.paid })),
+    ...fm.map(r => ({ date:r.date, brand:'m', name:r.name, sales:r.totalCustomer || 0, income:r.profit || 0, paid:r.paid })),
+    ...fs.map(r => ({ date:r.date, brand:'s', name:r.name, sales:r.totalInc || 0, income:r.totalRef || 0, paid:'—' })),
+  ].sort((a, b) => a.date.localeCompare(b.date));
+
+  const tbody = document.getElementById('d-all-tbody');
+  if (!all.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty">この月の案件はありません</td></tr>';
+    return;
+  }
+
+  const BL = { f:'友人', m:'自分', s:'サロン' };
+  tbody.innerHTML = all.map(r => `
+    <tr>
+      <td style="white-space:nowrap;">${r.date.slice(5).replace('-', '/')}</td>
+      <td><span class="tag tag-${r.brand}">${BL[r.brand]}</span></td>
+      <td>${r.name}</td>
+      <td style="text-align:right;">${fmt(r.sales)}</td>
+      <td style="text-align:right;color:${r.income >= 0 ? 'var(--green)' : 'var(--red)'};">${fmt(r.income)}</td>
+      <td>${r.paid === '入金済' ? '✓' : r.paid === '未入金' ? '<span style="color:var(--orange);">未</span>' : '—'}</td>
+    </tr>
+  `).join('');
 }
 
-// ========== FRIEND BRAND ==========
 function buildFriendGrids() {
-  const build=(items,gridId,type,selObj,selCls)=>{
-    const g=document.getElementById(gridId);
-    g.innerHTML=items.map((p,i)=>{
-      const isStar=type==='sp'||type==='so';
-      const sel=selObj[i];
-      const badge=p.reward===false?'<span class="badge badge-nr">報酬なし</span>':'';
-      const qh=p.qty?`<div class="qty-wrap" onclick="event.stopPropagation()"><button class="qty-btn" onclick="fChQty(event,'${type}',${i},-1)">−</button><span id="fq-${type}-${i}" style="font-size:12px;min-width:14px;text-align:center;">1</span><button class="qty-btn" onclick="fChQty(event,'${type}',${i},1)">＋</button></div>`:'';
-      const cls=sel?(isStar?'sel-s':'sel-f'):'';
-      return`<div class="menu-item ${cls}" id="fi-${type}-${i}" onclick="fTog('${type}',${i})">
-        <div class="mi-name">${p.name}${badge}</div>
-        <div class="mi-price">${fmt(p.price||p.rewardBase||0)}</div>${qh}
+  const build = (items, gridId, type, selObj) => {
+    const grid = document.getElementById(gridId);
+    grid.innerHTML = items.map((item, i) => {
+      const isStar = type === 'sp' || type === 'so';
+      const cls = selObj[i] ? (isStar ? 'sel-s' : 'sel-f') : '';
+      const badge = item.reward === false ? '<span class="badge badge-nr">報酬なし</span>' : '';
+      const qtyHtml = item.qty ? `<div class="qty-wrap" onclick="event.stopPropagation()"><button class="qty-btn" onclick="fChQty(event,'${type}',${i},-1)">−</button><span id="fq-${type}-${i}" style="font-size:12px;min-width:14px;text-align:center;">${fOQty[type + i] || 1}</span><button class="qty-btn" onclick="fChQty(event,'${type}',${i},1)">＋</button></div>` : '';
+      return `<div class="menu-item ${cls}" id="fi-${type}-${i}" onclick="fTog('${type}',${i})">
+        <div class="mi-name">${item.name}${badge}</div>
+        <div class="mi-price">${fmt(item.price || item.rewardBase || 0)}</div>
+        ${qtyHtml}
       </div>`;
     }).join('');
   };
-  build(WPLANS,'f-wplan-grid','wp',fSelWP,'sel-f');
-  build(SPLANS,'f-splan-grid','sp',fSelSP,'sel-s');
-  build(WOPTS,'f-wopt-grid','wo',fSelWO,'sel-f');
-  build(SOPTS,'f-sopt-grid','so',fSelSO,'sel-s');
+
+  build(WPLANS, 'f-wplan-grid', 'wp', fSelWP);
+  build(SPLANS, 'f-splan-grid', 'sp', fSelSP);
+  build(WOPTS, 'f-wopt-grid', 'wo', fSelWO);
+  build(SOPTS, 'f-sopt-grid', 'so', fSelSO);
 }
 
-window.fTog = (type,i) => {
-  const maps={wp:fSelWP,sp:fSelSP,wo:fSelWO,so:fSelSO};
-  const isStar=type==='sp'||type==='so';
-  const cls=isStar?'sel-s':'sel-f';
-  const m=maps[type]; const el=document.getElementById(`fi-${type}-${i}`);
-  if(m[i]){delete m[i];el.classList.remove(cls);}else{m[i]=true;el.classList.add(cls);}
+window.fTog = (type, i) => {
+  const maps = { wp:fSelWP, sp:fSelSP, wo:fSelWO, so:fSelSO };
+  const map = maps[type];
+  const isStar = type === 'sp' || type === 'so';
+  const cls = isStar ? 'sel-s' : 'sel-f';
+  const el = document.getElementById(`fi-${type}-${i}`);
+  if (map[i]) {
+    delete map[i];
+    el.classList.remove(cls);
+  } else {
+    map[i] = true;
+    el.classList.add(cls);
+  }
   fRecalc();
 };
-window.fChQty = (e,type,i,d) => {
+
+window.fChQty = (e, type, i, d) => {
   e.stopPropagation();
-  fOQty[type+i]=Math.max(1,(fOQty[type+i]||1)+d);
-  document.getElementById(`fq-${type}-${i}`).textContent=fOQty[type+i];
+  fOQty[type + i] = Math.max(1, (fOQty[type + i] || 1) + d);
+  document.getElementById(`fq-${type}-${i}`).textContent = fOQty[type + i];
   fRecalc();
 };
 
 function fCalc() {
-  let wC=0,wR=0,sC=0,sR=0,nr=0;
-  WPLANS.forEach((p,i)=>{if(fSelWP[i]){wC+=p.price;wR+=p.price;}});
-  SPLANS.forEach((p,i)=>{if(fSelSP[i]){sC+=p.price;sR+=p.price;}});
-  WOPTS.forEach((o,i)=>{
-    if(!fSelWO[i])return;
-    const q=o.qty?(fOQty['wo'+i]||1):1;
-    const cp=o.price*q; wC+=cp;
-    if(o.reward){wR+=o.special?(o.rewardBase*q):cp;}else{nr+=cp;}
+  let wC = 0;
+  let wR = 0;
+  let sC = 0;
+  let sR = 0;
+  let nr = 0;
+
+  WPLANS.forEach((p, i) => { if (fSelWP[i]) { wC += p.price; wR += p.price; } });
+  SPLANS.forEach((p, i) => { if (fSelSP[i]) { sC += p.price; sR += p.price; } });
+  WOPTS.forEach((o, i) => {
+    if (!fSelWO[i]) return;
+    const q = o.qty ? (fOQty['wo' + i] || 1) : 1;
+    const cp = o.price * q;
+    wC += cp;
+    if (o.reward) wR += o.special ? (o.rewardBase * q) : cp;
+    else nr += cp;
   });
-  SOPTS.forEach((o,i)=>{if(fSelSO[i]){sC+=o.price;sR+=o.price;}});
-  const sd=parseInt(document.getElementById('f-set').value);
-  const taxBase=wC+sC+nr-sd*3000;
-  const tax=Math.round(taxBase*0.1);
-  const total=taxBase+tax;
-  const wReward=Math.round(wR*0.8);
-  const sReward=Math.round(sR*0.5);
-  const setMy=sd*1500;
-  const myReward=wReward+sReward-setMy;
-  const pay=document.getElementById('f-pay').value;
-  const toFriend=pay==='現金_自分'?total-myReward:0;
-  const note=pay==='振込'?'振込：友人から翌月振込されます。':pay==='現金_自分'?`現金（自分受取）：${fmt(total)}を受取り、${fmt(toFriend)}を友人へ手渡し。`:`現金（友人受取）：友人が全額受取後、報酬${fmt(myReward)}を手渡し。`;
-  return{wC,wR,sC,sR,nr,taxBase,tax,total,wReward,sReward,setMy,myReward,toFriend,note,sd,pay};
+  SOPTS.forEach((o, i) => { if (fSelSO[i]) { sC += o.price; sR += o.price; } });
+
+  const sd = parseInt(document.getElementById('f-set').value, 10);
+  const taxBase = wC + sC + nr - sd * 3000;
+  const tax = Math.round(taxBase * 0.1);
+  const total = taxBase + tax;
+  const wReward = Math.round(wR * 0.8);
+  const sReward = Math.round(sR * 0.5);
+  const setMy = sd * 1500;
+  const myReward = wReward + sReward - setMy;
+  const pay = document.getElementById('f-pay').value;
+  const toFriend = pay === '現金_自分' ? total - myReward : 0;
+  const note = pay === '振込'
+    ? '振込：友人から翌月振込されます。'
+    : pay === '現金_自分'
+      ? `現金（自分受取）：${fmt(total)}を受取り、${fmt(toFriend)}を友人へ手渡し。`
+      : `現金（友人受取）：友人が全額受取後、報酬${fmt(myReward)}を手渡し。`;
+
+  return { taxBase, tax, total, wReward, sReward, setMy, myReward, toFriend, note, sd, pay };
 }
 
 window.fRecalc = () => {
-  const a=fCalc();
-  document.getElementById('fs-ex').textContent=fmt(a.taxBase);
-  document.getElementById('fs-tax').textContent=fmt(a.tax);
-  document.getElementById('fs-total').textContent=fmt(a.total);
-  document.getElementById('fs-wreward').textContent=fmt(a.wReward);
-  document.getElementById('fs-sreward').textContent=fmt(a.sReward);
-  const hasSd=a.sd>0;
-  document.getElementById('fs-set-row').style.display=hasSd?'':'none';
-  if(hasSd) document.getElementById('fs-setval').textContent='−'+fmt(a.setMy);
-  document.getElementById('fs-reward').textContent=fmt(a.myReward);
-  document.getElementById('fs-friend').textContent=a.toFriend>0?fmt(a.toFriend):'—';
-  document.getElementById('fs-friend-label').textContent=a.pay==='現金_自分'?'友人への手渡し':a.pay==='現金_友人'?'友人から手渡し受取':'振込受取予定';
-  document.getElementById('fs-note').textContent=a.note;
+  const a = fCalc();
+  document.getElementById('fs-ex').textContent = fmt(a.taxBase);
+  document.getElementById('fs-tax').textContent = fmt(a.tax);
+  document.getElementById('fs-total').textContent = fmt(a.total);
+  document.getElementById('fs-wreward').textContent = fmt(a.wReward);
+  document.getElementById('fs-sreward').textContent = fmt(a.sReward);
+  document.getElementById('fs-set-row').style.display = a.sd > 0 ? '' : 'none';
+  document.getElementById('fs-setval').textContent = `−${fmt(a.setMy)}`;
+  document.getElementById('fs-reward').textContent = fmt(a.myReward);
+  document.getElementById('fs-friend').textContent = a.toFriend > 0 ? fmt(a.toFriend) : '—';
+  document.getElementById('fs-friend-label').textContent = a.pay === '現金_自分' ? '友人への手渡し' : a.pay === '現金_友人' ? '友人から手渡し受取' : '振込受取予定';
+  document.getElementById('fs-note').textContent = a.note;
 };
 
 window.showFriendForm = () => {
-  document.getElementById('friend-form').style.display='';
-  buildFriendGrids(); fRecalc();
-  document.getElementById('friend-form').scrollIntoView({behavior:'smooth'});
+  document.getElementById('friend-form').style.display = '';
+  buildFriendGrids();
+  fRecalc();
+  document.getElementById('friend-form').scrollIntoView({ behavior:'smooth' });
 };
-window.cancelFriend = () => { fResetForm(); document.getElementById('friend-form').style.display='none'; };
+
+window.cancelFriend = () => {
+  fResetForm();
+  document.getElementById('friend-form').style.display = 'none';
+};
 
 function fResetForm() {
-  fSelWP={};fSelSP={};fSelWO={};fSelSO={};fOQty={};fEditId=null;
+  fEditId = null;
+  fSelWP = {};
+  fSelSP = {};
+  fSelWO = {};
+  fSelSO = {};
+  fOQty = {};
   buildFriendGrids();
-  ['f-name','f-memo'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
-  document.getElementById('f-paid').value='未入金';
-  document.getElementById('f-pay').value='振込';
-  document.getElementById('f-set').value='0';
-  document.getElementById('f-form-title').textContent='新規案件 — 友人ブランド';
-  document.getElementById('f-submit').textContent='この案件を登録する';
-  document.getElementById('f-cancel').style.display='none';
+  ['f-name', 'f-memo'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('f-date').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('f-paid').value = '未入金';
+  document.getElementById('f-pay').value = '振込';
+  document.getElementById('f-set').value = '0';
+  document.getElementById('f-form-title').textContent = '新規案件 — 友人ブランド';
+  document.getElementById('f-submit').textContent = 'この案件を登録する';
+  document.getElementById('f-cancel').style.display = 'none';
   fRecalc();
 }
 
 window.submitFriend = async () => {
-  const name=document.getElementById('f-name').value.trim();
-  const date=document.getElementById('f-date').value;
-  if(!name||!date){alert('お客様名と撮影日を入力してください');return;}
-  const hasAny=Object.keys(fSelWP).length||Object.keys(fSelSP).length||Object.keys(fSelWO).length||Object.keys(fSelSO).length;
-  if(!hasAny){alert('プランまたはオプションを選択してください');return;}
-  const a=fCalc();
-  const data={
-    name,date,pay:document.getElementById('f-pay').value,
-    paid:document.getElementById('f-paid').value,memo:document.getElementById('f-memo').value,
-    setDisc:a.sd,setMyBurden:a.setMy,totalCustomer:a.total,myReward:a.myReward,toFriend:a.toFriend,
-    wPlans:Object.keys(fSelWP).map(i=>WPLANS[i].name),
-    sPlans:Object.keys(fSelSP).map(i=>SPLANS[i].name),
-    wOpts:Object.keys(fSelWO).map(i=>WOPTS[i].name),
-    sOpts:Object.keys(fSelSO).map(i=>SOPTS[i].name),
-    updatedAt:new Date().toISOString()
+  const name = document.getElementById('f-name').value.trim();
+  const date = document.getElementById('f-date').value;
+  if (!name || !date) {
+    alert('お客様名と撮影日を入力してください');
+    return;
+  }
+
+  const hasAny = Object.keys(fSelWP).length || Object.keys(fSelSP).length || Object.keys(fSelWO).length || Object.keys(fSelSO).length;
+  if (!hasAny) {
+    alert('プランまたはオプションを選択してください');
+    return;
+  }
+
+  const a = fCalc();
+  const payload = {
+    name,
+    date,
+    pay: document.getElementById('f-pay').value,
+    paid: document.getElementById('f-paid').value,
+    memo: document.getElementById('f-memo').value,
+    setDisc: a.sd,
+    setMyBurden: a.setMy,
+    totalCustomer: a.total,
+    myReward: a.myReward,
+    toFriend: a.toFriend,
+    wPlans: Object.keys(fSelWP).map(i => WPLANS[Number(i)].name),
+    sPlans: Object.keys(fSelSP).map(i => SPLANS[Number(i)].name),
+    wOpts: Object.keys(fSelWO).map(i => WOPTS[Number(i)].name),
+    sOpts: Object.keys(fSelSO).map(i => SOPTS[Number(i)].name),
+    updatedAt: new Date().toISOString()
   };
-if (fEditId) {
-  await updateDoc(doc(db, 'friend-recs', fEditId), data);
-} else {
-  await addDoc(collection(db, 'friend-recs'), data);
-}
-  fResetForm(); document.getElementById('friend-form').style.display='none';
+
+  if (fEditId) await updateDoc(doc(db, 'friend-recs', fEditId), payload);
+  else await addDoc(collection(db, 'friend-recs'), payload);
+
+  fResetForm();
+  document.getElementById('friend-form').style.display = 'none';
 };
 
-window.fEdit = (id) => {
-  const r=friendRecs.find(x=>x._id===id); if(!r)return;
-  fEditId=r._id; fResetForm();
-  document.getElementById('f-name').value=r.name;
-  document.getElementById('f-date').value=r.date;
-  document.getElementById('f-pay').value=r.pay;
-  document.getElementById('f-paid').value=r.paid;
-  document.getElementById('f-memo').value=r.memo||'';
-  document.getElementById('f-set').value=String(r.setDisc||0);
-  document.getElementById('f-form-title').textContent='編集中';
-  document.getElementById('f-submit').textContent='変更を保存する';
-  document.getElementById('f-cancel').style.display='';
-  document.getElementById('friend-form').style.display='';
-  document.getElementById('friend-form').scrollIntoView({behavior:'smooth'});
+window.fEdit = id => {
+  const record = friendRecs.find(x => x._id === id);
+  if (!record) return;
+
+  fResetForm();
+  fEditId = record._id;
+  document.getElementById('f-name').value = record.name;
+  document.getElementById('f-date').value = record.date;
+  document.getElementById('f-pay').value = record.pay;
+  document.getElementById('f-paid').value = record.paid;
+  document.getElementById('f-memo').value = record.memo || '';
+  document.getElementById('f-set').value = String(record.setDisc || 0);
+  document.getElementById('f-form-title').textContent = '編集中';
+  document.getElementById('f-submit').textContent = '変更を保存する';
+  document.getElementById('f-cancel').style.display = '';
+  document.getElementById('friend-form').style.display = '';
+  document.getElementById('friend-form').scrollIntoView({ behavior:'smooth' });
   fRecalc();
 };
-window.fDel = async (id) => {
+
+window.fDel = async id => {
   if (!confirm('削除しますか？')) return;
   await deleteDoc(doc(db, 'friend-recs', id));
 };
 
 function renderFriendList() {
-  const {y,m}=getTabYM('friend');
-  const f=filterMonth(friendRecs,y,m).sort((a,b)=>a.date.localeCompare(b.date));
-  const tbody=document.getElementById('f-tbody');
-  if(!f.length){tbody.innerHTML='<tr><td colspan="8" class="empty">この月の案件はありません</td></tr>';return;}
-  tbody.innerHTML=f.map(r=>{
-    const pc={振込:'tag-tr',現金_自分:'tag-cash',現金_友人:'tag-cash'}[r.pay]||'tag-tr';
-    const pn={振込:'振込',現金_自分:'現金(自)',現金_友人:'現金(友)'}[r.pay]||r.pay;
-    const plans=[...(r.wPlans||[]),...(r.sPlans||[]),...(r.wOpts||[]),...(r.sOpts||[])];
-    return`<tr>
-      <td style="white-space:nowrap;">${r.date.slice(5).replace('-','/')}</td>
+  const { y, m } = getTabYM('friend');
+  const records = filterMonth(friendRecs, y, m).sort((a, b) => a.date.localeCompare(b.date));
+  const tbody = document.getElementById('f-tbody');
+
+  if (!records.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty">この月の案件はありません</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = records.map(r => {
+    const payClass = { 振込:'tag-tr', 現金_自分:'tag-cash', 現金_友人:'tag-cash' }[r.pay] || 'tag-tr';
+    const payLabel = { 振込:'振込', 現金_自分:'現金(自)', 現金_友人:'現金(友)' }[r.pay] || r.pay;
+    const plans = [ ...(r.wPlans || []), ...(r.sPlans || []), ...(r.wOpts || []), ...(r.sOpts || []) ];
+    return `<tr>
+      <td style="white-space:nowrap;">${r.date.slice(5).replace('-', '/')}</td>
       <td>${r.name}</td>
-      <td><div class="chips">${plans.slice(0,3).map(p=>`<span class="chip chip-f">${p}</span>`).join('')}${plans.length>3?`<span class="chip">+${plans.length-3}</span>`:''}</div></td>
-      <td style="text-align:right;">${fmt(r.totalCustomer||0)}</td>
-      <td style="text-align:right;color:var(--friend);">${fmt(r.myReward||0)}</td>
-      <td><span class="tag ${pc}">${pn}</span></td>
-      <td><span class="tag ${r.paid==='入金済'?'tag-paid':'tag-unpaid'}">${r.paid}</span></td>
+      <td><div class="chips">${plans.slice(0, 3).map(p => `<span class="chip chip-f">${p}</span>`).join('')}${plans.length > 3 ? `<span class="chip">+${plans.length - 3}</span>` : ''}</div></td>
+      <td style="text-align:right;">${fmt(r.totalCustomer || 0)}</td>
+      <td style="text-align:right;color:var(--friend);">${fmt(r.myReward || 0)}</td>
+      <td><span class="tag ${payClass}">${payLabel}</span></td>
+      <td><span class="tag ${r.paid === '入金済' ? 'tag-paid' : 'tag-unpaid'}">${r.paid}</span></td>
       <td style="white-space:nowrap;"><button class="icon-btn" onclick="fEdit('${r._id}')">✏️</button><button class="icon-btn" onclick="fDel('${r._id}')" style="color:var(--red);">✕</button></td>
     </tr>`;
   }).join('');
 }
 
 function renderFriendMetrics() {
-  const {y,m}=getTabYM('friend');
-  const f=filterMonth(friendRecs,y,m);
-  document.getElementById('f-count').textContent=f.length+'件';
-  document.getElementById('f-sales').textContent=fmt(f.reduce((s,r)=>s+(r.totalCustomer||0),0));
-  document.getElementById('f-reward').textContent=fmt(f.reduce((s,r)=>s+(r.myReward||0),0));
-  const cashNet=f.filter(r=>r.pay==='現金_友人').reduce((s,r)=>s+(r.myReward||0),0)-f.filter(r=>r.pay==='現金_自分').reduce((s,r)=>s+(r.toFriend||0),0);
-  const el=document.getElementById('f-cash');
-  el.textContent=(cashNet>=0?'+':'')+fmt(cashNet);
-  el.style.color=cashNet>=0?'var(--green)':'var(--orange)';
+  const { y, m } = getTabYM('friend');
+  const records = filterMonth(friendRecs, y, m);
+  document.getElementById('f-count').textContent = `${records.length}件`;
+  document.getElementById('f-sales').textContent = fmt(records.reduce((s, r) => s + (r.totalCustomer || 0), 0));
+  document.getElementById('f-reward').textContent = fmt(records.reduce((s, r) => s + (r.myReward || 0), 0));
+  const cashNet = records.filter(r => r.pay === '現金_友人').reduce((s, r) => s + (r.myReward || 0), 0)
+    - records.filter(r => r.pay === '現金_自分').reduce((s, r) => s + (r.toFriend || 0), 0);
+  const el = document.getElementById('f-cash');
+  el.textContent = `${cashNet >= 0 ? '+' : ''}${fmt(cashNet)}`;
+  el.style.color = cashNet >= 0 ? 'var(--green)' : 'var(--orange)';
 }
 
 function renderFriendSettle() {
-  const {y,m}=getTabYM('friend');
-  const f=filterMonth(friendRecs,y,m);
-  const tr=f.filter(r=>r.pay==='振込');
-  const cS=f.filter(r=>r.pay==='現金_自分');
-  const cF=f.filter(r=>r.pay==='現金_友人');
-  const trReward=tr.reduce((s,r)=>s+(r.myReward||0),0);
-  const cToF=cS.reduce((s,r)=>s+(r.toFriend||0),0);
-  const cToMe=cF.reduce((s,r)=>s+(r.myReward||0),0);
-  const cashNet=cToMe-cToF;
-  document.getElementById('ft-reward').textContent=fmt(trReward);
-  document.getElementById('ft-final').textContent=fmt(trReward);
-  document.getElementById('ft-tof').textContent='-'+fmt(cToF);
-  document.getElementById('ft-tome').textContent='+'+fmt(cToMe);
-  document.getElementById('ft-cash-label').textContent=cashNet>=0?'友人から受取':'友人へ手渡し';
-  const el=document.getElementById('ft-cash-final');
-  el.textContent=fmt(Math.abs(cashNet));
-  el.style.color=cashNet>=0?'var(--green)':'var(--orange)';
+  const { y, m } = getTabYM('friend');
+  const records = filterMonth(friendRecs, y, m);
+  const trReward = records.filter(r => r.pay === '振込').reduce((s, r) => s + (r.myReward || 0), 0);
+  const cToF = records.filter(r => r.pay === '現金_自分').reduce((s, r) => s + (r.toFriend || 0), 0);
+  const cToMe = records.filter(r => r.pay === '現金_友人').reduce((s, r) => s + (r.myReward || 0), 0);
+  const cashNet = cToMe - cToF;
+
+  document.getElementById('ft-reward').textContent = fmt(trReward);
+  document.getElementById('ft-final').textContent = fmt(trReward);
+  document.getElementById('ft-tof').textContent = `-${fmt(cToF)}`;
+  document.getElementById('ft-tome').textContent = `+${fmt(cToMe)}`;
+  document.getElementById('ft-cash-label').textContent = cashNet >= 0 ? '友人から受取' : '友人へ手渡し';
+  const el = document.getElementById('ft-cash-final');
+  el.textContent = fmt(Math.abs(cashNet));
+  el.style.color = cashNet >= 0 ? 'var(--green)' : 'var(--orange)';
 }
 
-// ========== MY BRAND ==========
 function buildMineGrids() {
-  const buildG=(items,gridId,selObj,selCls,type,isSalon)=>{
-    const g=document.getElementById(gridId); if(!g)return;
-    g.innerHTML=items.map((o,i)=>{
-      const sel=selObj[i];
-      const badge=o.hasSalon?'<span class="badge badge-si">サロン込</span>':o.est?'<span class="badge badge-est">要見積</span>':o.hasRef===false?'<span class="badge badge-nr">報酬なし</span>':o.hasRef?'<span class="badge badge-ref">報酬あり</span>':'';
-      const pr=o.hasSalon?fmt(o.priceInc):o.est?'要見積':fmt((o.ex||o.price||0)*1.1);
-      const prLabel=isSalon?`税抜${fmt(o.ex)}`:(o.est?'要見積':fmt((o.ex||0)*1.1));
-      const ei=o.est?`<input class="est-input" type="number" placeholder="税込金額" id="me-${type}-${i}" onclick="event.stopPropagation()" oninput="mEstP['${type}'+${i}]=parseFloat(this.value)||0;mRecalc()"/>`:'';
-      const qh=o.qty?`<div class="qty-wrap" onclick="event.stopPropagation()"><button class="qty-btn" onclick="mChQty(event,'${type}',${i},-1)">−</button><span id="mq-${type}-${i}" style="font-size:12px;min-width:14px;text-align:center;">1</span><button class="qty-btn" onclick="mChQty(event,'${type}',${i},1)">＋</button></div>`:'';
-      const diff=isSalon&&type==='du'?`<span style="color:var(--red);font-size:11px;"> +${fmt((o.ex-30000)*1.1)}</span>`:isSalon&&type==='mu'?`<span style="color:var(--red);font-size:11px;"> +${fmt((o.ex-30000)*1.1)}</span>`:'';
-      return`<div class="menu-item ${sel?selCls:''}" id="mi-${type}-${i}" onclick="mTog('${type}',${i},'${selCls}')">
-        <div class="mi-name">${o.name}${badge}</div>
-        <div class="mi-price">${isSalon?`税抜${fmt(o.ex)}`:(o.hasSalon?fmt(o.priceInc):o.est?'要見積':fmt((o.ex||0)*1.1))}${diff}</div>${ei}${qh}
+  const buildGrid = (items, gridId, selObj, selCls, type, isSalon) => {
+    const grid = document.getElementById(gridId);
+    if (!grid) return;
+
+    grid.innerHTML = items.map((item, i) => {
+      const selected = selObj[i];
+      const badge = item.hasSalon
+        ? '<span class="badge badge-si">サロン込</span>'
+        : item.est
+          ? '<span class="badge badge-est">要見積</span>'
+          : item.hasRef === false
+            ? '<span class="badge badge-nr">報酬なし</span>'
+            : item.hasRef
+              ? '<span class="badge badge-ref">報酬あり</span>'
+              : '';
+      const priceLabel = isSalon
+        ? `税抜${fmt(item.ex)}`
+        : item.hasSalon
+          ? fmt(item.priceInc)
+          : item.est
+            ? '要見積'
+            : fmt((item.ex || 0) * 1.1);
+      const estInput = item.est
+        ? `<input class="est-input" type="number" placeholder="税込金額" id="me-${type}-${i}" onclick="event.stopPropagation()" oninput="mEstP['${type}${i}']=parseFloat(this.value)||0;mRecalc()">`
+        : '';
+      const qtyHtml = item.qty
+        ? `<div class="qty-wrap" onclick="event.stopPropagation()"><button class="qty-btn" onclick="mChQty(event,'${type}',${i},-1)">−</button><span id="mq-${type}-${i}" style="font-size:12px;min-width:14px;text-align:center;">${mOQty[type + i] || 1}</span><button class="qty-btn" onclick="mChQty(event,'${type}',${i},1)">＋</button></div>`
+        : '';
+      const diff = isSalon && type === 'du'
+        ? `<span style="color:var(--red);font-size:11px;"> +${fmt((item.ex - 30000) * 1.1)}</span>`
+        : isSalon && type === 'mu'
+          ? `<span style="color:var(--red);font-size:11px;"> +${fmt((item.ex - 30000) * 1.1)}</span>`
+          : '';
+
+      return `<div class="menu-item ${selected ? selCls : ''}" id="mi-${type}-${i}" onclick="mTog('${type}',${i},'${selCls}')">
+        <div class="mi-name">${item.name}${badge}</div>
+        <div class="mi-price">${priceLabel}${diff}</div>
+        ${estInput}
+        ${qtyHtml}
       </div>`;
     }).join('');
   };
-  buildG(MPLANS,'m-plan-grid',mSelP,'sel-m','pl',false);
-  buildG(MOPTS,'m-opt-grid',mSelO,'sel-m','op',false);
-  buildG(MSALON,'m-salon-grid',mSelS,'sel-s','sl',true);
-  buildG(MDRESS_UP,'m-dress-grid',{},'sel-m','du',true);
-  buildG(MMENS_UP,'m-mens-grid',{},'sel-m','mu',true);
-  buildG(MEXTRA,'m-extra-grid',mSelExtra,'sel-s','ex',true);
+
+  buildGrid(MPLANS, 'm-plan-grid', mSelP, 'sel-m', 'pl', false);
+  buildGrid(MOPTS, 'm-opt-grid', mSelO, 'sel-m', 'op', false);
+  buildGrid(MSALON, 'm-salon-grid', mSelS, 'sel-s', 'sl', true);
+  buildGrid(MDRESS_UP, 'm-dress-grid', {}, 'sel-m', 'du', true);
+  buildGrid(MMENS_UP, 'm-mens-grid', {}, 'sel-m', 'mu', true);
+  buildGrid(MEXTRA, 'm-extra-grid', mSelExtra, 'sel-s', 'ex', true);
   mSelBouquet(mBouquet);
-  if(mSelDressUp!==null){const el=document.getElementById('mi-du-'+mSelDressUp);if(el)el.classList.add('sel-m');}
-  if(mSelMensUp!==null){const el=document.getElementById('mi-mu-'+mSelMensUp);if(el)el.classList.add('sel-m');}
+  if (mSelDressUp !== null) document.getElementById(`mi-du-${mSelDressUp}`)?.classList.add('sel-m');
+  if (mSelMensUp !== null) document.getElementById(`mi-mu-${mSelMensUp}`)?.classList.add('sel-m');
 }
 
-window.mTog = (type,i,cls) => {
-  const maps={pl:mSelP,op:mSelO,sl:mSelS,ex:mSelExtra};
-  if(type==='du'){
-    if(mSelDressUp===i){mSelDressUp=null;document.getElementById('mi-du-'+i).classList.remove('sel-m');}
-    else{if(mSelDressUp!==null)document.getElementById('mi-du-'+mSelDressUp).classList.remove('sel-m');mSelDressUp=i;document.getElementById('mi-du-'+i).classList.add('sel-m');}
-    mRecalc();return;
+window.mTog = (type, i, cls) => {
+  const maps = { pl:mSelP, op:mSelO, sl:mSelS, ex:mSelExtra };
+  if (type === 'du') {
+    if (mSelDressUp === i) {
+      document.getElementById(`mi-du-${i}`)?.classList.remove('sel-m');
+      mSelDressUp = null;
+    } else {
+      if (mSelDressUp !== null) document.getElementById(`mi-du-${mSelDressUp}`)?.classList.remove('sel-m');
+      mSelDressUp = i;
+      document.getElementById(`mi-du-${i}`)?.classList.add('sel-m');
+    }
+    mRecalc();
+    return;
   }
-  if(type==='mu'){
-    if(mSelMensUp===i){mSelMensUp=null;document.getElementById('mi-mu-'+i).classList.remove('sel-m');}
-    else{if(mSelMensUp!==null)document.getElementById('mi-mu-'+mSelMensUp).classList.remove('sel-m');mSelMensUp=i;document.getElementById('mi-mu-'+i).classList.add('sel-m');}
-    mRecalc();return;
+  if (type === 'mu') {
+    if (mSelMensUp === i) {
+      document.getElementById(`mi-mu-${i}`)?.classList.remove('sel-m');
+      mSelMensUp = null;
+    } else {
+      if (mSelMensUp !== null) document.getElementById(`mi-mu-${mSelMensUp}`)?.classList.remove('sel-m');
+      mSelMensUp = i;
+      document.getElementById(`mi-mu-${i}`)?.classList.add('sel-m');
+    }
+    mRecalc();
+    return;
   }
-  const m=maps[type]; if(!m)return;
-  const el=document.getElementById(`mi-${type}-${i}`);
-  if(m[i]){delete m[i];el.classList.remove(cls);}else{m[i]=true;el.classList.add(cls);}
-  if(type==='pl'){
-    const hasSalon=Object.keys(mSelP).some(k=>MPLANS[+k].hasSalon);
-    document.getElementById('m-salon-inc-section').style.display=hasSalon?'':'none';
-    document.getElementById('m-salon-normal-section').style.display=hasSalon?'none':'';
-    if(hasSalon)buildMineGrids();
-  }
-  mRecalc();
-};
-window.mChQty = (e,type,i,d) => {
-  e.stopPropagation();
-  mOQty[type+i]=Math.max(1,(mOQty[type+i]||1)+d);
-  document.getElementById(`mq-${type}-${i}`).textContent=mOQty[type+i];
-  mRecalc();
-};
-window.mSelBouquet = (type) => {
-  mBouquet=type;
-  ['dry','art'].forEach(t=>{const el=document.getElementById('mbq-'+t);if(el)el.classList.toggle('sel-s',t===type);});
-  mRecalc();
-};
 
-function mFeeRate(){const p=document.getElementById('m-pay').value;return p==='カード'?0.025:p==='PayPay'?0.0198:0;}
-function mIsCP(){return mFeeRate()>0;}
-function mCalcSalonItem(ex,hasRef){
-  const inc=Math.round(ex*1.1);
-  if(hasRef){const ref=Math.round(ex*0.2*1.08);const bf=inc-ref;const sf=mIsCP()?Math.round(bf*0.025):0;return{inc,salonBack:bf-sf,referral:ref,salonFeeShare:sf};}
-  else{const sf=mIsCP()?Math.round(inc*0.025):0;return{inc,salonBack:inc-sf,referral:0,salonFeeShare:sf};}
-}
-
-function mCalc(){
-  const rate=mFeeRate();
-  let shootInc=0,salonCustInc=0,totalRef=0,totalSalonBack=0,totalSalonFee=0,discountBurden=0;
-  MPLANS.forEach((p,i)=>{if(!mSelP[i])return;if(!p.hasSalon)shootInc+=p.est?(mEstP['pl'+i]?mEstP['pl'+i]/1.1:0)*1.1||0:p.ex*1.1;});
-  MOPTS.forEach((o,i)=>{if(!mSelO[i])return;const q=o.qty?(mOQty['op'+i]||1):1;shootInc+=(o.est?(mEstP['op'+i]?mEstP['op'+i]/1.1:0):o.ex)*q*1.1;});
-  const hasSalon=Object.keys(mSelP).some(k=>MPLANS[+k].hasSalon);
-  if(hasSalon){
-    let planFixed=0,planShootEx=0;
-    Object.keys(mSelP).forEach(i=>{if(MPLANS[+i].hasSalon){planFixed+=MPLANS[+i].priceInc;planShootEx+=MPLANS[+i].shootEx;}});
-    shootInc+=planShootEx*1.1;
-    const dressUpInc=mSelDressUp!==null?Math.round((MDRESS_UP[mSelDressUp].ex-30000)*1.1):0;
-    const mensUpInc=mSelMensUp!==null?Math.round((MMENS_UP[mSelMensUp].ex-30000)*1.1):0;
-    const custTotal=planFixed+dressUpInc+mensUpInc;
-    const bqEx={dry:3500,art:5000}[mBouquet];
-    const actualDressEx=mSelDressUp!==null?MDRESS_UP[mSelDressUp].ex:30000;
-    const actualMensEx=mSelMensUp!==null?MMENS_UP[mSelMensUp].ex:30000;
-    const salonItems=[{ex:actualDressEx,hasRef:true},{ex:actualMensEx,hasRef:true},{ex:25000,hasRef:true},{ex:bqEx,hasRef:true}];
-    MEXTRA.forEach((s,i)=>{if(mSelExtra[i])salonItems.push({ex:s.ex,hasRef:s.hasRef});});
-    const soEx=parseFloat(document.getElementById('m-so-val').value)||0;
-    if(soEx>0)salonItems.push({ex:soEx,hasRef:false});
-    salonItems.forEach(item=>{
-      const r=mCalcSalonItem(item.ex,item.hasRef);
-      totalRef+=r.referral;totalSalonBack+=r.salonBack;totalSalonFee+=r.salonFeeShare;salonCustInc+=item.ex;
-    });
-    const myFee=Math.round(custTotal*rate);
-    const received=custTotal-myFee;
-    const profit=received-totalSalonBack;
-    const optInc=Object.keys(mSelO).reduce((s,i)=>{const o=MOPTS[+i];const q=o.qty?(mOQty['op'+i]||1):1;return s+(o.est?(mEstP['op'+i]||0):o.ex*1.1)*q;},0);
-    const totalInc=custTotal+optInc;
-    const otherExp=mExps.reduce((s,e)=>s+e.amount,0);
-    // update SI panel
-    document.getElementById('msi-fixed').textContent=fmt(planFixed);
-    document.getElementById('msi-upgrade').textContent=fmt(dressUpInc+mensUpInc);
-    document.getElementById('msi-total').textContent=fmt(totalInc);
-    document.getElementById('msi-fee').textContent=myFee>0?'−'+fmt(myFee):'¥0';
-    document.getElementById('msi-recv').textContent=fmt(received);
-    document.getElementById('msi-salon-inc').textContent=fmt(Math.round(salonCustInc*1.1));
-    document.getElementById('msi-ref').textContent=fmt(totalRef);
-    document.getElementById('msi-back').textContent=fmt(totalSalonBack);
-    document.getElementById('msi-profit').textContent=fmt(profit-otherExp);
-    return{shootEx:0,salonEx:salonCustInc,totalEx:Math.round(totalInc/1.1),tax:totalInc-Math.round(totalInc/1.1),totalInc,myFee,totalSalonBack,totalRef,totalSalonFee,shootIncome:received-totalSalonBack,otherExp,profit:profit-otherExp,isSalonInc:true};
+  const map = maps[type];
+  if (!map) return;
+  const el = document.getElementById(`mi-${type}-${i}`);
+  if (map[i]) {
+    delete map[i];
+    el.classList.remove(cls);
   } else {
-    MSALON.forEach((s,i)=>{if(!mSelS[i])return;const r=mCalcSalonItem(s.ex,s.hasRef);salonCustInc+=s.ex;totalRef+=r.referral;totalSalonBack+=r.salonBack;totalSalonFee+=r.salonFeeShare;});
-    const so2Ex=parseFloat(document.getElementById('m-so-val2').value)||0;
-    if(so2Ex>0){const r=mCalcSalonItem(so2Ex,false);salonCustInc+=so2Ex;totalSalonBack+=r.salonBack;totalSalonFee+=r.salonFeeShare;}
-    const totalEx=Math.round(shootInc/1.1)+salonCustInc;
-    const totalInc=Math.round(totalEx*1.1);
-    const myFee=Math.round(totalInc*rate);
-    const shootFee=Math.round(shootInc*rate);
-    const shootIncome=shootInc-shootFee;
-    const otherExp=mExps.reduce((s,e)=>s+e.amount,0);
-    const profit=shootIncome+totalRef+totalSalonFee-otherExp;
-    return{shootEx:Math.round(shootInc/1.1),salonEx:salonCustInc,totalEx,tax:totalInc-totalEx,totalInc,myFee,totalSalonBack,totalRef,totalSalonFee,shootIncome,otherExp,profit,isSalonInc:false};
+    map[i] = true;
+    el.classList.add(cls);
   }
+  if (type === 'pl') {
+    const hasSalon = Object.keys(mSelP).some(k => MPLANS[Number(k)].hasSalon);
+    document.getElementById('m-salon-inc-section').style.display = hasSalon ? '' : 'none';
+    document.getElementById('m-salon-normal-section').style.display = hasSalon ? 'none' : '';
+    if (hasSalon) buildMineGrids();
+  }
+  mRecalc();
+};
+
+window.mChQty = (e, type, i, d) => {
+  e.stopPropagation();
+  mOQty[type + i] = Math.max(1, (mOQty[type + i] || 1) + d);
+  document.getElementById(`mq-${type}-${i}`).textContent = mOQty[type + i];
+  mRecalc();
+};
+
+window.mSelBouquet = type => {
+  mBouquet = type;
+  ['dry', 'art'].forEach(t => {
+    document.getElementById(`mbq-${t}`)?.classList.toggle('sel-s', t === type);
+  });
+  mRecalc();
+};
+
+function mFeeRate() {
+  const pay = document.getElementById('m-pay').value;
+  return pay === 'カード' ? 0.025 : pay === 'PayPay' ? 0.0198 : 0;
+}
+
+function mIsCP() {
+  return mFeeRate() > 0;
+}
+
+function mCalcSalonItem(ex, hasRef) {
+  const inc = Math.round(ex * 1.1);
+  if (hasRef) {
+    const ref = Math.round(ex * 0.2 * 1.08);
+    const beforeFee = inc - ref;
+    const salonFeeShare = mIsCP() ? Math.round(beforeFee * 0.025) : 0;
+    return { inc, salonBack: beforeFee - salonFeeShare, referral: ref, salonFeeShare };
+  }
+  const salonFeeShare = mIsCP() ? Math.round(inc * 0.025) : 0;
+  return { inc, salonBack: inc - salonFeeShare, referral: 0, salonFeeShare };
+}
+
+function mCalc() {
+  const rate = mFeeRate();
+  let shootInc = 0;
+  let salonCustEx = 0;
+  let totalRef = 0;
+  let totalSalonBack = 0;
+  let totalSalonFee = 0;
+
+  MPLANS.forEach((p, i) => {
+    if (!mSelP[i] || p.hasSalon) return;
+    if (p.est) shootInc += mEstP['pl' + i] || 0;
+    else shootInc += p.ex * 1.1;
+  });
+
+  MOPTS.forEach((o, i) => {
+    if (!mSelO[i]) return;
+    const q = o.qty ? (mOQty['op' + i] || 1) : 1;
+    const amount = o.est ? (mEstP['op' + i] || 0) : o.ex * 1.1;
+    shootInc += amount * q;
+  });
+
+  const hasSalonInc = Object.keys(mSelP).some(k => MPLANS[Number(k)].hasSalon);
+
+  if (hasSalonInc) {
+    let planFixed = 0;
+    let planShootEx = 0;
+    Object.keys(mSelP).forEach(i => {
+      const plan = MPLANS[Number(i)];
+      if (!plan.hasSalon) return;
+      planFixed += plan.priceInc;
+      planShootEx += plan.shootEx;
+    });
+
+    const dressUpInc = mSelDressUp !== null ? Math.round((MDRESS_UP[mSelDressUp].ex - 30000) * 1.1) : 0;
+    const mensUpInc = mSelMensUp !== null ? Math.round((MMENS_UP[mSelMensUp].ex - 30000) * 1.1) : 0;
+    const customerPlanTotal = planFixed + dressUpInc + mensUpInc;
+    const bouquetEx = mBouquet === 'art' ? 5000 : 3500;
+    const actualDressEx = mSelDressUp !== null ? MDRESS_UP[mSelDressUp].ex : 30000;
+    const actualMensEx = mSelMensUp !== null ? MMENS_UP[mSelMensUp].ex : 30000;
+    const salonItems = [
+      { ex:actualDressEx, hasRef:true },
+      { ex:actualMensEx, hasRef:true },
+      { ex:25000, hasRef:true },
+      { ex:bouquetEx, hasRef:true }
+    ];
+    MEXTRA.forEach((extra, i) => { if (mSelExtra[i]) salonItems.push({ ex:extra.ex, hasRef:extra.hasRef }); });
+
+    const otherSalonEx = parseFloat(document.getElementById('m-so-val').value) || 0;
+    if (otherSalonEx > 0) salonItems.push({ ex:otherSalonEx, hasRef:false });
+
+    salonItems.forEach(item => {
+      const result = mCalcSalonItem(item.ex, item.hasRef);
+      salonCustEx += item.ex;
+      totalRef += result.referral;
+      totalSalonBack += result.salonBack;
+      totalSalonFee += result.salonFeeShare;
+    });
+
+    const optionsInc = Object.keys(mSelO).reduce((sum, i) => {
+      const option = MOPTS[Number(i)];
+      const q = option.qty ? (mOQty['op' + i] || 1) : 1;
+      const amount = option.est ? (mEstP['op' + i] || 0) : option.ex * 1.1;
+      return sum + amount * q;
+    }, 0);
+
+    const totalInc = customerPlanTotal + optionsInc;
+    const myFee = Math.round(totalInc * rate);
+    const received = totalInc - myFee;
+    const otherExp = mExps.reduce((s, e) => s + (e.amount || 0), 0);
+    const profit = received - totalSalonBack - otherExp;
+
+    document.getElementById('msi-fixed').textContent = fmt(planFixed);
+    document.getElementById('msi-upgrade').textContent = fmt(dressUpInc + mensUpInc);
+    document.getElementById('msi-total').textContent = fmt(totalInc);
+    document.getElementById('msi-fee').textContent = myFee > 0 ? `−${fmt(myFee)}` : '¥0';
+    document.getElementById('msi-recv').textContent = fmt(received);
+    document.getElementById('msi-salon-inc').textContent = fmt(Math.round(salonCustEx * 1.1));
+    document.getElementById('msi-ref').textContent = fmt(totalRef);
+    document.getElementById('msi-back').textContent = fmt(totalSalonBack);
+    document.getElementById('msi-profit').textContent = fmt(profit);
+
+    return {
+      shootEx: planShootEx,
+      salonEx: salonCustEx,
+      totalEx: Math.round(totalInc / 1.1),
+      tax: totalInc - Math.round(totalInc / 1.1),
+      totalInc,
+      myFee,
+      totalSalonBack,
+      totalRef,
+      totalSalonFee,
+      shootIncome: received - totalSalonBack,
+      otherExp,
+      profit,
+      isSalonInc: true
+    };
+  }
+
+  MSALON.forEach((item, i) => {
+    if (!mSelS[i]) return;
+    const result = mCalcSalonItem(item.ex, item.hasRef);
+    salonCustEx += item.ex;
+    totalRef += result.referral;
+    totalSalonBack += result.salonBack;
+    totalSalonFee += result.salonFeeShare;
+  });
+
+  const otherSalonEx = parseFloat(document.getElementById('m-so-val2').value) || 0;
+  if (otherSalonEx > 0) {
+    const result = mCalcSalonItem(otherSalonEx, false);
+    salonCustEx += otherSalonEx;
+    totalSalonBack += result.salonBack;
+    totalSalonFee += result.salonFeeShare;
+  }
+
+  const totalEx = Math.round(shootInc / 1.1) + salonCustEx;
+  const totalInc = Math.round(totalEx * 1.1);
+  const myFee = Math.round(totalInc * rate);
+  const shootFee = Math.round(shootInc * rate);
+  const shootIncome = shootInc - shootFee;
+  const otherExp = mExps.reduce((s, e) => s + (e.amount || 0), 0);
+  const profit = shootIncome + totalRef + totalSalonFee - otherExp;
+
+  return {
+    shootEx: Math.round(shootInc / 1.1),
+    salonEx: salonCustEx,
+    totalEx,
+    tax: totalInc - totalEx,
+    totalInc,
+    myFee,
+    totalSalonBack,
+    totalRef,
+    totalSalonFee,
+    shootIncome,
+    otherExp,
+    profit,
+    isSalonInc: false
+  };
 }
 
 window.mRecalc = () => {
-  const a=mCalc();
-  document.getElementById('ms-ex').textContent=fmt(a.totalEx);
-  document.getElementById('ms-tax').textContent=fmt(a.tax);
-  document.getElementById('ms-total').textContent=fmt(a.totalInc);
-  const pay=document.getElementById('m-pay').value;
-  document.getElementById('ms-fee-label').textContent=pay==='カード'?'カード手数料2.5%':pay==='PayPay'?'PayPay手数料1.98%':'決済手数料';
-  document.getElementById('ms-fee').textContent=a.myFee>0?'−'+fmt(a.myFee):'¥0';
-  document.getElementById('ms-salon-back').textContent=fmt(a.totalSalonBack);
-  document.getElementById('ms-ref').textContent=fmt(a.totalRef);
-  const profEl=document.getElementById('ms-profit');
-  profEl.textContent=fmt(a.profit);profEl.style.color=a.profit>=0?'var(--mine)':'var(--red)';
-  document.getElementById('ms-exp-rows').innerHTML=mExps.map(e=>`<div class="s-row sub"><span>${e.name||'経費'}</span><span style="color:var(--red);">−${fmt(e.amount)}</span></div>`).join('');
+  const a = mCalc();
+  document.getElementById('ms-ex').textContent = fmt(a.totalEx);
+  document.getElementById('ms-tax').textContent = fmt(a.tax);
+  document.getElementById('ms-total').textContent = fmt(a.totalInc);
+  const pay = document.getElementById('m-pay').value;
+  document.getElementById('ms-fee-label').textContent = pay === 'カード' ? 'カード手数料2.5%' : pay === 'PayPay' ? 'PayPay手数料1.98%' : '決済手数料';
+  document.getElementById('ms-fee').textContent = a.myFee > 0 ? `−${fmt(a.myFee)}` : '¥0';
+  document.getElementById('ms-salon-back').textContent = fmt(a.totalSalonBack);
+  document.getElementById('ms-ref').textContent = fmt(a.totalRef);
+  document.getElementById('ms-exp-rows').innerHTML = mExps.map(e => `<div class="s-row sub"><span>${e.name || '経費'}</span><span style="color:var(--red);">−${fmt(e.amount || 0)}</span></div>`).join('');
+  const profitEl = document.getElementById('ms-profit');
+  profitEl.textContent = fmt(a.profit);
+  profitEl.style.color = a.profit >= 0 ? 'var(--mine)' : 'var(--red)';
 };
 
-window.addMExp = () => { mExps.push({name:'',amount:0}); renderMExpList(); };
+window.addMExp = () => {
+  mExps.push({ name:'', amount:0 });
+  renderMExpList();
+};
+
 function renderMExpList() {
-  document.getElementById('m-exp-list').innerHTML=mExps.map((e,i)=>`
+  document.getElementById('m-exp-list').innerHTML = mExps.map((e, i) => `
     <div class="exp-row">
-      <input type="text" placeholder="経費名" value="${e.name}" oninput="mExps[${i}].name=this.value" style="flex:1;"/>
-      <input type="number" placeholder="金額（税込）" value="${e.amount||''}" min="0" oninput="mExps[${i}].amount=parseFloat(this.value)||0;mRecalc()" style="width:120px;flex:none;"/>
+      <input type="text" placeholder="経費名" value="${e.name}" oninput="mExps[${i}].name=this.value" style="flex:1;">
+      <input type="number" placeholder="金額（税込）" value="${e.amount || ''}" min="0" oninput="mExps[${i}].amount=parseFloat(this.value)||0;mRecalc()" style="width:120px;flex:none;">
       <button class="exp-del" onclick="mExps.splice(${i},1);renderMExpList();mRecalc();">✕</button>
-    </div>`).join('');
+    </div>
+  `).join('');
 }
 
 window.showMineForm = () => {
-  document.getElementById('mine-form').style.display='';
-  buildMineGrids(); mRecalc();
-  document.getElementById('mine-form').scrollIntoView({behavior:'smooth'});
+  document.getElementById('mine-form').style.display = '';
+  buildMineGrids();
+  mRecalc();
+  document.getElementById('mine-form').scrollIntoView({ behavior:'smooth' });
 };
-window.cancelMine = () => { mResetForm(); document.getElementById('mine-form').style.display='none'; };
+
+window.cancelMine = () => {
+  mResetForm();
+  document.getElementById('mine-form').style.display = 'none';
+};
 
 function mResetForm() {
-  mSelP={};mSelO={};mSelS={};mSelDressUp=null;mSelMensUp=null;mBouquet='dry';mSelExtra={};mOQty={};mEstP={};mEstO={};mExps=[];mEditId=null;
-  buildMineGrids(); renderMExpList();
-  ['m-name','m-memo','m-so-name','m-so-name2'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  ['m-so-val','m-so-val2'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('m-date').value=new Date().toISOString().slice(0,10);
-  document.getElementById('m-paid').value='未入金';
-  document.getElementById('m-pay').value='現金';
-  document.getElementById('m-salon-inc-section').style.display='none';
-  document.getElementById('m-salon-normal-section').style.display='';
-  document.getElementById('m-form-title').textContent='新規案件 — 自分ブランド';
-  document.getElementById('m-submit').textContent='この案件を登録する';
-  document.getElementById('m-cancel').style.display='none';
+  mEditId = null;
+  mSelP = {};
+  mSelO = {};
+  mSelS = {};
+  mSelDressUp = null;
+  mSelMensUp = null;
+  mBouquet = 'dry';
+  mSelExtra = {};
+  mOQty = {};
+  mEstP = {};
+  mExps = [];
+  buildMineGrids();
+  renderMExpList();
+  ['m-name', 'm-memo', 'm-so-name', 'm-so-name2'].forEach(id => { document.getElementById(id).value = ''; });
+  ['m-so-val', 'm-so-val2'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('m-date').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('m-paid').value = '未入金';
+  document.getElementById('m-pay').value = '現金';
+  document.getElementById('m-salon-inc-section').style.display = 'none';
+  document.getElementById('m-salon-normal-section').style.display = '';
+  document.getElementById('m-form-title').textContent = '新規案件 — 自分ブランド';
+  document.getElementById('m-submit').textContent = 'この案件を登録する';
+  document.getElementById('m-cancel').style.display = 'none';
   mRecalc();
 }
 
 window.submitMine = async () => {
-  const name=document.getElementById('m-name').value.trim();
-  const date=document.getElementById('m-date').value;
-  if(!name||!date){alert('お客様名と撮影日を入力してください');return;}
-  const a=mCalc();
-  const planNames=Object.keys(mSelP).map(i=>MPLANS[+i].name);
-  const data={
-    name,date,pay:document.getElementById('m-pay').value,
-    paid:document.getElementById('m-paid').value,memo:document.getElementById('m-memo').value,
-    isSalonInc:a.isSalonInc,plans:planNames,
-    shootEx:a.shootEx,salonEx:a.salonEx,tax:a.tax,totalCustomer:a.totalInc,
-    myFee:a.myFee,salonBack:a.totalSalonBack,referral:a.totalRef,
-    salonFeeShare:a.totalSalonFee,shootIncome:a.shootIncome,otherExp:a.otherExp,profit:a.profit,
-    updatedAt:new Date().toISOString()
+  const name = document.getElementById('m-name').value.trim();
+  const date = document.getElementById('m-date').value;
+  if (!name || !date) {
+    alert('お客様名と撮影日を入力してください');
+    return;
+  }
+
+  const a = mCalc();
+  const payload = {
+    name,
+    date,
+    pay: document.getElementById('m-pay').value,
+    paid: document.getElementById('m-paid').value,
+    memo: document.getElementById('m-memo').value,
+    isSalonInc: a.isSalonInc,
+    plans: Object.keys(mSelP).map(i => MPLANS[Number(i)].name),
+    shootEx: a.shootEx,
+    salonEx: a.salonEx,
+    tax: a.tax,
+    totalCustomer: a.totalInc,
+    myFee: a.myFee,
+    salonBack: a.totalSalonBack,
+    referral: a.totalRef,
+    salonFeeShare: a.totalSalonFee,
+    shootIncome: a.shootIncome,
+    otherExp: a.otherExp,
+    profit: a.profit,
+    updatedAt: new Date().toISOString()
   };
-if (mEditId) {
-  await updateDoc(doc(db, 'my-recs', mEditId), data);
-} else {
-  await addDoc(collection(db, 'my-recs'), data);
-}
-  mResetForm(); document.getElementById('mine-form').style.display='none';
+
+  if (mEditId) await updateDoc(doc(db, 'my-recs', mEditId), payload);
+  else await addDoc(collection(db, 'my-recs'), payload);
+
+  mResetForm();
+  document.getElementById('mine-form').style.display = 'none';
 };
 
-window.mEdit = (id) => {
-  const r=myRecs.find(x=>x._id===id); if(!r)return;
-  mEditId=r._id; mResetForm();
-  document.getElementById('m-name').value=r.name;
-  document.getElementById('m-date').value=r.date;
-  document.getElementById('m-pay').value=r.pay;
-  document.getElementById('m-paid').value=r.paid;
-  document.getElementById('m-memo').value=r.memo||'';
-  document.getElementById('m-form-title').textContent='編集中';
-  document.getElementById('m-submit').textContent='変更を保存する';
-  document.getElementById('m-cancel').style.display='';
-  document.getElementById('mine-form').style.display='';
-  document.getElementById('mine-form').scrollIntoView({behavior:'smooth'});
+window.mEdit = id => {
+  const record = myRecs.find(x => x._id === id);
+  if (!record) return;
+  mResetForm();
+  mEditId = record._id;
+  document.getElementById('m-name').value = record.name;
+  document.getElementById('m-date').value = record.date;
+  document.getElementById('m-pay').value = record.pay;
+  document.getElementById('m-paid').value = record.paid;
+  document.getElementById('m-memo').value = record.memo || '';
+  document.getElementById('m-form-title').textContent = '編集中';
+  document.getElementById('m-submit').textContent = '変更を保存する';
+  document.getElementById('m-cancel').style.display = '';
+  document.getElementById('mine-form').style.display = '';
+  document.getElementById('mine-form').scrollIntoView({ behavior:'smooth' });
   mRecalc();
 };
-window.mDel = async (id) => {
+
+window.mDel = async id => {
   if (!confirm('削除しますか？')) return;
   await deleteDoc(doc(db, 'my-recs', id));
 };
 
 function renderMineList() {
-  const {y,m}=getTabYM('mine');
-  const f=filterMonth(myRecs,y,m).sort((a,b)=>a.date.localeCompare(b.date));
-  const tbody=document.getElementById('m-tbody');
-  if(!f.length){tbody.innerHTML='<tr><td colspan="8" class="empty">この月の案件はありません</td></tr>';return;}
-  tbody.innerHTML=f.map(r=>{
-    const tc={現金:'tag-cash',振込:'tag-tr',カード:'tag-card',PayPay:'tag-pp'}[r.pay]||'tag-cash';
-    const tl={現金:'現金',振込:'振込',カード:'カード',PayPay:'PP'}[r.pay]||r.pay;
-    const plans=(r.plans||[]);
-    return`<tr>
-      <td style="white-space:nowrap;">${r.date.slice(5).replace('-','/')}</td>
+  const { y, m } = getTabYM('mine');
+  const records = filterMonth(myRecs, y, m).sort((a, b) => a.date.localeCompare(b.date));
+  const tbody = document.getElementById('m-tbody');
+
+  if (!records.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty">この月の案件はありません</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = records.map(r => {
+    const tagClass = { 現金:'tag-cash', 振込:'tag-tr', カード:'tag-card', PayPay:'tag-pp' }[r.pay] || 'tag-cash';
+    const tagLabel = { 現金:'現金', 振込:'振込', カード:'カード', PayPay:'PP' }[r.pay] || r.pay;
+    return `<tr>
+      <td style="white-space:nowrap;">${r.date.slice(5).replace('-', '/')}</td>
       <td>${r.name}</td>
-      <td><div class="chips">${plans.slice(0,2).map(p=>`<span class="chip chip-m">${p}</span>`).join('')}</div></td>
-      <td style="text-align:right;">${fmt(r.totalCustomer||0)}</td>
-      <td style="text-align:right;color:${(r.profit||0)>=0?'var(--mine)':'var(--red)'};">${fmt(r.profit||0)}</td>
-      <td><span class="tag ${tc}">${tl}</span></td>
-      <td><span class="tag ${r.paid==='入金済'?'tag-paid':'tag-unpaid'}">${r.paid}</span></td>
+      <td><div class="chips">${(r.plans || []).slice(0, 2).map(p => `<span class="chip chip-m">${p}</span>`).join('')}</div></td>
+      <td style="text-align:right;">${fmt(r.totalCustomer || 0)}</td>
+      <td style="text-align:right;color:${(r.profit || 0) >= 0 ? 'var(--mine)' : 'var(--red)'};">${fmt(r.profit || 0)}</td>
+      <td><span class="tag ${tagClass}">${tagLabel}</span></td>
+      <td><span class="tag ${r.paid === '入金済' ? 'tag-paid' : 'tag-unpaid'}">${r.paid}</span></td>
       <td style="white-space:nowrap;"><button class="icon-btn" onclick="mEdit('${r._id}')">✏️</button><button class="icon-btn" onclick="mDel('${r._id}')" style="color:var(--red);">✕</button></td>
     </tr>`;
   }).join('');
 }
 
 function renderMineMetrics() {
-  const {y,m}=getTabYM('mine');
-  const f=filterMonth(myRecs,y,m);
-  document.getElementById('m-count').textContent=f.length+'件';
-  document.getElementById('m-sales').textContent=fmt(f.reduce((s,r)=>s+(r.totalCustomer||0),0));
-  document.getElementById('m-profit').textContent=fmt(f.reduce((s,r)=>s+(r.profit||0),0));
-  document.getElementById('m-exp').textContent=fmt(f.reduce((s,r)=>s+(r.myFee||0)+(r.otherExp||0)+(r.salonBack||0),0));
+  const { y, m } = getTabYM('mine');
+  const records = filterMonth(myRecs, y, m);
+  document.getElementById('m-count').textContent = `${records.length}件`;
+  document.getElementById('m-sales').textContent = fmt(records.reduce((s, r) => s + (r.totalCustomer || 0), 0));
+  document.getElementById('m-profit').textContent = fmt(records.reduce((s, r) => s + (r.profit || 0), 0));
+  document.getElementById('m-exp').textContent = fmt(records.reduce((s, r) => s + (r.myFee || 0) + (r.otherExp || 0) + (r.salonBack || 0), 0));
 }
 
-// ========== SALON ==========
 function buildSalonMenuGrid() {
-  const g=document.getElementById('s-menu-grid'); if(!g)return;
-  g.innerHTML=MSALON.map((m,i)=>{
-    const br=m.hasRef?'<span class="badge badge-ref">報酬あり</span>':'';
-    const sel=sSelMenu[i];
-    return`<div class="menu-item ${sel?'sel-s':''}" id="si-${i}" onclick="sTog(${i})">
-      <div class="mi-name">${m.name}${br}</div>
-      <div class="mi-price">税抜${fmt(m.ex)}</div>
+  const grid = document.getElementById('s-menu-grid');
+  grid.innerHTML = MSALON.map((item, i) => `
+    <div class="menu-item ${sSelMenu[i] ? 'sel-s' : ''}" id="si-${i}" onclick="sTog(${i})">
+      <div class="mi-name">${item.name}${item.hasRef ? '<span class="badge badge-ref">報酬あり</span>' : ''}</div>
+      <div class="mi-price">税抜${fmt(item.ex)}</div>
       <div class="qty-wrap" onclick="event.stopPropagation()">
         <button class="qty-btn" onclick="sChQty(event,${i},-1)">−</button>
-        <span id="sq-${i}" style="font-size:12px;min-width:14px;text-align:center;">1</span>
+        <span id="sq-${i}" style="font-size:12px;min-width:14px;text-align:center;">${sMenuQty[i] || 1}</span>
         <button class="qty-btn" onclick="sChQty(event,${i},1)">＋</button>
       </div>
-    </div>`;
-  }).join('');
-}
-window.sTog=(i)=>{const el=document.getElementById('si-'+i);if(sSelMenu[i]){delete sSelMenu[i];el.classList.remove('sel-s');}else{sSelMenu[i]=true;el.classList.add('sel-s');}sRecalc();};
-window.sChQty=(e,i,d)=>{e.stopPropagation();sMenuQty[i]=Math.max(1,(sMenuQty[i]||1)+d);document.getElementById('sq-'+i).textContent=sMenuQty[i];sRecalc();};
-window.saveSalonSettings=()=>{
-  sCamSettings.camName=document.getElementById('s-cam-name').value;
-  sCamSettings.rate=parseFloat(document.getElementById('s-cam-rate').value)||20;
-  sCamSettings.taxRate=parseFloat(document.getElementById('s-cam-tax').value)||8;
-  try{localStorage.setItem('sCamSettings',JSON.stringify(sCamSettings));}catch(e){}
-};
-window.showSalonSettings=()=>{const el=document.getElementById('salon-settings');el.style.display=el.style.display?'':'none';};
-window.showSalonForm=()=>{document.getElementById('salon-form').style.display='';buildSalonMenuGrid();sRecalc();document.getElementById('salon-form').scrollIntoView({behavior:'smooth'});};
-window.cancelSalon=()=>{sResetForm();document.getElementById('salon-form').style.display='none';};
-window.showSalonInvoice=()=>{document.getElementById('salon-invoice-card').style.display='';renderSalonInvoice();document.getElementById('salon-invoice-card').scrollIntoView({behavior:'smooth'});};
-
-function sCalc(){
-  const isCard=document.getElementById('s-pay').value==='カード';
-  let totalEx=0,totalInc=0,totalRef=0;
-  const items=[];
-  MSALON.forEach((m,i)=>{
-    if(!sSelMenu[i])return;
-    const q=sMenuQty[i]||1;
-    const ex=m.ex*q; const inc=Math.round(ex*1.1);
-    const ref=m.hasRef?Math.round(ex*(sCamSettings.rate/100)*(1+sCamSettings.taxRate/100)):0;
-    totalEx+=ex;totalInc+=inc;totalRef+=ref;
-    items.push({name:m.name+(q>1?` ×${q}`:''),ex,inc,ref,hasRef:m.hasRef});
-  });
-  const otherEx=parseFloat(document.getElementById('s-other-val').value)||0;
-  if(otherEx>0){const inc=Math.round(otherEx*1.1);totalEx+=otherEx;totalInc+=inc;items.push({name:document.getElementById('s-other-name').value||'その他',ex:otherEx,inc,ref:0,hasRef:false});}
-  const cardFee=isCard?Math.round((totalInc-totalRef)*0.025):0;
-  const salonRecv=totalInc-totalRef-cardFee;
-  return{totalEx,totalInc,totalRef,cardFee,salonRecv,items,isCard};
+    </div>
+  `).join('');
 }
 
-window.sRecalc=()=>{
-  const a=sCalc();
-  document.getElementById('ss-ex').textContent=fmt(a.totalEx);
-  document.getElementById('ss-vat').textContent=fmt(a.totalInc-a.totalEx);
-  document.getElementById('ss-inc').textContent=fmt(a.totalInc);
-  document.getElementById('ss-ref-label').textContent=`紹介料（税抜×${sCamSettings.rate}%＋消費税${sCamSettings.taxRate}%）`;
-  document.getElementById('ss-ref').textContent=fmt(a.totalRef);
-  document.getElementById('ss-fee-row').style.opacity=a.isCard?'1':'0.3';
-  document.getElementById('ss-fee').textContent=a.isCard?'−'+fmt(a.cardFee):'¥0';
-  document.getElementById('ss-recv').textContent=fmt(a.salonRecv);
-};
-
-window.submitSalon=async()=>{
-  const name=document.getElementById('s-name').value.trim();
-  const date=document.getElementById('s-date').value;
-  if(!name||!date){alert('お客様名と撮影日を入力してください');return;}
-  const a=sCalc();
-  const data={
-    name,date,pay:document.getElementById('s-pay').value,memo:document.getElementById('s-memo').value,
-    camName:sCamSettings.camName||'未設定',items:a.items,
-    totalEx:a.totalEx,totalInc:a.totalInc,totalRef:a.totalRef,cardFee:a.cardFee,salonRecv:a.salonRecv,
-    updatedAt:new Date().toISOString()
-  };
-if (sEditId) {
-  await updateDoc(doc(db, 'salon-recs', sEditId), data);
-} else {
-  await addDoc(collection(db, 'salon-recs'), data);
-}
-  sResetForm(); document.getElementById('salon-form').style.display='none';
-};
-
-function sResetForm(){
-  sSelMenu={};sMenuQty={};sEditId=null;
-  buildSalonMenuGrid();
-  ['s-name','s-memo','s-other-name'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('s-date').value=new Date().toISOString().slice(0,10);
-  document.getElementById('s-other-val').value='';
-  document.getElementById('s-pay').value='現金';
-  document.getElementById('s-form-title').textContent='案件情報';
-  document.getElementById('s-submit').textContent='登録する';
-  document.getElementById('s-cancel').style.display='none';
-}
-
-window.sEdit=(id)=>{
-  const r=salonRecs.find(x=>x._id===id);if(!r)return;
-  sEditId=r._id;sResetForm();
-  document.getElementById('s-name').value=r.name;
-  document.getElementById('s-date').value=r.date;
-  document.getElementById('s-pay').value=r.pay;
-  document.getElementById('s-memo').value=r.memo||'';
-  document.getElementById('s-form-title').textContent='編集中';
-  document.getElementById('s-submit').textContent='変更を保存する';
-  document.getElementById('s-cancel').style.display='';
-  document.getElementById('salon-form').style.display='';
-  document.getElementById('salon-form').scrollIntoView({behavior:'smooth'});
+window.sTog = i => {
+  const el = document.getElementById(`si-${i}`);
+  if (sSelMenu[i]) {
+    delete sSelMenu[i];
+    el.classList.remove('sel-s');
+  } else {
+    sSelMenu[i] = true;
+    el.classList.add('sel-s');
+  }
   sRecalc();
 };
-window.sDel = async (id) => {
+
+window.sChQty = (e, i, d) => {
+  e.stopPropagation();
+  sMenuQty[i] = Math.max(1, (sMenuQty[i] || 1) + d);
+  document.getElementById(`sq-${i}`).textContent = sMenuQty[i];
+  sRecalc();
+};
+
+window.saveSalonSettings = () => {
+  sCamSettings.camName = document.getElementById('s-cam-name').value;
+  sCamSettings.rate = parseFloat(document.getElementById('s-cam-rate').value) || 20;
+  sCamSettings.taxRate = parseFloat(document.getElementById('s-cam-tax').value) || 8;
+  localStorage.setItem('sCamSettings', JSON.stringify(sCamSettings));
+  sRecalc();
+};
+
+window.showSalonSettings = () => {
+  const el = document.getElementById('salon-settings');
+  el.style.display = el.style.display === 'none' || !el.style.display ? '' : 'none';
+};
+
+window.showSalonForm = () => {
+  document.getElementById('salon-form').style.display = '';
+  buildSalonMenuGrid();
+  sRecalc();
+  document.getElementById('salon-form').scrollIntoView({ behavior:'smooth' });
+};
+
+window.cancelSalon = () => {
+  sResetForm();
+  document.getElementById('salon-form').style.display = 'none';
+};
+
+window.showSalonInvoice = () => {
+  document.getElementById('salon-invoice-card').style.display = '';
+  renderSalonInvoice();
+  document.getElementById('salon-invoice-card').scrollIntoView({ behavior:'smooth' });
+};
+
+function sCalc() {
+  const isCard = document.getElementById('s-pay').value === 'カード';
+  let totalEx = 0;
+  let totalInc = 0;
+  let totalRef = 0;
+  const items = [];
+
+  MSALON.forEach((item, i) => {
+    if (!sSelMenu[i]) return;
+    const qty = sMenuQty[i] || 1;
+    const ex = item.ex * qty;
+    const inc = Math.round(ex * 1.1);
+    const ref = item.hasRef ? Math.round(ex * (sCamSettings.rate / 100) * (1 + sCamSettings.taxRate / 100)) : 0;
+    totalEx += ex;
+    totalInc += inc;
+    totalRef += ref;
+    items.push({ name:item.name + (qty > 1 ? ` ×${qty}` : ''), ex, inc, ref, hasRef:item.hasRef });
+  });
+
+  const otherEx = parseFloat(document.getElementById('s-other-val').value) || 0;
+  if (otherEx > 0) {
+    const inc = Math.round(otherEx * 1.1);
+    totalEx += otherEx;
+    totalInc += inc;
+    items.push({ name:document.getElementById('s-other-name').value || 'その他', ex:otherEx, inc, ref:0, hasRef:false });
+  }
+
+  const cardFee = isCard ? Math.round((totalInc - totalRef) * 0.025) : 0;
+  const salonRecv = totalInc - totalRef - cardFee;
+  return { totalEx, totalInc, totalRef, cardFee, salonRecv, items, isCard };
+}
+
+window.sRecalc = () => {
+  const a = sCalc();
+  document.getElementById('ss-ex').textContent = fmt(a.totalEx);
+  document.getElementById('ss-vat').textContent = fmt(a.totalInc - a.totalEx);
+  document.getElementById('ss-inc').textContent = fmt(a.totalInc);
+  document.getElementById('ss-ref-label').textContent = `紹介料（税抜×${sCamSettings.rate}%＋消費税${sCamSettings.taxRate}%）`;
+  document.getElementById('ss-ref').textContent = fmt(a.totalRef);
+  document.getElementById('ss-fee-row').style.opacity = a.isCard ? '1' : '0.3';
+  document.getElementById('ss-fee').textContent = a.isCard ? `−${fmt(a.cardFee)}` : '¥0';
+  document.getElementById('ss-recv').textContent = fmt(a.salonRecv);
+};
+
+window.submitSalon = async () => {
+  const name = document.getElementById('s-name').value.trim();
+  const date = document.getElementById('s-date').value;
+  if (!name || !date) {
+    alert('お客様名と撮影日を入力してください');
+    return;
+  }
+  const a = sCalc();
+  const payload = {
+    name,
+    date,
+    pay: document.getElementById('s-pay').value,
+    memo: document.getElementById('s-memo').value,
+    camName: sCamSettings.camName || '未設定',
+    items: a.items,
+    totalEx: a.totalEx,
+    totalInc: a.totalInc,
+    totalRef: a.totalRef,
+    cardFee: a.cardFee,
+    salonRecv: a.salonRecv,
+    updatedAt: new Date().toISOString()
+  };
+
+  if (sEditId) await updateDoc(doc(db, 'salon-recs', sEditId), payload);
+  else await addDoc(collection(db, 'salon-recs'), payload);
+
+  sResetForm();
+  document.getElementById('salon-form').style.display = 'none';
+};
+
+function sResetForm() {
+  sEditId = null;
+  sSelMenu = {};
+  sMenuQty = {};
+  buildSalonMenuGrid();
+  ['s-name', 's-memo', 's-other-name'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('s-date').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('s-other-val').value = '';
+  document.getElementById('s-pay').value = '現金';
+  document.getElementById('s-form-title').textContent = '案件情報';
+  document.getElementById('s-submit').textContent = '登録する';
+  document.getElementById('s-cancel').style.display = 'none';
+  sRecalc();
+}
+
+window.sEdit = id => {
+  const record = salonRecs.find(x => x._id === id);
+  if (!record) return;
+  sResetForm();
+  sEditId = record._id;
+  document.getElementById('s-name').value = record.name;
+  document.getElementById('s-date').value = record.date;
+  document.getElementById('s-pay').value = record.pay;
+  document.getElementById('s-memo').value = record.memo || '';
+  document.getElementById('s-form-title').textContent = '編集中';
+  document.getElementById('s-submit').textContent = '変更を保存する';
+  document.getElementById('s-cancel').style.display = '';
+  document.getElementById('salon-form').style.display = '';
+  document.getElementById('salon-form').scrollIntoView({ behavior:'smooth' });
+  sRecalc();
+};
+
+window.sDel = async id => {
   if (!confirm('削除しますか？')) return;
   await deleteDoc(doc(db, 'salon-recs', id));
 };
 
-function renderSalonList(){
-  const {y,m}=getTabYM('salon');
-  const f=filterMonth(salonRecs,y,m).sort((a,b)=>a.date.localeCompare(b.date));
-  const tbody=document.getElementById('s-tbody');
-  if(!f.length){tbody.innerHTML='<tr><td colspan="8" class="empty">この月の案件はありません</td></tr>';return;}
-  tbody.innerHTML=f.map(r=>`<tr>
-    <td style="white-space:nowrap;">${r.date.slice(5).replace('-','/')}</td>
-    <td>${r.name}</td>
-    <td><span class="tag ${r.pay==='カード'?'tag-card':'tag-cash'}">${r.pay}</span></td>
-    <td style="text-align:right;">${fmt(r.totalInc||0)}</td>
-    <td style="text-align:right;color:var(--salon);">${fmt(r.totalRef||0)}</td>
-    <td style="text-align:right;color:var(--red);">${r.cardFee>0?fmt(r.cardFee):'—'}</td>
-    <td style="text-align:right;">${fmt(r.salonRecv||0)}</td>
-    <td style="white-space:nowrap;"><button class="icon-btn" onclick="sEdit('${r._id}')">✏️</button><button class="icon-btn" onclick="sDel('${r._id}')" style="color:var(--red);">✕</button></td>
-  </tr>`).join('');
+function renderSalonList() {
+  const { y, m } = getTabYM('salon');
+  const records = filterMonth(salonRecs, y, m).sort((a, b) => a.date.localeCompare(b.date));
+  const tbody = document.getElementById('s-tbody');
+
+  if (!records.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty">この月の案件はありません</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = records.map(r => `
+    <tr>
+      <td style="white-space:nowrap;">${r.date.slice(5).replace('-', '/')}</td>
+      <td>${r.name}</td>
+      <td><span class="tag ${r.pay === 'カード' ? 'tag-card' : 'tag-cash'}">${r.pay}</span></td>
+      <td style="text-align:right;">${fmt(r.totalInc || 0)}</td>
+      <td style="text-align:right;color:var(--salon);">${fmt(r.totalRef || 0)}</td>
+      <td style="text-align:right;color:var(--red);">${r.cardFee > 0 ? fmt(r.cardFee) : '—'}</td>
+      <td style="text-align:right;">${fmt(r.salonRecv || 0)}</td>
+      <td style="white-space:nowrap;"><button class="icon-btn" onclick="sEdit('${r._id}')">✏️</button><button class="icon-btn" onclick="sDel('${r._id}')" style="color:var(--red);">✕</button></td>
+    </tr>
+  `).join('');
 }
 
-function renderSalonMetrics(){
-  const {y,m}=getTabYM('salon');
-  const f=filterMonth(salonRecs,y,m);
-  document.getElementById('s-count').textContent=f.length+'件';
-  document.getElementById('s-sales').textContent=fmt(f.reduce((s,r)=>s+(r.totalInc||0),0));
-  document.getElementById('s-ref').textContent=fmt(f.reduce((s,r)=>s+(r.totalRef||0),0));
-  document.getElementById('s-recv').textContent=fmt(f.reduce((s,r)=>s+(r.salonRecv||0),0));
+function renderSalonMetrics() {
+  const { y, m } = getTabYM('salon');
+  const records = filterMonth(salonRecs, y, m);
+  document.getElementById('s-count').textContent = `${records.length}件`;
+  document.getElementById('s-sales').textContent = fmt(records.reduce((s, r) => s + (r.totalInc || 0), 0));
+  document.getElementById('s-ref').textContent = fmt(records.reduce((s, r) => s + (r.totalRef || 0), 0));
+  document.getElementById('s-recv').textContent = fmt(records.reduce((s, r) => s + (r.salonRecv || 0), 0));
 }
 
-function renderSalonInvoice(){
-  const {y,m}=getTabYM('salon');
-  const f=filterMonth(salonRecs,y,m);
-  const camName=sCamSettings.camName||'カメラマン名未設定';
-  const totalInc=f.reduce((s,r)=>s+(r.totalInc||0),0);
-  const totalRef=f.reduce((s,r)=>s+(r.totalRef||0),0);
-  const totalFee=f.reduce((s,r)=>s+(r.cardFee||0),0);
-  const totalSalon=f.reduce((s,r)=>s+(r.salonRecv||0),0);
-  const now=new Date();
-  const itemMap={};
-  f.forEach(r=>(r.items||[]).forEach(item=>{
-    const key=item.name.replace(/ ×\d+/,'');
-    if(!itemMap[key])itemMap[key]={name:key,ex:0,inc:0,ref:0,hasRef:item.hasRef};
-    itemMap[key].ex+=item.ex;itemMap[key].inc+=item.inc;itemMap[key].ref+=item.ref;
-  }));
-  const caseRows=f.map(r=>`<tr><td>${r.date.slice(5).replace('-','/')}</td><td>${r.name}</td><td style="color:${r.pay==='カード'?'#534AB7':'#2e7d32'};font-size:11px;">${r.pay}</td><td class="r">${fmt(r.totalInc||0)}</td><td class="r" style="color:#2e7d32;">${fmt(r.totalRef||0)}</td><td class="r" style="color:#c62828;">${r.cardFee>0?fmt(r.cardFee):'—'}</td><td class="r" style="font-weight:600;">${fmt(r.salonRecv||0)}</td></tr>`).join('');
-  const itemRows=Object.values(itemMap).map(item=>`<tr><td>${item.name}${item.hasRef?'<span style="font-size:10px;background:#e8f5e9;color:#2e7d32;padding:1px 5px;border-radius:3px;margin-left:4px;">報酬あり</span>':''}</td><td class="r">${fmt(item.ex)}</td><td class="r">${fmt(item.inc)}</td><td class="r" style="color:#2e7d32;">${item.hasRef?fmt(item.ref):'—'}</td></tr>`).join('');
-  document.getElementById('salon-invoice-body').innerHTML=`
+function renderSalonInvoice() {
+  const { y, m } = getTabYM('salon');
+  const records = filterMonth(salonRecs, y, m);
+  const camName = sCamSettings.camName || 'カメラマン名未設定';
+  const totalInc = records.reduce((s, r) => s + (r.totalInc || 0), 0);
+  const totalRef = records.reduce((s, r) => s + (r.totalRef || 0), 0);
+  const totalFee = records.reduce((s, r) => s + (r.cardFee || 0), 0);
+  const totalSalon = records.reduce((s, r) => s + (r.salonRecv || 0), 0);
+  const now = new Date();
+  const itemMap = {};
+
+  records.forEach(r => {
+    (r.items || []).forEach(item => {
+      const key = item.name.replace(/ ×\d+/, '');
+      if (!itemMap[key]) itemMap[key] = { name:key, ex:0, inc:0, ref:0, hasRef:item.hasRef };
+      itemMap[key].ex += item.ex;
+      itemMap[key].inc += item.inc;
+      itemMap[key].ref += item.ref;
+    });
+  });
+
+  const caseRows = records.map(r => `
+    <tr>
+      <td>${r.date.slice(5).replace('-', '/')}</td>
+      <td>${r.name}</td>
+      <td style="color:${r.pay === 'カード' ? '#534AB7' : '#2e7d32'};font-size:11px;">${r.pay}</td>
+      <td class="r">${fmt(r.totalInc || 0)}</td>
+      <td class="r" style="color:#2e7d32;">${fmt(r.totalRef || 0)}</td>
+      <td class="r" style="color:#c62828;">${r.cardFee > 0 ? fmt(r.cardFee) : '—'}</td>
+      <td class="r" style="font-weight:600;">${fmt(r.salonRecv || 0)}</td>
+    </tr>
+  `).join('');
+
+  const itemRows = Object.values(itemMap).map(item => `
+    <tr>
+      <td>${item.name}${item.hasRef ? '<span style="font-size:10px;background:#e8f5e9;color:#2e7d32;padding:1px 5px;border-radius:3px;margin-left:4px;">報酬あり</span>' : ''}</td>
+      <td class="r">${fmt(item.ex)}</td>
+      <td class="r">${fmt(item.inc)}</td>
+      <td class="r" style="color:#2e7d32;">${item.hasRef ? fmt(item.ref) : '—'}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('salon-invoice-body').innerHTML = `
     <div class="invoice">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
-        <div><div class="inv-title">紹介料 請求書</div><div class="inv-meta">対象：${y}年${MN[m]}　発行：${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}</div></div>
-        <div style="text-align:right;"><div style="font-size:14px;font-weight:700;">${camName} 様</div><div style="font-size:12px;color:#666;">報酬率：${sCamSettings.rate}%＋消費税${sCamSettings.taxRate}%</div></div>
+        <div>
+          <div class="inv-title">紹介料 請求書</div>
+          <div class="inv-meta">対象：${y}年${MN[m]}　発行：${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:14px;font-weight:700;">${camName} 様</div>
+          <div style="font-size:12px;color:#666;">報酬率：${sCamSettings.rate}%＋消費税${sCamSettings.taxRate}%</div>
+        </div>
       </div>
-      <div style="font-size:12px;font-weight:700;margin-bottom:6px;">案件明細（${f.length}件）</div>
+      <div style="font-size:12px;font-weight:700;margin-bottom:6px;">案件明細（${records.length}件）</div>
       <table class="inv-table" style="margin-bottom:16px;">
         <thead><tr><th>日付</th><th>お客様</th><th>支払</th><th style="text-align:right;">売上(税込)</th><th style="text-align:right;">紹介料</th><th style="text-align:right;">手数料</th><th style="text-align:right;">サロン受取</th></tr></thead>
-        <tbody>${caseRows||'<tr><td colspan="7" style="text-align:center;color:#999;">案件なし</td></tr>'}</tbody>
+        <tbody>${caseRows || '<tr><td colspan="7" style="text-align:center;color:#999;">案件なし</td></tr>'}</tbody>
       </table>
       <div style="font-size:12px;font-weight:700;margin-bottom:6px;">商品別集計</div>
       <table class="inv-table" style="margin-bottom:16px;">
         <thead><tr><th>商品名</th><th style="text-align:right;">税抜</th><th style="text-align:right;">税込</th><th style="text-align:right;">紹介料</th></tr></thead>
-        <tbody>${itemRows||'<tr><td colspan="4" style="text-align:center;color:#999;">データなし</td></tr>'}</tbody>
+        <tbody>${itemRows || '<tr><td colspan="4" style="text-align:center;color:#999;">データなし</td></tr>'}</tbody>
       </table>
       <div class="inv-total">
         <div class="inv-total-row"><span>売上合計（税込）</span><span>${fmt(totalInc)}</span></div>
@@ -1520,67 +1794,15 @@ function renderSalonInvoice(){
         <div class="inv-total-row big"><span>サロン最終受取額</span><span>${fmt(totalSalon)}</span></div>
       </div>
       <div class="inv-note">※ サロン最終受取額 ＝ 売上（税込）− 紹介料 − カード手数料（カード払いの場合のみ）</div>
-    </div>`;
+    </div>
+  `;
 }
 
-// ========== INIT ==========
-document.querySelectorAll('input[type="date"]').forEach(el=>el.value=new Date().toISOString().slice(0,10));
-  
-</script>
-
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDxFECYZ4VFQuNHyDy1sKgjasxep-qVzBo",
-  authDomain: "my-sale-site.firebaseapp.com",
-  projectId: "my-sale-site",
-  storageBucket: "my-sale-site.firebasestorage.app",
-  messagingSenderId: "389648038190",
-  appId: "1:389648038190:web:3679305098afb3677562bf"
-};
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-auth.onAuthStateChanged(function(user) {
-  if (user) {
-    document.getElementById("login-screen").style.display = "none";
-    document.getElementById("app").style.display = "block";
-    initDB();
-  } else {
-    document.getElementById("login-screen").style.display = "block";
-    document.getElementById("app").style.display = "none";
-  }
-});
-
-function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  auth.signInWithEmailAndPassword(email, password)
-    .then(() => {
-      console.log("ログイン成功");
-    })
-    .catch((error) => {
-      alert("ログイン失敗");
-      console.error(error);
-    });
-}
-
-function logout() {
-  auth.signOut();
-}
-
-function downloadCSV(type) {
+window.downloadCSV = type => {
   let rows = [];
 
   if (type === 'mine') {
-    rows = (myRecs || []).map(r => ({
+    rows = myRecs.map(r => ({
       date: r.date || '',
       brand: 'ONE SHOT',
       customer: r.name || '',
@@ -1594,7 +1816,7 @@ function downloadCSV(type) {
       memo: r.memo || ''
     }));
   } else if (type === 'friend') {
-    rows = (friendRecs || []).map(r => ({
+    rows = friendRecs.map(r => ({
       date: r.date || '',
       brand: 'Massu photo studio',
       customer: r.name || '',
@@ -1608,7 +1830,7 @@ function downloadCSV(type) {
       memo: r.memo || ''
     }));
   } else if (type === 'salon') {
-    rows = (salonRecs || []).map(r => ({
+    rows = salonRecs.map(r => ({
       date: r.date || '',
       brand: 'AKKA HAKKA',
       customer: r.name || '',
@@ -1629,93 +1851,30 @@ function downloadCSV(type) {
   }
 
   let csv = '日付,ブランド,顧客名,プラン,オプション,売上,紹介料,手取り,入金状況,支払い方法,メモ\n';
-
   rows.forEach(r => {
-    csv += `${r.date},${r.brand},${r.customer},${r.plan},${r.option},${r.sales},${r.referral},${r.profit},${r.payment},${r.payMethod},${r.memo}\n`;
+    csv += `"${r.date}","${r.brand}","${r.customer}","${r.plan}","${r.option}",${r.sales},${r.referral},${r.profit},"${r.payment}","${r.payMethod}","${String(r.memo).replace(/"/g, '""')}"\n`;
   });
 
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = type + '.csv';
+  a.download = `${type}.csv`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-}
-  let rows = [];
+};
 
-  if (type === "mine") {
-    rows = (myRecs || []).map(r => ({
-      date: r.date || "",
-      brand: "ONE SHOT",
-      customer: r.name || "",
-      plan: (r.plans || []).join(" / "),
-      option: "",
-      sales: r.totalCustomer || 0,
-      referral: r.referral || 0,
-      profit: r.profit || 0,
-      payment: r.paid || "",
-      payMethod: r.pay || "",
-      memo: r.memo || ""
-    }));
-  }
+document.querySelectorAll('input[type="date"]').forEach(el => {
+  el.value = new Date().toISOString().slice(0, 10);
+});
 
-  if (type === "friend") {
-    rows = (friendRecs || []).map(r => ({
-      date: r.date || "",
-      brand: "Massu photo studio",
-      customer: r.name || "",
-      plan: [...(r.wPlans || []), ...(r.sPlans || [])].join(" / "),
-      option: [...(r.wOpts || []), ...(r.sOpts || [])].join(" / "),
-      sales: r.totalCustomer || 0,
-      referral: 0,
-      profit: r.myReward || 0,
-      payment: r.paid || "",
-      payMethod: r.pay || "",
-      memo: r.memo || ""
-    }));
-  }
-
-  if (type === "salon") {
-    rows = (salonRecs || []).map(r => ({
-      date: r.date || "",
-      brand: "AKKA HAKKA",
-      customer: r.name || "",
-      plan: "",
-      option: (r.items || []).map(x => x.name).join(" / "),
-      sales: r.totalInc || 0,
-      referral: r.totalRef || 0,
-      profit: r.totalRef || 0,
-      payment: "—",
-      payMethod: r.pay || "",
-      memo: r.memo || ""
-    }));
-  }
-
-  if (!rows.length) {
-    alert("データがありません");
-    return;
-  }
-
-  let csv = "日付,ブランド,顧客名,プラン,オプション,売上,紹介料,手取り,入金状況,支払い方法,メモ\n";
-
-  rows.forEach(r => {
-    csv += `${r.date},${r.brand},${r.customer},${r.plan},${r.option},${r.sales},${r.referral},${r.profit},${r.payment},${r.payMethod},${r.memo}\n`;
-  });
-
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = type + ".csv";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-}
+buildFriendGrids();
+buildMineGrids();
+buildSalonMenuGrid();
+renderMExpList();
+renderAll();
 </script>
 </body>
 </html>
