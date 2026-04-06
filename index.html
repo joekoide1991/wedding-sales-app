@@ -652,10 +652,11 @@ window.login = async function () {
   const password = document.getElementById('password').value;
 
   try {
-    await signInWithEmailAndPassword(auth, email, password);
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    console.log('login ok', result.user.email);
   } catch (e) {
-    alert('ログイン失敗');
-    console.error(e);
+    console.error('LOGIN ERROR:', e);
+    alert((e.code || 'error') + ' / ' + (e.message || 'ログイン失敗'));
   }
 };
 </script>
