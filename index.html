@@ -627,7 +627,7 @@ let myRecs = [];
 let salonRecs = [];
 let sCamSettings = { camName:'', rate:20, taxRate:8 };
 
-let fSelWP = {}, fSelSP = {}, fSelWO = {}, fSelSO = {}, fOQty = {}, fEditId = null;
+let fSelWP = {}, fSelSP = {}, fSelWO = {}, fSelSO = {}, fOQty = {}, fAttendMemo = {}, fEditId = null;
 let fCustomOpts = [], fExps = [];
 let mSelP = {}, mSelO = {}, mSelS = {}, mSelDressUp = null, mSelMensUp = null, mBouquet = 'dry', mSelExtra = {}, mOQty = {}, mEstP = {}, mExps = [], mCustomOpts = [], mEditId = null;
 let sSelMenu = {}, sMenuQty = {}, sEditId = null;
@@ -837,12 +837,16 @@ function buildFriendGrids() {
       const isStar = type === 'sp' || type === 'so';
       const cls = selObj[i] ? (isStar ? 'sel-s' : 'sel-f') : '';
       const badge = item.reward === false ? '<span class="badge badge-nr">報酬なし</span>' : '';
-      const qtyHtml = item.qty ? `<div class="qty-wrap" onclick="event.stopPropagation()"><button class="qty-btn" onclick="fChQty(event,'${type}',${i},-1)">−</button><span id="fq-${type}-${i}" style="font-size:12px;min-width:14px;text-align:center;">${fOQty[type + i] || 1}</span><button class="qty-btn" onclick="fChQty(event,'${type}',${i},1)">＋</button></div>` : '';
-      return `<div class="menu-item ${cls}" id="fi-${type}-${i}" onclick="fTog('${type}',${i})">
-        <div class="mi-name">${item.name}${badge}</div>
-        <div class="mi-price">${fmt(item.price || item.rewardBase || 0)}</div>
-        ${qtyHtml}
-      </div>`;
+     const qtyHtml = item.qty ? `<div class="qty-wrap" onclick="event.stopPropagation()"><button class="qty-btn" onclick="fChQty(event,'${type}',${i},-1)">−</button><span id="fq-${type}-${i}" style="font-size:12px;min-width:14px;text-align:center;">${fOQty[type + i] || 1}</span><button class="qty-btn" onclick="fChQty(event,'${type}',${i},1)">＋</button></div>` : '';
+const memoHtml = item.name.includes('アテンド')
+  ? `<input class="est-input" type="text" maxlength="10" placeholder="メモ(10文字)" value="${fAttendMemo[type + i] || ''}" onclick="event.stopPropagation()" oninput="fAttendMemo['${type + i}']=this.value">`
+  : '';
+return `<div class="menu-item ${cls}" id="fi-${type}-${i}" onclick="fTog('${type}',${i})">
+  <div class="mi-name">${item.name}${badge}</div>
+  <div class="mi-price">${fmt(item.price || item.rewardBase || 0)}</div>
+  ${qtyHtml}
+  ${memoHtml}
+</div>`;
     }).join('');
   };
 
@@ -999,6 +1003,7 @@ window.cancelFriend = () => {
 };
 
 function fResetForm() {
+  fAttendMemo = {};
   fEditId = null;
   fSelWP = {};
   fSelSP = {};
@@ -1055,6 +1060,9 @@ window.submitFriend = async () => {
     wOpts: Object.keys(fSelWO).map(i => WOPTS[Number(i)].name),
     sOpts: Object.keys(fSelSO).map(i => SOPTS[Number(i)].name),
     updatedAt: new Date().toISOString()
+    attendMemo: Object.fromEntries(
+  Object.entries(fAttendMemo).filter(([, value]) => value && value.trim())
+),
   };
 
   if (fEditId) await updateDoc(doc(db, 'friend-recs', fEditId), payload);
@@ -1076,6 +1084,7 @@ window.fEdit = id => {
   document.getElementById('f-paid').value = record.paid;
   document.getElementById('f-memo').value = record.memo || '';
   document.getElementById('f-set').value = String(record.setDisc || 0);
+  fAttendMemo = record.attendMemo || {};
   fCustomOpts = Array.isArray(record.customOptions) ? record.customOptions.map(item => ({ ...item })) : [];
   fExps = Array.isArray(record.expenses) ? record.expenses.map(item => ({ ...item })) : [];
   renderFCustomOptList();
