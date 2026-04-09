@@ -1044,32 +1044,28 @@ window.submitFriend = async () => {
   }
 
   const a = fCalc();
-const payload = {
-  name,
-  date,
-  pay: document.getElementById('f-pay').value,
-  paid: document.getElementById('f-paid').value,
-  memo: document.getElementById('f-memo').value,
-  setDisc: a.sd,
-  setMyBurden: a.setMy,
-  totalCustomer: a.total,
-  myReward: a.netReward,
-  grossReward: a.myReward,
-  expenses: fExps.filter(item => item.name || item.amount),
-  customOptions: fCustomOpts.filter(item => item.name || item.amount),
-  attendMemo: Object.fromEntries(
-    Object.entries(fAttendMemo).filter(([, value]) => value && value.trim())
-  ),
-  toFriend: a.toFriend,
-  wPlans: Object.keys(fSelWP).map(i => WPLANS[Number(i)].name),
-  sPlans: Object.keys(fSelSP).map(i => SPLANS[Number(i)].name),
-  wOpts: Object.keys(fSelWO).map(i => WOPTS[Number(i)].name),
-  sOpts: Object.keys(fSelSO).map(i => SOPTS[Number(i)].name),
-  updatedAt: new Date().toISOString()
-};
+  const payload = {
+    name,
+    date,
+    pay: document.getElementById('f-pay').value,
+    paid: document.getElementById('f-paid').value,
+    memo: document.getElementById('f-memo').value,
+    setDisc: a.sd,
+    setMyBurden: a.setMy,
+    totalCustomer: a.total,
+    myReward: a.netReward,
+    grossReward: a.myReward,
+    expenses: fExps.filter(item => item.name || item.amount),
+    customOptions: fCustomOpts.filter(item => item.name || item.amount),
     attendMemo: Object.fromEntries(
-  Object.entries(fAttendMemo).filter(([, value]) => value && value.trim())
-),
+      Object.entries(fAttendMemo).filter(([, value]) => value && value.trim())
+    ),
+    toFriend: a.toFriend,
+    wPlans: Object.keys(fSelWP).map(i => WPLANS[Number(i)].name),
+    sPlans: Object.keys(fSelSP).map(i => SPLANS[Number(i)].name),
+    wOpts: Object.keys(fSelWO).map(i => WOPTS[Number(i)].name),
+    sOpts: Object.keys(fSelSO).map(i => SOPTS[Number(i)].name),
+    updatedAt: new Date().toISOString()
   };
 
   if (fEditId) await updateDoc(doc(db, 'friend-recs', fEditId), payload);
@@ -1078,6 +1074,7 @@ const payload = {
   fResetForm();
   document.getElementById('friend-form').style.display = 'none';
 };
+
 
 window.fEdit = id => {
   const record = friendRecs.find(x => x._id === id);
