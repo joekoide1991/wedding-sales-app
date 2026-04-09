@@ -158,7 +158,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   <h2 style="margin-bottom:20px;">ログイン</h2>
   <input id="email" type="email" placeholder="メール"><br><br>
   <input id="password" type="password" placeholder="パスワード"><br><br>
- <button class="btn btn-primary" id="login-btn" onclick="window.login()">ログイン</button>
+<button class="btn btn-primary" id="login-btn">ログイン</button>
   <div id="login-error" style="margin-top:12px;color:var(--red);font-size:12px;display:none;"></div>
 </div>
 
@@ -755,6 +755,9 @@ window.login = async () => {
     loginBtn.textContent = 'ログイン';
   }
 };
+    document.getElementById('login-btn')?.addEventListener('click', () => {
+  window.login();
+});
 
 window.logout = async () => {
   await signOut(auth);
