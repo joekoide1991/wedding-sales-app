@@ -934,7 +934,6 @@ function fCalc() {
   let wR = 0;
   let sC = 0;
   let sR = 0;
-  let nr = 0;
 
   WPLANS.forEach((p, i) => { if (fSelWP[i]) { wC += p.price; wR += p.price; } });
   SPLANS.forEach((p, i) => { if (fSelSP[i]) { sC += p.price; sR += p.price; } });
@@ -944,15 +943,15 @@ function fCalc() {
     const cp = o.price * q;
     wC += cp;
     if (o.reward) wR += o.special ? (o.rewardBase * q) : cp;
-    else nr += cp;
   });
   SOPTS.forEach((o, i) => { if (fSelSO[i]) { sC += o.price; sR += o.price; } });
+
   const customOptInc = fCustomOpts.reduce((sum, item) => sum + (item.amount || 0), 0);
   const customOptEx = Math.round(customOptInc / 1.1);
-  nr += customOptEx;
+  wC += customOptEx;
 
   const sd = parseInt(document.getElementById('f-set').value, 10);
-  const taxBase = wC + sC + nr - sd * 3000;
+  const taxBase = wC + sC - sd * 3000;
   const tax = Math.round(taxBase * 0.1);
   const total = taxBase + tax;
   const wReward = Math.round(wR * 0.8);
