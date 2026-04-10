@@ -1331,9 +1331,11 @@ function mCalc() {
 
   const hasSalonInc = Object.keys(mSelP).some(k => MPLANS[Number(k)].hasSalon);
 
-  if (hasSalonInc) {
-    let planFixed = 0;
-    let planShootEx = 0;
+ if (hasSalonInc) {
+  const hasChinaPlan = Object.keys(mSelP).some(i => MPLANS[Number(i)].name.includes('中国'));
+  let planFixed = 0;
+  let planShootEx = 0;
+  let insuranceInc = 0;
     Object.keys(mSelP).forEach(i => {
       const plan = MPLANS[Number(i)];
       if (!plan.hasSalon) return;
@@ -1353,8 +1355,14 @@ function mCalc() {
       { ex:25000, hasRef:true },
       { ex:bouquetEx, hasRef:true }
     ];
-    MEXTRA.forEach((extra, i) => { if (mSelExtra[i]) salonItems.push({ ex:extra.ex, hasRef:extra.hasRef }); });
-
+  MEXTRA.forEach((extra, i) => {
+  if (!mSelExtra[i]) return;
+  salonItems.push({ ex:extra.ex, hasRef:extra.hasRef });
+  if (!hasChinaPlan && extra.name.includes('保険')) {
+    insuranceInc += Math.round(extra.ex * 1.1);
+  }
+});
+   
     const otherSalonEx = parseFloat(document.getElementById('m-so-val').value) || 0;
     if (otherSalonEx > 0) salonItems.push({ ex:otherSalonEx, hasRef:false });
 
@@ -1373,7 +1381,7 @@ function mCalc() {
       return sum + amount * q;
     }, 0);
 
-   const rawTotalInc = customerPlanTotal + optionsInc;
+const rawTotalInc = customerPlanTotal + optionsInc + insuranceInc;
 const totalInc = Math.max(0, rawTotalInc - discountTotal);
 const myFee = Math.round(rawTotalInc * rate);
 const received = rawTotalInc - myFee;
