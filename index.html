@@ -549,7 +549,20 @@ const SPLANS = [
 ];
 const WOPTS = [
   { name:'ドローン', price:24800, reward:true }, { name:'チャペル', price:15800, reward:true },
-  { name:'スリム美肌補正', price:24800, reward:true }, { name:'スリム美肌補正(歯)', price:36600, reward:true },
+{
+  name:'スリム美肌補正',
+  price:24800,
+  reward:true,
+  choices:[
+    { label:'ショ', price:19800 },
+    { label:'スタorサン', price:24800 },
+    { label:'プレ', price:37200 },
+    { label:'サロ,チャ', price:15800 },
+    { label:'カジュ', price:19800 }
+  ],
+  defaultChoice:'スタorサン'
+}, { name:'スリム美肌補正(歯)', price:36600, reward:true },
+
   { name:'動画撮影', price:34800, reward:true }, { name:'動画撮制', price:51800, reward:true },
   { name:'動画撮制＋サン', price:71600, reward:true }, { name:'離島出張4-10', price:14800, reward:true },
   { name:'離島出張11-3', price:9800, reward:true }, { name:'お急ぎ21', price:5000, reward:true },
@@ -632,7 +645,7 @@ let myRecs = [];
 let salonRecs = [];
 let sCamSettings = { camName:'', rate:20, taxRate:8 };
 
-let fSelWP = {}, fSelSP = {}, fSelWO = {}, fSelSO = {}, fOQty = {}, fAttendMemo = {}, fEditId = null;
+let fSelWP = {}, fSelSP = {}, fSelWO = {}, fSelSO = {}, fOQty = {}, fAttendMemo = {}, fWOptChoices = {}, fEditId = null;
 let fCustomOpts = [], fExps = [];
 let mSelP = {}, mSelO = {}, mSelS = {}, mSelDressUp = null, mSelMensUp = null, mBouquet = 'dry', mSelExtra = {}, mOQty = {}, mEstP = {}, mExps = [], mDiscounts = [], mCustomOpts = [], mEditId = null;
 let sSelMenu = {}, sMenuQty = {}, sEditId = null;
@@ -839,22 +852,34 @@ function renderDash() {
 }
 
 function buildFriendGrids() {
+  const getWOptPrice = (item, index) => {
+    if (!item.choices) return item.price || item.rewardBase || 0;
+    const selected = fWOptChoices[index] || item.defaultChoice;
+    return item.choices.find(choice => choice.label === selected)?.price || item.price || 0;
+  };
+
   const build = (items, gridId, type, selObj) => {
     const grid = document.getElementById(gridId);
     grid.innerHTML = items.map((item, i) => {
       const isStar = type === 'sp' || type === 'so';
       const cls = selObj[i] ? (isStar ? 'sel-s' : 'sel-f') : '';
       const badge = item.reward === false ? '<span class="badge badge-nr">報酬なし</span>' : '';
-     const qtyHtml = item.qty ? `<div class="qty-wrap" onclick="event.stopPropagation()"><button class="qty-btn" onclick="fChQty(event,'${type}',${i},-1)">−</button><span id="fq-${type}-${i}" style="font-size:12px;min-width:14px;text-align:center;">${fOQty[type + i] || 1}</span><button class="qty-btn" onclick="fChQty(event,'${type}',${i},1)">＋</button></div>` : '';
-const memoHtml = item.name.includes('アテンド')
-  ? `<input class="est-input" type="text" maxlength="10" placeholder="メモ(10文字)" value="${fAttendMemo[type + i] || ''}" onclick="event.stopPropagation()" oninput="fAttendMemo['${type + i}']=this.value">`
-  : '';
-return `<div class="menu-item ${cls}" id="fi-${type}-${i}" onclick="fTog('${type}',${i})">
-  <div class="mi-name">${item.name}${badge}</div>
-  <div class="mi-price">${fmt(item.price || item.rewardBase || 0)}</div>
-  ${qtyHtml}
-  ${memoHtml}
-</div>`;
+      const displayPrice = type === 'wo' ? getWOptPrice(item, i) : (item.price || item.rewardBase || 0);
+      const qtyHtml = item.qty ? `<div class="qty-wrap" onclick="event.stopPropagation()"><button class="qty-btn" onclick="fChQty(event,'${type}',${i},-1)">−</button><span id="fq-${type}-${i}" style="font-size:12px;min-width:14px;text-align:center;">${fOQty[type + i] || 1}</span><button class="qty-btn" onclick="fChQty(event,'${type}',${i},1)">＋</button></div>` : '';
+      const memoHtml = item.name.includes('アテンド')
+        ? `<input class="est-input" type="text" maxlength="10" placeholder="メモ(10文字)" value="${fAttendMemo[type + i] || ''}" onclick="event.stopPropagation()" oninput="fAttendMemo['${type + i}']=this.value">`
+        : '';
+      const choiceHtml = type === 'wo' && item.choices
+        ? `<select class="est-input" onclick="event.stopPropagation()" onchange="fChangeWOptChoice(${i}, this.value)">${item.choices.map(choice => `<option value="${choice.label}" ${((fWOptChoices[i] || item.defaultChoice) === choice.label) ? 'selected' : ''}>${choice.label} ${fmt(choice.price)}</option>`).join('')}</select>`
+        : '';
+
+      return `<div class="menu-item ${cls}" id="fi-${type}-${i}" onclick="fTog('${type}',${i})">
+        <div class="mi-name">${item.name}${badge}</div>
+        <div class="mi-price">${fmt(displayPrice)}</div>
+        ${qtyHtml}
+        ${memoHtml}
+        ${choiceHtml}
+      </div>`;
     }).join('');
   };
 
@@ -919,6 +944,11 @@ window.removeFExp = index => {
 };
 
 window.fTog = (type, i) => {
+  window.fChangeWOptChoice = (index, value) => {
+  fWOptChoices[index] = value;
+  buildFriendGrids();
+  fRecalc();
+};
   const maps = { wp:fSelWP, sp:fSelSP, wo:fSelWO, so:fSelSO };
   const map = maps[type];
   const isStar = type === 'sp' || type === 'so';
@@ -927,9 +957,13 @@ window.fTog = (type, i) => {
   if (map[i]) {
     delete map[i];
     el.classList.remove(cls);
-  } else {
-    map[i] = true;
-    el.classList.add(cls);
+} else {
+  map[i] = true;
+  if (type === 'wo' && WOPTS[i]?.choices && !fWOptChoices[i]) {
+    fWOptChoices[i] = WOPTS[i].defaultChoice;
+  }
+  el.classList.add(cls);
+    
   }
   fRecalc();
 };
@@ -951,10 +985,14 @@ function fCalc() {
   SPLANS.forEach((p, i) => { if (fSelSP[i]) { sC += p.price; sR += p.price; } });
   WOPTS.forEach((o, i) => {
     if (!fSelWO[i]) return;
-    const q = o.qty ? (fOQty['wo' + i] || 1) : 1;
-    const cp = o.price * q;
-    wC += cp;
-    if (o.reward) wR += o.special ? (o.rewardBase * q) : cp;
+  const q = o.qty ? (fOQty['wo' + i] || 1) : 1;
+const selectedPrice = o.choices
+  ? (o.choices.find(choice => choice.label === (fWOptChoices[i] || o.defaultChoice))?.price || o.price)
+  : o.price;
+const cp = selectedPrice * q;
+wC += cp;
+if (o.reward) wR += o.special ? (o.rewardBase * q) : cp;
+
   });
   SOPTS.forEach((o, i) => { if (fSelSO[i]) { sC += o.price; sR += o.price; } });
 
@@ -1011,13 +1049,14 @@ window.cancelFriend = () => {
 };
 
 function fResetForm() {
-  fAttendMemo = {};
   fEditId = null;
   fSelWP = {};
   fSelSP = {};
   fSelWO = {};
   fSelSO = {};
   fOQty = {};
+  fAttendMemo = {};
+  fWOptChoices = {};
   fCustomOpts = [];
   fExps = [];
   buildFriendGrids();
@@ -1062,13 +1101,22 @@ window.submitFriend = async () => {
     grossReward: a.myReward,
     expenses: fExps.filter(item => item.name || item.amount),
     customOptions: fCustomOpts.filter(item => item.name || item.amount),
+    wOptChoices: fWOptChoices,
     attendMemo: Object.fromEntries(
       Object.entries(fAttendMemo).filter(([, value]) => value && value.trim())
     ),
     toFriend: a.toFriend,
     wPlans: Object.keys(fSelWP).map(i => WPLANS[Number(i)].name),
     sPlans: Object.keys(fSelSP).map(i => SPLANS[Number(i)].name),
-    wOpts: Object.keys(fSelWO).map(i => WOPTS[Number(i)].name),
+  wOpts: Object.keys(fSelWO).map(i => {
+  const option = WOPTS[Number(i)];
+  if (option.choices) {
+    const selected = fWOptChoices[Number(i)] || option.defaultChoice;
+    return `${option.name}(${selected})`;
+  }
+  return option.name;
+}),
+    
     sOpts: Object.keys(fSelSO).map(i => SOPTS[Number(i)].name),
     updatedAt: new Date().toISOString()
   };
@@ -1094,6 +1142,7 @@ window.fEdit = id => {
   document.getElementById('f-memo').value = record.memo || '';
   document.getElementById('f-set').value = String(record.setDisc || 0);
   fAttendMemo = record.attendMemo || {};
+  fWOptChoices = record.wOptChoices || {};
   fCustomOpts = Array.isArray(record.customOptions) ? record.customOptions.map(item => ({ ...item })) : [];
   fExps = Array.isArray(record.expenses) ? record.expenses.map(item => ({ ...item })) : [];
   renderFCustomOptList();
