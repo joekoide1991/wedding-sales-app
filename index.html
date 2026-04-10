@@ -1373,11 +1373,12 @@ function mCalc() {
       return sum + amount * q;
     }, 0);
 
-    const totalInc = customerPlanTotal + optionsInc;
-    const myFee = Math.round(totalInc * rate);
-    const received = totalInc - myFee;
-    const otherExp = mExps.reduce((s, e) => s + (e.amount || 0), 0);
-    const profit = received - totalSalonBack - otherExp;
+   const rawTotalInc = customerPlanTotal + optionsInc;
+const totalInc = Math.max(0, rawTotalInc - discountTotal);
+const myFee = Math.round(rawTotalInc * rate);
+const received = rawTotalInc - myFee;
+const otherExp = mExps.reduce((s, e) => s + (e.amount || 0), 0);
+const profit = received - totalSalonBack - otherExp - discountTotal;
 
     document.getElementById('msi-fixed').textContent = fmt(planFixed);
     document.getElementById('msi-upgrade').textContent = fmt(dressUpInc + mensUpInc);
@@ -1395,6 +1396,7 @@ function mCalc() {
       totalEx: Math.round(totalInc / 1.1),
       tax: totalInc - Math.round(totalInc / 1.1),
       totalInc,
+      discountTotal,
       myFee,
       totalSalonBack,
       totalRef,
@@ -1423,29 +1425,32 @@ function mCalc() {
     totalSalonFee += result.salonFeeShare;
   }
 
-  const totalEx = Math.round(shootInc / 1.1) + salonCustEx;
-  const totalInc = Math.round(totalEx * 1.1);
-  const myFee = Math.round(totalInc * rate);
-  const shootFee = Math.round(shootInc * rate);
-  const shootIncome = shootInc - shootFee;
-  const otherExp = mExps.reduce((s, e) => s + (e.amount || 0), 0);
-  const profit = shootIncome + totalRef + totalSalonFee - otherExp;
+ const rawTotalEx = Math.round(shootInc / 1.1) + salonCustEx;
+const rawTotalInc = Math.round(rawTotalEx * 1.1);
+const totalInc = Math.max(0, rawTotalInc - discountTotal);
+const totalEx = Math.round(totalInc / 1.1);
+const myFee = Math.round(rawTotalInc * rate);
+const shootFee = Math.round(shootInc * rate);
+const shootIncome = shootInc - shootFee;
+const otherExp = mExps.reduce((s, e) => s + (e.amount || 0), 0);
+const profit = shootIncome + totalRef + totalSalonFee - otherExp - discountTotal;
 
-  return {
-    shootEx: Math.round(shootInc / 1.1),
-    salonEx: salonCustEx,
-    totalEx,
-    tax: totalInc - totalEx,
-    totalInc,
-    myFee,
-    totalSalonBack,
-    totalRef,
-    totalSalonFee,
-    shootIncome,
-    otherExp,
-    profit,
-    isSalonInc: false
-  };
+return {
+  shootEx: Math.round(shootInc / 1.1),
+  salonEx: salonCustEx,
+  totalEx,
+  tax: totalInc - totalEx,
+  totalInc,
+  discountTotal,
+  myFee,
+  totalSalonBack,
+  totalRef,
+  totalSalonFee,
+  shootIncome,
+  otherExp,
+  profit,
+  isSalonInc: false
+};
 }
 
 window.mRecalc = () => {
