@@ -269,6 +269,10 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       </div>
       <div><label>メモ</label><input type="text" id="f-memo" placeholder="備考"></div>
     </div>
+    <div class="g2" style="margin-bottom:12px;">
+      <div><label>リピート割（%）</label><input type="number" id="f-repeat" min="0" max="100" step="1" placeholder="0" oninput="fRecalc()"></div>
+      <div></div>
+    </div>
     <div class="card-title" style="margin-top:4px;">ウェディング系プラン</div>
     <div class="menu-grid" id="f-wplan-grid" style="margin-bottom:12px;"></div>
     <div class="card-title">星空系プラン <span class="badge badge-est">報酬50%</span></div>
@@ -288,7 +292,8 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       <div class="s-row sub"><span>税抜額</span><span id="fs-ex">¥0</span></div>
       <div class="s-row sub"><span>消費税</span><span id="fs-tax">¥0</span></div>
       <div class="s-row total"><span>お客様総額（税込）</span><span id="fs-total">¥0</span></div>
-      <hr class="divider">div>
+      <hr class="divider">
+      <div class="s-row sub" id="fs-repeat-row" style="display:none;"><span>リピート割</span><span style="color:var(--red);" id="fs-repeatval">¥0</span></div>
       <div class="s-row sub"><span>ウェディング報酬（×80%）</span><span id="fs-wreward">¥0</span></div>
       <div class="s-row sub"><span>星空報酬（×50%）</span><span id="fs-sreward">¥0</span></div>
       <div class="s-row sub" id="fs-set-row" style="display:none;"><span>セット割自分負担</span><span style="color:var(--red);" id="fs-setval">¥0</span></div>
@@ -541,8 +546,8 @@ const WPLANS = [
   { name:'ウェディングショート', price:34800 }, { name:'ウェディングショート送迎', price:36800 },
   { name:'ウェディングスタンダード', price:54800 }, { name:'ウェディングプレミアム', price:98000 },
   { name:'ウェディングサンセット', price:54800 }, { name:'ウェディングスタ＆サン', price:106600 },
-  { name:'ウェディングプレ＆サン', price:149800 }, { name:'カジュアル', price:27800 },
-  { name:'カジュアル送迎', price:29800 }, { name:'チャペル単体', price:34800 }, { name:'プロポーズ', price:44800 },
+  { name:'ウェディングプレ＆サン', price:149800 }, { name:'カジュアル', price:29800 },
+  { name:'チャペル単体', price:34800 }, { name:'プロポーズ', price:44800 },
 ];
 const SPLANS = [
   { name:'星空ウェディング', price:62800 }, { name:'星空プロポーズ', price:44800 }, { name:'星空カジュアル', price:34800 },
@@ -567,6 +572,7 @@ const WOPTS = [
   { name:'動画撮制＋サン', price:71600, reward:true }, { name:'離島出張4-10', price:14800, reward:true },
   { name:'離島出張11-3', price:9800, reward:true }, { name:'お急ぎ21', price:5000, reward:true },
   { name:'お急ぎ7', price:10000, reward:true }, { name:'サロンスタジオ', price:26800, rewardBase:24800, reward:true, special:true },
+  { name:'カジュアル延長', price:9800, reward:true, qty:true },
   { name:'花束代行', price:5000, reward:true }, { name:'アテンド1ロケ', price:6800, reward:false },
   { name:'アテンド2ロケ', price:13600, reward:false }, { name:'ブーケA', price:5000, reward:false },
   { name:'ブーケB', price:3500, reward:false }, { name:'アルバムA', price:29800, reward:false },
@@ -944,11 +950,6 @@ window.removeFExp = index => {
 };
 
 window.fTog = (type, i) => {
-  window.fChangeWOptChoice = (index, value) => {
-  fWOptChoices[index] = value;
-  buildFriendGrids();
-  fRecalc();
-};
   const maps = { wp:fSelWP, sp:fSelSP, wo:fSelWO, so:fSelSO };
   const map = maps[type];
   const isStar = type === 'sp' || type === 'so';
@@ -965,6 +966,12 @@ window.fTog = (type, i) => {
   el.classList.add(cls);
     
   }
+  fRecalc();
+};
+
+window.fChangeWOptChoice = (index, value) => {
+  fWOptChoices[index] = value;
+  buildFriendGrids();
   fRecalc();
 };
 
@@ -1000,11 +1007,21 @@ if (o.reward) wR += o.special ? (o.rewardBase * q) : cp;
   const customOptEx = Math.round(customOptInc / 1.1);
   wC += customOptEx;
 
+  const repeatPct = Math.min(100, Math.max(0, parseFloat(document.getElementById('f-repeat').value) || 0));
+  const repeatRate = repeatPct / 100;
   const sd = parseInt(document.getElementById('f-set').value, 10);
-  const taxBase = wC + sC - sd * 3000;
+  const discountWedding = Math.round(wC * repeatRate);
+  const discountRewardBase = Math.round(wR * repeatRate);
+  const discountedWedding = wC - discountWedding;
+  const discountedRewardBase = wR - discountRewardBase;
+  const preRepeatTaxBase = wC + sC - sd * 3000;
+  const preRepeatTax = Math.round(preRepeatTaxBase * 0.1);
+  const preRepeatTotal = preRepeatTaxBase + preRepeatTax;
+  const taxBase = discountedWedding + sC - sd * 3000;
   const tax = Math.round(taxBase * 0.1);
   const total = taxBase + tax;
-  const wReward = Math.round(wR * 0.8);
+  const repeatCustomerDiscount = preRepeatTotal - total;
+  const wReward = Math.round(discountedRewardBase * 0.8);
   const sReward = Math.round(sR * 0.5);
   const setMy = sd * 1500;
   const myReward = wReward + sReward - setMy;
@@ -1018,7 +1035,7 @@ if (o.reward) wR += o.special ? (o.rewardBase * q) : cp;
       ? `現金（自分受取）：${fmt(total)}を受取り、${fmt(toFriend)}を友人へ手渡し。`
       : `現金（友人受取）：友人が全額受取後、報酬${fmt(netReward)}を手渡し。`;
 
-  return { taxBase, tax, total, wReward, sReward, setMy, myReward, expTotal, netReward, toFriend, note, sd, pay };
+  return { taxBase, tax, total, wReward, sReward, setMy, myReward, expTotal, netReward, toFriend, note, sd, pay, repeatPct, discountWedding, repeatCustomerDiscount };
 }
 
 window.fRecalc = () => {
@@ -1026,6 +1043,8 @@ window.fRecalc = () => {
   document.getElementById('fs-ex').textContent = fmt(a.taxBase);
   document.getElementById('fs-tax').textContent = fmt(a.tax);
   document.getElementById('fs-total').textContent = fmt(a.total);
+  document.getElementById('fs-repeat-row').style.display = a.repeatPct > 0 ? '' : 'none';
+  document.getElementById('fs-repeatval').textContent = `−${fmt(a.repeatCustomerDiscount)}`;
   document.getElementById('fs-wreward').textContent = fmt(a.wReward);
   document.getElementById('fs-sreward').textContent = fmt(a.sReward);
   document.getElementById('fs-set-row').style.display = a.sd > 0 ? '' : 'none';
@@ -1067,6 +1086,7 @@ function fResetForm() {
   document.getElementById('f-paid').value = '未入金';
   document.getElementById('f-pay').value = '振込';
   document.getElementById('f-set').value = '0';
+  document.getElementById('f-repeat').value = '';
   document.getElementById('f-form-title').textContent = '新規案件 — 友人ブランド';
   document.getElementById('f-submit').textContent = 'この案件を登録する';
   document.getElementById('f-cancel').style.display = 'none';
@@ -1095,6 +1115,7 @@ window.submitFriend = async () => {
     paid: document.getElementById('f-paid').value,
     memo: document.getElementById('f-memo').value,
     setDisc: a.sd,
+    repeatDiscount: a.repeatPct,
     setMyBurden: a.setMy,
     totalCustomer: a.total,
     myReward: a.netReward,
@@ -1141,6 +1162,7 @@ window.fEdit = id => {
   document.getElementById('f-paid').value = record.paid;
   document.getElementById('f-memo').value = record.memo || '';
   document.getElementById('f-set').value = String(record.setDisc || 0);
+  document.getElementById('f-repeat').value = String(record.repeatDiscount || '');
   fAttendMemo = record.attendMemo || {};
   fWOptChoices = record.wOptChoices || {};
   fCustomOpts = Array.isArray(record.customOptions) ? record.customOptions.map(item => ({ ...item })) : [];
