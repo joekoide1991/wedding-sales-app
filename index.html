@@ -658,6 +658,7 @@ let sSelMenu = {}, sMenuQty = {}, sEditId = null;
 
 const fmt = n => '¥' + Math.round(Number(n) || 0).toLocaleString('ja-JP');
 const getLoginError = () => document.getElementById('login-error');
+const cloneMap = map => Object.fromEntries(Object.entries(map || {}).filter(([, value]) => value !== undefined));
 function getYM(offset = 0) {
   let m = curM + offset;
   let y = curY;
@@ -915,6 +916,45 @@ function renderFExpList() {
   `).join('');
 }
 
+function restoreFriendSelections(record) {
+  if (record.selectionState) {
+    fSelWP = { ...(record.selectionState.selWP || {}) };
+    fSelSP = { ...(record.selectionState.selSP || {}) };
+    fSelWO = { ...(record.selectionState.selWO || {}) };
+    fSelSO = { ...(record.selectionState.selSO || {}) };
+    fOQty = { ...(record.selectionState.oQty || {}) };
+    return;
+  }
+
+  fSelWP = {};
+  fSelSP = {};
+  fSelWO = {};
+  fSelSO = {};
+  fOQty = {};
+
+  (record.wPlans || []).forEach(name => {
+    const i = WPLANS.findIndex(item => item.name === name);
+    if (i >= 0) fSelWP[i] = true;
+  });
+  (record.sPlans || []).forEach(name => {
+    const i = SPLANS.findIndex(item => item.name === name);
+    if (i >= 0) fSelSP[i] = true;
+  });
+  (record.wOpts || []).forEach(name => {
+    const slimMatch = name.match(/^(.+)\((.+)\)$/);
+    const plainName = slimMatch ? slimMatch[1] : name;
+    const i = WOPTS.findIndex(item => item.name === plainName);
+    if (i >= 0) {
+      fSelWO[i] = true;
+      if (slimMatch) fWOptChoices[i] = slimMatch[2];
+    }
+  });
+  (record.sOpts || []).forEach(name => {
+    const i = SOPTS.findIndex(item => item.name === name);
+    if (i >= 0) fSelSO[i] = true;
+  });
+}
+
 window.addFCustomOpt = () => {
   fCustomOpts.push({ name:'', amount:0 });
   renderFCustomOptList();
@@ -1123,6 +1163,13 @@ window.submitFriend = async () => {
     expenses: fExps.filter(item => item.name || item.amount),
     customOptions: fCustomOpts.filter(item => item.name || item.amount),
     wOptChoices: fWOptChoices,
+    selectionState: {
+      selWP: cloneMap(fSelWP),
+      selSP: cloneMap(fSelSP),
+      selWO: cloneMap(fSelWO),
+      selSO: cloneMap(fSelSO),
+      oQty: cloneMap(fOQty)
+    },
     attendMemo: Object.fromEntries(
       Object.entries(fAttendMemo).filter(([, value]) => value && value.trim())
     ),
@@ -1165,8 +1212,10 @@ window.fEdit = id => {
   document.getElementById('f-repeat').value = String(record.repeatDiscount || '');
   fAttendMemo = record.attendMemo || {};
   fWOptChoices = record.wOptChoices || {};
+  restoreFriendSelections(record);
   fCustomOpts = Array.isArray(record.customOptions) ? record.customOptions.map(item => ({ ...item })) : [];
   fExps = Array.isArray(record.expenses) ? record.expenses.map(item => ({ ...item })) : [];
+  buildFriendGrids();
   renderFCustomOptList();
   renderFExpList();
   document.getElementById('f-form-title').textContent = '編集中';
@@ -1293,6 +1342,27 @@ function buildMineGrids() {
   mSelBouquet(mBouquet);
   if (mSelDressUp !== null) document.getElementById(`mi-du-${mSelDressUp}`)?.classList.add('sel-m');
   if (mSelMensUp !== null) document.getElementById(`mi-mu-${mSelMensUp}`)?.classList.add('sel-m');
+}
+
+function restoreMineSelections(record) {
+  if (record.selectionState) {
+    mSelP = { ...(record.selectionState.selP || {}) };
+    mSelO = { ...(record.selectionState.selO || {}) };
+    mSelS = { ...(record.selectionState.selS || {}) };
+    mSelDressUp = record.selectionState.selDressUp ?? null;
+    mSelMensUp = record.selectionState.selMensUp ?? null;
+    mBouquet = record.selectionState.bouquet || 'dry';
+    mSelExtra = { ...(record.selectionState.selExtra || {}) };
+    mOQty = { ...(record.selectionState.oQty || {}) };
+    mEstP = { ...(record.selectionState.estP || {}) };
+    return;
+  }
+
+  mSelP = {};
+  (record.plans || []).forEach(name => {
+    const i = MPLANS.findIndex(item => item.name === name);
+    if (i >= 0) mSelP[i] = true;
+  });
 }
 
 window.mTog = (type, i, cls) => {
@@ -1691,6 +1761,17 @@ window.submitMine = async () => {
     memo: document.getElementById('m-memo').value,
     isSalonInc: a.isSalonInc,
     plans: Object.keys(mSelP).map(i => MPLANS[Number(i)].name),
+    selectionState: {
+      selP: cloneMap(mSelP),
+      selO: cloneMap(mSelO),
+      selS: cloneMap(mSelS),
+      selDressUp: mSelDressUp,
+      selMensUp: mSelMensUp,
+      bouquet: mBouquet,
+      selExtra: cloneMap(mSelExtra),
+      oQty: cloneMap(mOQty),
+      estP: cloneMap(mEstP)
+    },
     shootEx: a.shootEx,
     salonEx: a.salonEx,
     tax: a.tax,
@@ -1705,6 +1786,10 @@ window.submitMine = async () => {
 customOptions: mCustomOpts.filter(item => item.name || item.amount),
 discounts: mDiscounts.filter(item => item.name || item.amount),
 expenses: mExps.filter(item => item.name || item.amount),
+otherSalonName: document.getElementById('m-so-name').value,
+otherSalonValue: parseFloat(document.getElementById('m-so-val').value) || 0,
+otherSalonName2: document.getElementById('m-so-name2').value,
+otherSalonValue2: parseFloat(document.getElementById('m-so-val2').value) || 0,
 updatedAt: new Date().toISOString()
   };
 
@@ -1725,9 +1810,22 @@ window.mEdit = id => {
   document.getElementById('m-pay').value = record.pay;
   document.getElementById('m-paid').value = record.paid;
   document.getElementById('m-memo').value = record.memo || '';
+  document.getElementById('m-so-name').value = record.otherSalonName || '';
+  document.getElementById('m-so-val').value = record.otherSalonValue || '';
+  document.getElementById('m-so-name2').value = record.otherSalonName2 || '';
+  document.getElementById('m-so-val2').value = record.otherSalonValue2 || '';
+restoreMineSelections(record);
 mCustomOpts = Array.isArray(record.customOptions) ? record.customOptions.map(item => ({ ...item })) : [];
 mDiscounts = Array.isArray(record.discounts) ? record.discounts.map(item => ({ ...item })) : [];
 mExps = Array.isArray(record.expenses) ? record.expenses.map(item => ({ ...item })) : [];
+  const hasSalon = Object.keys(mSelP).some(k => MPLANS[Number(k)]?.hasSalon);
+  document.getElementById('m-salon-inc-section').style.display = hasSalon ? '' : 'none';
+  document.getElementById('m-salon-normal-section').style.display = hasSalon ? 'none' : '';
+buildMineGrids();
+  Object.entries(mEstP).forEach(([key, value]) => {
+    const input = document.getElementById(`me-${key.slice(0, 2)}-${key.slice(2)}`);
+    if (input) input.value = value;
+  });
 renderMCustomOptList();
 renderMDiscountList();
 renderMExpList();
@@ -1902,6 +2000,12 @@ window.submitSalon = async () => {
     pay: document.getElementById('s-pay').value,
     memo: document.getElementById('s-memo').value,
     camName: sCamSettings.camName || '未設定',
+    selectionState: {
+      selMenu: cloneMap(sSelMenu),
+      menuQty: cloneMap(sMenuQty)
+    },
+    otherName: document.getElementById('s-other-name').value,
+    otherValue: parseFloat(document.getElementById('s-other-val').value) || 0,
     items: a.items,
     totalEx: a.totalEx,
     totalInc: a.totalInc,
@@ -1942,6 +2046,13 @@ window.sEdit = id => {
   document.getElementById('s-date').value = record.date;
   document.getElementById('s-pay').value = record.pay;
   document.getElementById('s-memo').value = record.memo || '';
+  document.getElementById('s-other-name').value = record.otherName || '';
+  document.getElementById('s-other-val').value = record.otherValue || '';
+  if (record.selectionState) {
+    sSelMenu = { ...(record.selectionState.selMenu || {}) };
+    sMenuQty = { ...(record.selectionState.menuQty || {}) };
+  }
+  buildSalonMenuGrid();
   document.getElementById('s-form-title').textContent = '編集中';
   document.getElementById('s-submit').textContent = '変更を保存する';
   document.getElementById('s-cancel').style.display = '';
