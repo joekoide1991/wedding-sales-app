@@ -460,9 +460,9 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   </div>
   <div class="metrics">
     <div class="metric"><div class="metric-label">案件数</div><div class="metric-value" id="s-count">0件</div></div>
-    <div class="metric"><div class="metric-label">売上（税込）</div><div class="metric-value" id="s-sales">¥0</div></div>
-    <div class="metric"><div class="metric-label">紹介料合計</div><div class="metric-value" style="color:var(--salon);" id="s-ref">¥0</div></div>
-    <div class="metric"><div class="metric-label">サロン受取</div><div class="metric-value" id="s-recv">¥0</div></div>
+    <div class="metric"><div class="metric-label">サロン売上（税込）</div><div class="metric-value" id="s-sales">¥0</div></div>
+    <div class="metric"><div class="metric-label">ONE SHOT紹介料</div><div class="metric-value" style="color:var(--salon);" id="s-ref">¥0</div></div>
+    <div class="metric"><div class="metric-label">ONE SHOT支払額</div><div class="metric-value" id="s-recv">¥0</div></div>
   </div>
   <div class="card" id="salon-settings" style="display:none;">
     <div class="card-title">カメラマン設定</div>
@@ -516,7 +516,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
     <div class="card-title">案件一覧</div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>日付</th><th>お客様</th><th>支払</th><th style="text-align:right;">売上</th><th style="text-align:right;">紹介料</th><th style="text-align:right;">手数料</th><th style="text-align:right;">サロン受取</th><th>操作</th></tr></thead>
+        <thead><tr><th>日付</th><th>お客様</th><th>メニュー</th><th>支払</th><th style="text-align:right;">売上</th><th style="text-align:right;">紹介料</th><th style="text-align:right;">手数料</th><th style="text-align:right;">ONE SHOT支払</th><th>操作</th></tr></thead>
         <tbody id="s-tbody"></tbody>
       </table>
     </div>
@@ -2066,13 +2066,142 @@ window.sDel = async id => {
   await deleteDoc(doc(db, 'salon-recs', id));
 };
 
-function renderSalonList() {
+function usesSalonCardFlow(pay) {
+  return pay === 'カード' || pay === 'PayPay';
+}
+
+function calcLinkedSalonItem(ex, hasRef, isCardFlow) {
+  const inc = Math.round(ex * 1.1);
+  if (hasRef) {
+    const ref = Math.round(ex * 0.2 * 1.08);
+    const beforeFee = inc - ref;
+    const cardFee = isCardFlow ? Math.round(beforeFee * 0.025) : 0;
+    return { inc, ref, cardFee, salonRecv: beforeFee - cardFee };
+  }
+  const cardFee = isCardFlow ? Math.round(inc * 0.025) : 0;
+  return { inc, ref: 0, cardFee, salonRecv: inc - cardFee };
+}
+
+function buildSalonItemsFromMineRecord(record) {
+  const selection = record.selectionState || {};
+  const selP = { ...(selection.selP || {}) };
+  const selS = { ...(selection.selS || {}) };
+  const selExtra = { ...(selection.selExtra || {}) };
+  const selDressUp = selection.selDressUp ?? null;
+  const selMensUp = selection.selMensUp ?? null;
+  const bouquet = selection.bouquet || 'dry';
+  const isCardFlow = usesSalonCardFlow(record.pay);
+  const items = [];
+
+  if (!selection.selP && Array.isArray(record.plans)) {
+    MPLANS.forEach((plan, index) => {
+      if (record.plans.includes(plan.name)) selP[index] = true;
+    });
+  }
+
+  const hasSalonInc = Object.keys(selP).some(index => MPLANS[Number(index)]?.hasSalon) || record.isSalonInc;
+
+  const pushItem = (name, ex, hasRef) => {
+    const calc = calcLinkedSalonItem(ex, hasRef, isCardFlow);
+    items.push({
+      name,
+      ex,
+      inc: calc.inc,
+      ref: calc.ref,
+      cardFee: calc.cardFee,
+      salonRecv: calc.salonRecv,
+      hasRef
+    });
+  };
+
+  if (hasSalonInc) {
+    const dress = selDressUp !== null ? MDRESS_UP[selDressUp] : { name:'ドレス C', ex:30000, hasRef:true };
+    const mens = selMensUp !== null ? MMENS_UP[selMensUp] : { name:'メンズ C', ex:30000, hasRef:true };
+    const bouquetItem = bouquet === 'art'
+      ? { name:'アーティシャルフラワー', ex:5000, hasRef:true }
+      : { name:'ドライフラワー', ex:3500, hasRef:true };
+
+    pushItem(dress.name, dress.ex, true);
+    pushItem(mens.name, mens.ex, true);
+    pushItem('ヘアメイク', 25000, true);
+    pushItem(bouquetItem.name, bouquetItem.ex, bouquetItem.hasRef);
+
+    MEXTRA.forEach((extra, index) => {
+      if (selExtra[index]) pushItem(extra.name, extra.ex, extra.hasRef);
+    });
+
+    if ((record.otherSalonValue || 0) > 0) {
+      pushItem(record.otherSalonName || 'その他サロン費用', Number(record.otherSalonValue), false);
+    }
+  } else {
+    MSALON.forEach((item, index) => {
+      if (selS[index]) pushItem(item.name, item.ex, item.hasRef);
+    });
+
+    if ((record.otherSalonValue2 || 0) > 0) {
+      pushItem(record.otherSalonName2 || 'その他サロン費用', Number(record.otherSalonValue2), false);
+    }
+  }
+
+  if (!items.length && (record.salonEx || 0) > 0) {
+    pushItem('サロンメニュー一式', Number(record.salonEx), (record.referral || 0) > 0);
+  }
+
+  return items;
+}
+
+function getSalonDisplayRecords() {
   const { y, m } = getTabYM('salon');
-  const records = filterMonth(salonRecs, y, m).sort((a, b) => a.date.localeCompare(b.date));
+  const linkedMineRecords = filterMonth(myRecs, y, m)
+    .filter(record => (record.salonEx || 0) > 0 || record.isSalonInc)
+    .map(record => {
+      const items = buildSalonItemsFromMineRecord(record);
+      const totalEx = items.reduce((sum, item) => sum + (item.ex || 0), 0);
+      const totalInc = items.reduce((sum, item) => sum + (item.inc || 0), 0);
+      const totalRef = items.reduce((sum, item) => sum + (item.ref || 0), 0);
+      const cardFee = items.reduce((sum, item) => sum + (item.cardFee || 0), 0);
+      const salonRecv = items.reduce((sum, item) => sum + (item.salonRecv || 0), 0);
+      return {
+        _id: `mine-${record._id}`,
+        source: 'mine',
+        date: record.date,
+        name: record.name,
+        pay: record.pay,
+        payLabel: usesSalonCardFlow(record.pay) ? (record.pay === 'PayPay' ? 'PayPay' : 'カード') : '現金',
+        items,
+        totalEx,
+        totalInc,
+        totalRef,
+        cardFee,
+        salonRecv
+      };
+    });
+
+  const manualRecords = filterMonth(salonRecs, y, m).map(record => ({
+    _id: `salon-${record._id}`,
+    source: 'manual',
+    date: record.date,
+    name: record.name,
+    pay: record.pay,
+    payLabel: record.pay,
+    items: record.items || [],
+    totalEx: record.totalEx || 0,
+    totalInc: record.totalInc || 0,
+    totalRef: record.totalRef || 0,
+    cardFee: record.cardFee || 0,
+    salonRecv: record.salonRecv || 0,
+    rawId: record._id
+  }));
+
+  return [...linkedMineRecords, ...manualRecords].sort((a, b) => a.date.localeCompare(b.date));
+}
+
+function renderSalonList() {
+  const records = getSalonDisplayRecords();
   const tbody = document.getElementById('s-tbody');
 
   if (!records.length) {
-    tbody.innerHTML = '<tr><td colspan="8" class="empty">この月の案件はありません</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" class="empty">この月の案件はありません</td></tr>';
     return;
   }
 
@@ -2080,19 +2209,21 @@ function renderSalonList() {
     <tr>
       <td style="white-space:nowrap;">${r.date.slice(5).replace('-', '/')}</td>
       <td>${r.name}</td>
-      <td><span class="tag ${r.pay === 'カード' ? 'tag-card' : 'tag-cash'}">${r.pay}</span></td>
+      <td><div class="chips">${(r.items || []).map(item => `<span class="chip chip-s">${item.name}</span>`).join('')}</div></td>
+      <td><span class="tag ${usesSalonCardFlow(r.pay) ? 'tag-card' : 'tag-cash'}">${r.payLabel}</span></td>
       <td style="text-align:right;">${fmt(r.totalInc || 0)}</td>
       <td style="text-align:right;color:var(--salon);">${fmt(r.totalRef || 0)}</td>
       <td style="text-align:right;color:var(--red);">${r.cardFee > 0 ? fmt(r.cardFee) : '—'}</td>
       <td style="text-align:right;">${fmt(r.salonRecv || 0)}</td>
-      <td style="white-space:nowrap;"><button class="icon-btn" onclick="sEdit('${r._id}')">✏️</button><button class="icon-btn" onclick="sDel('${r._id}')" style="color:var(--red);">✕</button></td>
+      <td style="white-space:nowrap;">${r.source === 'manual'
+        ? `<button class="icon-btn" onclick="sEdit('${r.rawId}')">✏️</button><button class="icon-btn" onclick="sDel('${r.rawId}')" style="color:var(--red);">✕</button>`
+        : '<span class="chip">ONE SHOT連動</span>'}</td>
     </tr>
   `).join('');
 }
 
 function renderSalonMetrics() {
-  const { y, m } = getTabYM('salon');
-  const records = filterMonth(salonRecs, y, m);
+  const records = getSalonDisplayRecords();
   document.getElementById('s-count').textContent = `${records.length}件`;
   document.getElementById('s-sales').textContent = fmt(records.reduce((s, r) => s + (r.totalInc || 0), 0));
   document.getElementById('s-ref').textContent = fmt(records.reduce((s, r) => s + (r.totalRef || 0), 0));
@@ -2101,7 +2232,7 @@ function renderSalonMetrics() {
 
 function renderSalonInvoice() {
   const { y, m } = getTabYM('salon');
-  const records = filterMonth(salonRecs, y, m);
+  const records = getSalonDisplayRecords();
   const camName = sCamSettings.camName || 'カメラマン名未設定';
   const totalInc = records.reduce((s, r) => s + (r.totalInc || 0), 0);
   const totalRef = records.reduce((s, r) => s + (r.totalRef || 0), 0);
@@ -2124,7 +2255,7 @@ function renderSalonInvoice() {
     <tr>
       <td>${r.date.slice(5).replace('-', '/')}</td>
       <td>${r.name}</td>
-      <td style="color:${r.pay === 'カード' ? '#534AB7' : '#2e7d32'};font-size:11px;">${r.pay}</td>
+      <td style="color:${usesSalonCardFlow(r.pay) ? '#534AB7' : '#2e7d32'};font-size:11px;">${r.payLabel}</td>
       <td class="r">${fmt(r.totalInc || 0)}</td>
       <td class="r" style="color:#2e7d32;">${fmt(r.totalRef || 0)}</td>
       <td class="r" style="color:#c62828;">${r.cardFee > 0 ? fmt(r.cardFee) : '—'}</td>
@@ -2155,7 +2286,7 @@ function renderSalonInvoice() {
       </div>
       <div style="font-size:12px;font-weight:700;margin-bottom:6px;">案件明細（${records.length}件）</div>
       <table class="inv-table" style="margin-bottom:16px;">
-        <thead><tr><th>日付</th><th>お客様</th><th>支払</th><th style="text-align:right;">売上(税込)</th><th style="text-align:right;">紹介料</th><th style="text-align:right;">手数料</th><th style="text-align:right;">サロン受取</th></tr></thead>
+        <thead><tr><th>日付</th><th>お客様</th><th>支払</th><th style="text-align:right;">売上(税込)</th><th style="text-align:right;">紹介料</th><th style="text-align:right;">手数料</th><th style="text-align:right;">ONE SHOT支払</th></tr></thead>
         <tbody>${caseRows || '<tr><td colspan="7" style="text-align:center;color:#999;">案件なし</td></tr>'}</tbody>
       </table>
       <div style="font-size:12px;font-weight:700;margin-bottom:6px;">商品別集計</div>
@@ -2165,16 +2296,17 @@ function renderSalonInvoice() {
       </table>
       <div class="inv-total">
         <div class="inv-total-row"><span>売上合計（税込）</span><span>${fmt(totalInc)}</span></div>
-        <div class="inv-total-row" style="color:#2e7d32;"><span>紹介料合計</span><span>${fmt(totalRef)}</span></div>
-        <div class="inv-total-row" style="color:#c62828;"><span>カード手数料（サロン負担）</span><span>−${fmt(totalFee)}</span></div>
-        <div class="inv-total-row big"><span>サロン最終受取額</span><span>${fmt(totalSalon)}</span></div>
+        <div class="inv-total-row" style="color:#2e7d32;"><span>ONE SHOT紹介料合計</span><span>${fmt(totalRef)}</span></div>
+        <div class="inv-total-row" style="color:#c62828;"><span>カード手数料差引</span><span>−${fmt(totalFee)}</span></div>
+        <div class="inv-total-row big"><span>ONE SHOT支払額合計</span><span>${fmt(totalSalon)}</span></div>
       </div>
-      <div class="inv-note">※ サロン最終受取額 ＝ 売上（税込）− 紹介料 − カード手数料（カード払いの場合のみ）</div>
+      <div class="inv-note">※ ONE SHOT支払額 ＝ サロン売上（税込）− ONE SHOT紹介料 − カード手数料（カード/PayPayの場合のみ）</div>
     </div>
   `;
 }
 
 window.downloadCSV = type => {
+  const csvCell = value => `"${String(value ?? '').replace(/"/g, '""')}"`;
   let rows = [];
 
   if (type === 'mine') {
@@ -2192,19 +2324,52 @@ window.downloadCSV = type => {
       memo: r.memo || ''
     }));
   } else if (type === 'friend') {
-    rows = friendRecs.map(r => ({
-      date: r.date || '',
-      brand: 'Massu photo studio',
-      customer: r.name || '',
-      plan: [...(r.wPlans || []), ...(r.sPlans || [])].join(' / '),
-      option: [...(r.wOpts || []), ...(r.sOpts || [])].join(' / '),
-      sales: r.totalCustomer || 0,
-      referral: 0,
-      profit: r.myReward || 0,
-      payment: r.paid || '',
-      payMethod: r.pay || '',
-      memo: r.memo || ''
-    }));
+    rows = friendRecs.map(r => {
+      const discountParts = [];
+      if ((r.repeatDiscount || 0) > 0) {
+        discountParts.push(`リピート${r.repeatDiscount}%OFF${r.repeatCustomerDiscount ? `(${fmt(r.repeatCustomerDiscount)})` : ''}`);
+      }
+      if ((r.setDisc || 0) > 0) {
+        discountParts.push(`セット割${r.setDisc > 1 ? `×${r.setDisc}` : ''}(−¥3,300)`);
+      }
+
+      const expenseText = (r.expenses || [])
+        .map(item => `${item.name || '経費'}:${fmt(item.amount || 0)}`)
+        .join(' / ');
+      const customOptText = (r.customOptions || [])
+        .map(item => `${item.name || '手入力'}:${fmt(item.amount || 0)}`)
+        .join(' / ');
+
+      let flowText = '';
+      let settlementAmount = 0;
+      let payMethodLabel = r.pay || '';
+      if (r.pay === '振込') {
+        flowText = 'Massu→ONE SHOT 振込';
+        settlementAmount = r.myReward || 0;
+      } else if (r.pay === '現金_友人') {
+        flowText = 'Massu→ONE SHOT 現金手渡し';
+        settlementAmount = r.myReward || 0;
+        payMethodLabel = '現金(マス)';
+      } else if (r.pay === '現金_自分') {
+        flowText = 'ONE SHOT→Massu 現金戻し';
+        settlementAmount = -(r.toFriend || 0);
+        payMethodLabel = '現金(ジョ)';
+      }
+
+      return {
+        date: r.date || '',
+        customer: r.name || '',
+        plan: [...(r.wPlans || []), ...(r.sPlans || [])].join(' / '),
+        option: [...(r.wOpts || []), ...(r.sOpts || [])].join(' / '),
+        sales: r.totalCustomer || 0,
+        payMethod: payMethodLabel,
+        discount: discountParts.join(' / '),
+        expenses: expenseText,
+        customOptions: customOptText,
+        flow: flowText,
+        settlementAmount
+      };
+    });
   } else if (type === 'salon') {
     rows = salonRecs.map(r => ({
       date: r.date || '',
@@ -2226,9 +2391,110 @@ window.downloadCSV = type => {
     return;
   }
 
+  if (type === 'friend') {
+    const totalSales = rows.reduce((sum, row) => sum + (row.sales || 0), 0);
+    const totalSettlement = rows.reduce((sum, row) => sum + (row.settlementAmount || 0), 0);
+    const transferTotal = rows.filter(row => row.payMethod === '振込').reduce((sum, row) => sum + (row.settlementAmount || 0), 0);
+    const cashJoTotal = rows.filter(row => row.payMethod === '現金(ジョ)').reduce((sum, row) => sum + Math.abs(row.settlementAmount || 0), 0);
+    const cashMasTotal = rows.filter(row => row.payMethod === '現金(マス)').reduce((sum, row) => sum + (row.settlementAmount || 0), 0);
+    const cashNet = cashMasTotal - cashJoTotal;
+    let csv = '日付,顧客名,プラン,オプション,お客様お支払い金額(税込),支払い方法,割引,追加経費,手入力オプション,お金のやり取り,精算金額\n';
+    rows.forEach(row => {
+      csv += [
+        csvCell(row.date),
+        csvCell(row.customer),
+        csvCell(row.plan),
+        csvCell(row.option),
+        row.sales,
+        csvCell(row.payMethod),
+        csvCell(row.discount),
+        csvCell(row.expenses),
+        csvCell(row.customOptions),
+        csvCell(row.flow),
+        row.settlementAmount
+      ].join(',') + '\n';
+    });
+    csv += [
+      csvCell(''),
+      csvCell('合計'),
+      csvCell(''),
+      csvCell(''),
+      totalSales,
+      csvCell(''),
+      csvCell(''),
+      csvCell(''),
+      csvCell(''),
+      csvCell('精算合計'),
+      totalSettlement
+    ].join(',') + '\n';
+    csv += [
+      csvCell(''),
+      csvCell('振込合計'),
+      csvCell(''),
+      csvCell(''),
+      csvCell(''),
+      csvCell('振込'),
+      csvCell(''),
+      csvCell(''),
+      csvCell(''),
+      csvCell('Massu→ONE SHOT 振込合計'),
+      transferTotal
+    ].join(',') + '\n';
+    csv += [
+      csvCell(''),
+      csvCell('現金(ジョ)合計'),
+      csvCell(''),
+      csvCell(''),
+      csvCell(''),
+      csvCell('現金(ジョ)'),
+      csvCell(''),
+      csvCell(''),
+      csvCell(''),
+      csvCell('ONE SHOT→Massu 現金戻し合計'),
+      cashJoTotal
+    ].join(',') + '\n';
+    csv += [
+      csvCell(''),
+      csvCell('現金(マス)合計'),
+      csvCell(''),
+      csvCell(''),
+      csvCell(''),
+      csvCell('現金(マス)'),
+      csvCell(''),
+      csvCell(''),
+      csvCell(''),
+      csvCell('Massu→ONE SHOT 現金手渡し合計'),
+      cashMasTotal
+    ].join(',') + '\n';
+    csv += [
+      csvCell(''),
+      csvCell('現金差額'),
+      csvCell(''),
+      csvCell(''),
+      csvCell(''),
+      csvCell('現金'),
+      csvCell(''),
+      csvCell(''),
+      csvCell(''),
+      csvCell(cashNet >= 0 ? 'Massu→ONE SHOT 現金差額' : 'ONE SHOT→Massu 現金差額'),
+      Math.abs(cashNet)
+    ].join(',') + '\n';
+
+    const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${type}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    return;
+  }
+
   let csv = '日付,ブランド,顧客名,プラン,オプション,売上,紹介料,手取り,入金状況,支払い方法,メモ\n';
   rows.forEach(r => {
-    csv += `"${r.date}","${r.brand}","${r.customer}","${r.plan}","${r.option}",${r.sales},${r.referral},${r.profit},"${r.payment}","${r.payMethod}","${String(r.memo).replace(/"/g, '""')}"\n`;
+    csv += `${csvCell(r.date)},${csvCell(r.brand)},${csvCell(r.customer)},${csvCell(r.plan)},${csvCell(r.option)},${r.sales},${r.referral},${r.profit},${csvCell(r.payment)},${csvCell(r.payMethod)},${csvCell(r.memo)}\n`;
   });
 
   const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
