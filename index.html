@@ -2144,7 +2144,20 @@ function buildSalonItemsFromMineRecord(record) {
   }
 
   if (!items.length && (record.salonEx || 0) > 0) {
-    pushItem('サロンメニュー一式', Number(record.salonEx), (record.referral || 0) > 0);
+    const salonExTotal = Number(record.salonEx) || 0;
+    const referralTotal = Number(record.referral) || 0;
+
+    // For old records without saved menu selections, infer the referral-applicable
+    // base from the stored referral amount so insurance/non-ref items don't skew totals.
+    if (referralTotal > 0) {
+      const inferredRefBase = Math.min(salonExTotal, Math.round(referralTotal / 0.216));
+      const inferredNonRefBase = Math.max(0, salonExTotal - inferredRefBase);
+
+      if (inferredRefBase > 0) pushItem('サロンメニュー(紹介料対象)', inferredRefBase, true);
+      if (inferredNonRefBase > 0) pushItem('サロンメニュー(紹介料対象外)', inferredNonRefBase, false);
+    } else {
+      pushItem('サロンメニュー一式', salonExTotal, false);
+    }
   }
 
   return items;
@@ -2307,6 +2320,17 @@ function renderSalonInvoice() {
 
 window.downloadCSV = type => {
   const csvCell = value => `"${String(value ?? '').replace(/"/g, '""')}"`;
+  const csvMoney = value => csvCell((Number(value) || 0).toLocaleString('ja-JP'));
+  const csvSignedMoney = value => {
+    const amount = Number(value) || 0;
+    const prefix = amount < 0 ? '-' : '';
+    return csvCell(`${prefix}${Math.abs(amount).toLocaleString('ja-JP')}`);
+  };
+  const withHonorific = name => {
+    const text = String(name || '').trim();
+    if (!text) return '';
+    return text.endsWith('様') ? text : `${text}様`;
+  };
   let rows = [];
 
   if (type === 'mine') {
@@ -2324,7 +2348,8 @@ window.downloadCSV = type => {
       memo: r.memo || ''
     }));
   } else if (type === 'friend') {
-    rows = friendRecs.map(r => {
+    const { y, m } = getTabYM('friend');
+    rows = filterMonth(friendRecs, y, m).sort((a, b) => a.date.localeCompare(b.date)).map(r => {
       const discountParts = [];
       if ((r.repeatDiscount || 0) > 0) {
         discountParts.push(`リピート${r.repeatDiscount}%OFF${r.repeatCustomerDiscount ? `(${fmt(r.repeatCustomerDiscount)})` : ''}`);
@@ -2340,25 +2365,21 @@ window.downloadCSV = type => {
         .map(item => `${item.name || '手入力'}:${fmt(item.amount || 0)}`)
         .join(' / ');
 
-      let flowText = '';
       let settlementAmount = 0;
       let payMethodLabel = r.pay || '';
       if (r.pay === '振込') {
-        flowText = 'Massu→ONE SHOT 振込';
         settlementAmount = r.myReward || 0;
       } else if (r.pay === '現金_友人') {
-        flowText = 'Massu→ONE SHOT 現金手渡し';
         settlementAmount = r.myReward || 0;
         payMethodLabel = '現金(マス)';
       } else if (r.pay === '現金_自分') {
-        flowText = 'ONE SHOT→Massu 現金戻し';
-        settlementAmount = -(r.toFriend || 0);
+        settlementAmount = r.toFriend || 0;
         payMethodLabel = '現金(ジョ)';
       }
 
       return {
         date: r.date || '',
-        customer: r.name || '',
+        customer: withHonorific(r.name),
         plan: [...(r.wPlans || []), ...(r.sPlans || [])].join(' / '),
         option: [...(r.wOpts || []), ...(r.sOpts || [])].join(' / '),
         sales: r.totalCustomer || 0,
@@ -2366,7 +2387,6 @@ window.downloadCSV = type => {
         discount: discountParts.join(' / '),
         expenses: expenseText,
         customOptions: customOptText,
-        flow: flowText,
         settlementAmount
       };
     });
@@ -2393,25 +2413,26 @@ window.downloadCSV = type => {
 
   if (type === 'friend') {
     const totalSales = rows.reduce((sum, row) => sum + (row.sales || 0), 0);
-    const totalSettlement = rows.reduce((sum, row) => sum + (row.settlementAmount || 0), 0);
     const transferTotal = rows.filter(row => row.payMethod === '振込').reduce((sum, row) => sum + (row.settlementAmount || 0), 0);
     const cashJoTotal = rows.filter(row => row.payMethod === '現金(ジョ)').reduce((sum, row) => sum + Math.abs(row.settlementAmount || 0), 0);
     const cashMasTotal = rows.filter(row => row.payMethod === '現金(マス)').reduce((sum, row) => sum + (row.settlementAmount || 0), 0);
     const cashNet = cashMasTotal - cashJoTotal;
-    let csv = '日付,顧客名,プラン,オプション,お客様お支払い金額(税込),支払い方法,割引,追加経費,手入力オプション,お金のやり取り,精算金額\n';
+    const totalSettlement = transferTotal + cashNet;
+    const { y, m } = getTabYM('friend');
+    const monthLabel = `${y}-${String(m + 1).padStart(2, '0')}`;
+    let csv = '日付,顧客名,プラン,オプション,お客様お支払い金額(税込),支払い方法,割引,追加経費,手入力オプション,精算金額\n';
     rows.forEach(row => {
       csv += [
         csvCell(row.date),
         csvCell(row.customer),
         csvCell(row.plan),
         csvCell(row.option),
-        row.sales,
+        csvMoney(row.sales),
         csvCell(row.payMethod),
         csvCell(row.discount),
         csvCell(row.expenses),
         csvCell(row.customOptions),
-        csvCell(row.flow),
-        row.settlementAmount
+        csvMoney(row.settlementAmount)
       ].join(',') + '\n';
     });
     csv += [
@@ -2419,13 +2440,12 @@ window.downloadCSV = type => {
       csvCell('合計'),
       csvCell(''),
       csvCell(''),
-      totalSales,
+      csvMoney(totalSales),
       csvCell(''),
       csvCell(''),
       csvCell(''),
       csvCell(''),
-      csvCell('精算合計'),
-      totalSettlement
+      csvSignedMoney(totalSettlement)
     ].join(',') + '\n';
     csv += [
       csvCell(''),
@@ -2437,38 +2457,11 @@ window.downloadCSV = type => {
       csvCell(''),
       csvCell(''),
       csvCell(''),
-      csvCell('Massu→ONE SHOT 振込合計'),
-      transferTotal
+      csvMoney(transferTotal)
     ].join(',') + '\n';
     csv += [
       csvCell(''),
-      csvCell('現金(ジョ)合計'),
-      csvCell(''),
-      csvCell(''),
-      csvCell(''),
-      csvCell('現金(ジョ)'),
-      csvCell(''),
-      csvCell(''),
-      csvCell(''),
-      csvCell('ONE SHOT→Massu 現金戻し合計'),
-      cashJoTotal
-    ].join(',') + '\n';
-    csv += [
-      csvCell(''),
-      csvCell('現金(マス)合計'),
-      csvCell(''),
-      csvCell(''),
-      csvCell(''),
-      csvCell('現金(マス)'),
-      csvCell(''),
-      csvCell(''),
-      csvCell(''),
-      csvCell('Massu→ONE SHOT 現金手渡し合計'),
-      cashMasTotal
-    ].join(',') + '\n';
-    csv += [
-      csvCell(''),
-      csvCell('現金差額'),
+      csvCell('現金合計(現金差額)'),
       csvCell(''),
       csvCell(''),
       csvCell(''),
@@ -2476,15 +2469,14 @@ window.downloadCSV = type => {
       csvCell(''),
       csvCell(''),
       csvCell(''),
-      csvCell(cashNet >= 0 ? 'Massu→ONE SHOT 現金差額' : 'ONE SHOT→Massu 現金差額'),
-      Math.abs(cashNet)
+      csvSignedMoney(cashNet)
     ].join(',') + '\n';
 
     const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${type}.csv`;
+    a.download = `${type}-${monthLabel}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
