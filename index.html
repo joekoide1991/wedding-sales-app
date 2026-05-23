@@ -1154,8 +1154,9 @@ window.submitFriend = async () => {
     return;
   }
 
-  const hasAny = Object.keys(fSelWP).length || Object.keys(fSelSP).length || Object.keys(fSelWO).length || Object.keys(fSelSO).length;
-  if (!hasAny) {
+  const hasSelectedMenu = Object.keys(fSelWP).length || Object.keys(fSelSP).length || Object.keys(fSelWO).length || Object.keys(fSelSO).length;
+  const hasCustomOption = fCustomOpts.some(item => ((item.name || '').trim()) || (item.amount || 0) > 0);
+  if (!hasSelectedMenu && !hasCustomOption) {
     alert('プランまたはオプションを選択してください');
     return;
   }
