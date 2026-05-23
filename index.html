@@ -128,7 +128,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 .brand-name.s { color: var(--salon); }
 .si-panel { background: rgba(52,211,153,0.05); border: 1px solid rgba(52,211,153,0.2); border-radius: var(--radius-sm); padding: 14px; margin-top: 12px; }
 .si-title { font-size: 11px; color: var(--salon); font-weight: 600; margin-bottom: 8px; }
-.exp-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.exp-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
 .exp-del { background: none; border: none; color: var(--red); cursor: pointer; font-size: 16px; padding: 0 4px; }
 .divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
 .loading { display: flex; align-items: center; justify-content: center; padding: 40px; color: var(--text3); font-size: 13px; gap: 8px; }
@@ -295,6 +295,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       <hr class="divider">
       <div class="s-row sub" id="fs-repeat-row" style="display:none;"><span>リピート割</span><span style="color:var(--red);" id="fs-repeatval">¥0</span></div>
       <div class="s-row sub"><span>ウェディング報酬（×80%）</span><span id="fs-wreward">¥0</span></div>
+      <div class="s-row sub" id="fs-custom-reward-row" style="display:none;"><span>手入力オプション報酬</span><span id="fs-custom-reward">¥0</span></div>
       <div class="s-row sub"><span>星空報酬（×50%）</span><span id="fs-sreward">¥0</span></div>
       <div class="s-row sub" id="fs-set-row" style="display:none;"><span>セット割自分負担</span><span style="color:var(--red);" id="fs-setval">¥0</span></div>
       <div class="s-row total"><span>自分の報酬</span><span style="color:var(--friend);" id="fs-reward">¥0</span></div>
@@ -901,6 +902,7 @@ function renderFCustomOptList() {
     <div class="exp-row">
       <input type="text" placeholder="名目" value="${item.name || ''}" oninput="fCustomOptUpdate(${i}, 'name', this.value)" style="flex:1;">
       <input type="number" placeholder="金額（税込）" value="${item.amount || ''}" min="0" oninput="fCustomOptUpdate(${i}, 'amount', this.value)" style="width:120px;flex:none;">
+      <input type="number" placeholder="報酬％" value="${item.rewardPct ?? 80}" min="0" max="100" step="1" oninput="fCustomOptUpdate(${i}, 'rewardPct', this.value)" style="width:95px;flex:none;">
       <button class="exp-del" onclick="removeFCustomOpt(${i})">✕</button>
     </div>
   `).join('');
@@ -956,13 +958,13 @@ function restoreFriendSelections(record) {
 }
 
 window.addFCustomOpt = () => {
-  fCustomOpts.push({ name:'', amount:0 });
+  fCustomOpts.push({ name:'', amount:0, rewardPct:80 });
   renderFCustomOptList();
 };
 
 window.fCustomOptUpdate = (index, field, value) => {
   if (!fCustomOpts[index]) return;
-  fCustomOpts[index][field] = field === 'amount' ? (parseFloat(value) || 0) : value;
+  fCustomOpts[index][field] = field === 'amount' || field === 'rewardPct' ? (parseFloat(value) || 0) : value;
   fRecalc();
 };
 
@@ -1045,6 +1047,12 @@ if (o.reward) wR += o.special ? (o.rewardBase * q) : cp;
 
   const customOptInc = fCustomOpts.reduce((sum, item) => sum + (item.amount || 0), 0);
   const customOptEx = Math.round(customOptInc / 1.1);
+  const customOptRewardBase = fCustomOpts.reduce((sum, item) => {
+    const amountInc = item.amount || 0;
+    const rewardPct = Math.min(100, Math.max(0, item.rewardPct ?? 80));
+    const amountEx = Math.round(amountInc / 1.1);
+    return sum + Math.round(amountEx * (rewardPct / 100));
+  }, 0);
   wC += customOptEx;
 
   const repeatPct = Math.min(100, Math.max(0, parseFloat(document.getElementById('f-repeat').value) || 0));
@@ -1052,8 +1060,10 @@ if (o.reward) wR += o.special ? (o.rewardBase * q) : cp;
   const sd = parseInt(document.getElementById('f-set').value, 10);
   const discountWedding = Math.round(wC * repeatRate);
   const discountRewardBase = Math.round(wR * repeatRate);
+  const discountCustomReward = Math.round(customOptRewardBase * repeatRate);
   const discountedWedding = wC - discountWedding;
   const discountedRewardBase = wR - discountRewardBase;
+  const discountedCustomReward = customOptRewardBase - discountCustomReward;
   const preRepeatTaxBase = wC + sC - sd * 3000;
   const preRepeatTax = Math.round(preRepeatTaxBase * 0.1);
   const preRepeatTotal = preRepeatTaxBase + preRepeatTax;
@@ -1062,9 +1072,10 @@ if (o.reward) wR += o.special ? (o.rewardBase * q) : cp;
   const total = taxBase + tax;
   const repeatCustomerDiscount = preRepeatTotal - total;
   const wReward = Math.round(discountedRewardBase * 0.8);
+  const customReward = discountedCustomReward;
   const sReward = Math.round(sR * 0.5);
   const setMy = sd * 1500;
-  const myReward = wReward + sReward - setMy;
+  const myReward = wReward + customReward + sReward - setMy;
   const expTotal = fExps.reduce((sum, item) => sum + (item.amount || 0), 0);
   const netReward = myReward - expTotal;
   const pay = document.getElementById('f-pay').value;
@@ -1075,7 +1086,7 @@ if (o.reward) wR += o.special ? (o.rewardBase * q) : cp;
       ? `現金（自分受取）：${fmt(total)}を受取り、${fmt(toFriend)}を友人へ手渡し。`
       : `現金（友人受取）：友人が全額受取後、報酬${fmt(netReward)}を手渡し。`;
 
-  return { taxBase, tax, total, wReward, sReward, setMy, myReward, expTotal, netReward, toFriend, note, sd, pay, repeatPct, discountWedding, repeatCustomerDiscount };
+  return { taxBase, tax, total, wReward, customReward, sReward, setMy, myReward, expTotal, netReward, toFriend, note, sd, pay, repeatPct, discountWedding, repeatCustomerDiscount };
 }
 
 window.fRecalc = () => {
@@ -1086,6 +1097,8 @@ window.fRecalc = () => {
   document.getElementById('fs-repeat-row').style.display = a.repeatPct > 0 ? '' : 'none';
   document.getElementById('fs-repeatval').textContent = `−${fmt(a.repeatCustomerDiscount)}`;
   document.getElementById('fs-wreward').textContent = fmt(a.wReward);
+  document.getElementById('fs-custom-reward-row').style.display = a.customReward > 0 ? '' : 'none';
+  document.getElementById('fs-custom-reward').textContent = fmt(a.customReward);
   document.getElementById('fs-sreward').textContent = fmt(a.sReward);
   document.getElementById('fs-set-row').style.display = a.sd > 0 ? '' : 'none';
   document.getElementById('fs-setval').textContent = `−${fmt(a.setMy)}`;
@@ -2362,7 +2375,7 @@ window.downloadCSV = type => {
         .map(item => `${item.name || '経費'}:${fmt(item.amount || 0)}`)
         .join(' / ');
       const customOptText = (r.customOptions || [])
-        .map(item => `${item.name || '手入力'}:${fmt(item.amount || 0)}`)
+        .map(item => `${item.name || '手入力'}:${fmt(item.amount || 0)}${item.rewardPct !== undefined ? `(${item.rewardPct}%)` : ''}`)
         .join(' / ');
 
       let settlementAmount = 0;
