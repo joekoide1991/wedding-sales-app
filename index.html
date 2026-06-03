@@ -2333,6 +2333,8 @@ function renderSalonInvoice() {
 }
 
 window.downloadCSV = type => {
+  const activeTab = document.querySelector('.page.active')?.id?.replace('page-', '') || 'dash';
+  const getCsvYM = preferredTab => getTabYM(activeTab === 'dash' ? 'dash' : preferredTab);
   const csvCell = value => `"${String(value ?? '').replace(/"/g, '""')}"`;
   const csvMoney = value => csvCell((Number(value) || 0).toLocaleString('ja-JP'));
   const csvSignedMoney = value => {
@@ -2362,7 +2364,7 @@ window.downloadCSV = type => {
       memo: r.memo || ''
     }));
   } else if (type === 'friend') {
-    const { y, m } = getTabYM('friend');
+    const { y, m } = getCsvYM('friend');
     rows = filterMonth(friendRecs, y, m).sort((a, b) => a.date.localeCompare(b.date)).map(r => {
       const discountParts = [];
       if ((r.repeatDiscount || 0) > 0) {
@@ -2432,7 +2434,7 @@ window.downloadCSV = type => {
     const cashMasTotal = rows.filter(row => row.payMethod === '現金(マス)').reduce((sum, row) => sum + (row.settlementAmount || 0), 0);
     const cashNet = cashMasTotal - cashJoTotal;
     const totalSettlement = transferTotal + cashNet;
-    const { y, m } = getTabYM('friend');
+    const { y, m } = getCsvYM('friend');
     const monthLabel = `${y}-${String(m + 1).padStart(2, '0')}`;
     let csv = '日付,顧客名,プラン,オプション,お客様お支払い金額(税込),支払い方法,割引,追加経費,手入力オプション,精算金額\n';
     rows.forEach(row => {
