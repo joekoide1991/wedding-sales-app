@@ -462,8 +462,8 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   <div class="metrics">
     <div class="metric"><div class="metric-label">案件数</div><div class="metric-value" id="s-count">0件</div></div>
     <div class="metric"><div class="metric-label">サロン売上（税込）</div><div class="metric-value" id="s-sales">¥0</div></div>
-    <div class="metric"><div class="metric-label">ONE SHOT紹介料</div><div class="metric-value" style="color:var(--salon);" id="s-ref">¥0</div></div>
-    <div class="metric"><div class="metric-label">ONE SHOT支払額</div><div class="metric-value" id="s-recv">¥0</div></div>
+    <div class="metric"><div class="metric-label">ONE SHOT紹介料手取り</div><div class="metric-value" style="color:var(--salon);" id="s-ref">¥0</div></div>
+    <div class="metric"><div class="metric-label">AKKAへの振込総額</div><div class="metric-value" id="s-recv">¥0</div></div>
   </div>
   <div class="card" id="salon-settings" style="display:none;">
     <div class="card-title">カメラマン設定</div>
@@ -471,6 +471,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       <div><label>カメラマン名</label><input type="text" id="s-cam-name" placeholder="田中 一郎" oninput="saveSalonSettings()"></div>
       <div><label>紹介料割合（%）</label><input type="number" id="s-cam-rate" value="20" oninput="saveSalonSettings()"></div>
       <div><label>消費税率（%）</label><input type="number" id="s-cam-tax" value="8" oninput="saveSalonSettings()"></div>
+      <div><label>カード手数料率（%）</label><input type="number" id="s-card-rate" value="2.5" step="0.1" oninput="saveSalonSettings()"></div>
     </div>
   </div>
   <div class="card" id="salon-form" style="display:none;">
@@ -481,11 +482,17 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       <div><label>支払い方法</label>
         <select id="s-pay" onchange="sRecalc()">
           <option value="現金">現金</option>
+          <option value="振込">銀行振込</option>
           <option value="カード">クレジットカード</option>
         </select>
       </div>
     </div>
-    <div><label>メモ</label><input type="text" id="s-memo" placeholder="備考" style="margin-bottom:12px;"></div>
+    <div class="g3" style="margin-bottom:12px;">
+      <div><label>AKKA受領済みデポジット（税込）</label><input type="number" min="0" id="s-deposit" placeholder="0" oninput="sRecalc()"></div>
+      <div><label>精算状況</label><select id="s-status"><option value="未精算">未精算</option><option value="精算済み">精算済み</option></select></div>
+      <div><label>精算日</label><input type="date" id="s-settled-date"></div>
+    </div>
+    <div><label>備考</label><input type="text" id="s-memo" placeholder="備考" style="margin-bottom:12px;"></div>
     <div class="card-title">サロンメニュー（税抜）<span class="badge badge-ref">緑＝紹介料あり</span></div>
     <div class="menu-grid" id="s-menu-grid" style="margin-bottom:12px;"></div>
     <div><label>その他（税抜・紹介料なし）</label>
@@ -497,9 +504,16 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       <div class="s-row sub"><span>消費税</span><span id="ss-vat">¥0</span></div>
       <div class="s-row total"><span>売上合計（税込）</span><span id="ss-inc">¥0</span></div>
       <hr class="divider">
-      <div class="s-row sub"><span id="ss-ref-label">紹介料</span><span style="color:var(--salon);" id="ss-ref">¥0</span></div>
-      <div class="s-row sub" id="ss-fee-row"><span>カード手数料（サロン負担2.5%）</span><span style="color:var(--red);" id="ss-fee">¥0</span></div>
-      <div class="s-row grand"><span>サロン最終受取</span><span id="ss-recv">¥0</span></div>
+      <div class="s-row sub"><span id="ss-ref-label">紹介料（税込）</span><span style="color:var(--salon);" id="ss-ref">¥0</span></div>
+      <div class="s-row sub"><span>AKKA本来受取額</span><span id="ss-akkanormal">¥0</span></div>
+      <div class="s-row sub"><span>AKKA受領済みデポジット</span><span id="ss-deposit">¥0</span></div>
+      <div class="s-row sub"><span>当方のお客様回収額</span><span id="ss-customer-collection">¥0</span></div>
+      <div class="s-row sub"><span>AKKA未精算額</span><span id="ss-unsettled">¥0</span></div>
+      <div class="s-row sub" id="ss-own-fee-row"><span>当方カード手数料</span><span style="color:var(--red);" id="ss-own-fee">¥0</span></div>
+      <div class="s-row sub"><span>当方紹介料手取り</span><span style="color:var(--salon);" id="ss-ref-net">¥0</span></div>
+      <div class="s-row sub" id="ss-akka-fee-row"><span>AKKAカード手数料</span><span style="color:var(--red);" id="ss-akka-fee">¥0</span></div>
+      <div class="s-row grand"><span>AKKAへの最終振込額</span><span id="ss-recv">¥0</span></div>
+      <div id="ss-warning" style="display:none;margin-top:8px;color:var(--red);font-size:12px;"></div>
     </div>
     <div style="display:flex;gap:8px;margin-top:12px;">
       <button class="btn btn-primary salon btn-block" id="s-submit" onclick="submitSalon()">登録する</button>
@@ -517,7 +531,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
     <div class="card-title">案件一覧</div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>日付</th><th>お客様</th><th>メニュー</th><th>支払</th><th style="text-align:right;">売上</th><th style="text-align:right;">紹介料</th><th style="text-align:right;">手数料</th><th style="text-align:right;">ONE SHOT支払</th><th>操作</th></tr></thead>
+        <thead><tr><th>日付</th><th>お客様</th><th>メニュー</th><th>支払</th><th style="text-align:right;">売上</th><th style="text-align:right;">紹介料手取り</th><th style="text-align:right;">デポジット</th><th style="text-align:right;">AKKA振込</th><th>精算</th><th>操作</th></tr></thead>
         <tbody id="s-tbody"></tbody>
       </table>
     </div>
@@ -652,7 +666,8 @@ const MN = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10�
 let friendRecs = [];
 let myRecs = [];
 let salonRecs = [];
-let sCamSettings = { camName:'', rate:20, taxRate:8 };
+// AKKA HAKKA settlement rates are centralized here so they can be adjusted from Settings.
+let sCamSettings = { camName:'', rate:20, taxRate:8, cardRate:2.5 };
 
 let fSelWP = {}, fSelSP = {}, fSelWO = {}, fSelSO = {}, fOQty = {}, fAttendMemo = {}, fWOptChoices = {}, fEditId = null;
 let fCustomOpts = [], fExps = [];
@@ -735,9 +750,11 @@ function initDB() {
   const camNameEl = document.getElementById('s-cam-name');
   const camRateEl = document.getElementById('s-cam-rate');
   const camTaxEl = document.getElementById('s-cam-tax');
+  const cardRateEl = document.getElementById('s-card-rate');
   if (camNameEl) camNameEl.value = sCamSettings.camName || '';
   if (camRateEl) camRateEl.value = sCamSettings.rate || 20;
   if (camTaxEl) camTaxEl.value = sCamSettings.taxRate || 8;
+  if (cardRateEl) cardRateEl.value = sCamSettings.cardRate ?? 2.5;
 }
 
 onAuthStateChanged(auth, user => {
@@ -1942,6 +1959,7 @@ window.saveSalonSettings = () => {
   sCamSettings.camName = document.getElementById('s-cam-name').value;
   sCamSettings.rate = parseFloat(document.getElementById('s-cam-rate').value) || 20;
   sCamSettings.taxRate = parseFloat(document.getElementById('s-cam-tax').value) || 8;
+  sCamSettings.cardRate = Math.max(0, parseFloat(document.getElementById('s-card-rate').value) || 0);
   localStorage.setItem('sCamSettings', JSON.stringify(sCamSettings));
   sRecalc();
 };
@@ -1969,11 +1987,27 @@ window.showSalonInvoice = () => {
   document.getElementById('salon-invoice-card').scrollIntoView({ behavior:'smooth' });
 };
 
+function calcAkkaSettlement(items, pay, deposit = 0) {
+  const isCard = usesSalonCardFlow(pay);
+  const totalEx = items.reduce((sum, item) => sum + (Number(item.ex) || 0), 0);
+  const totalInc = items.reduce((sum, item) => sum + (Number(item.inc) || 0), 0);
+  const totalRef = items.reduce((sum, item) => sum + (Number(item.ref) || 0), 0);
+  const akkaNormalReceive = Math.round(totalInc - totalRef);
+  const normalizedDeposit = Math.max(0, Math.round(Number(deposit) || 0));
+  const customerCollection = Math.round(totalInc - normalizedDeposit);
+  const akkaUnsettled = Math.round(akkaNormalReceive - normalizedDeposit);
+  const ownCardFee = isCard ? Math.round(totalRef * (sCamSettings.cardRate / 100)) : 0;
+  const refNet = Math.round(totalRef - ownCardFee);
+  const akkaCardFee = isCard ? Math.round(akkaUnsettled * (sCamSettings.cardRate / 100)) : 0;
+  const transferAmount = Math.round(akkaUnsettled - akkaCardFee);
+  const warnings = [];
+  if (normalizedDeposit > akkaNormalReceive) warnings.push('デポジットがAKKA本来受取額を超えています。');
+  if (customerCollection < 0 || akkaUnsettled < 0 || transferAmount < 0) warnings.push('計算結果がマイナスです。金額とデポジットを確認してください。');
+  return { totalEx, totalInc, totalRef, deposit:normalizedDeposit, akkaNormalReceive, customerCollection, akkaUnsettled, ownCardFee, refNet, akkaCardFee, transferAmount, isCard, warnings };
+}
+
 function sCalc() {
-  const isCard = document.getElementById('s-pay').value === 'カード';
   let totalEx = 0;
-  let totalInc = 0;
-  let totalRef = 0;
   const items = [];
 
   MSALON.forEach((item, i) => {
@@ -1983,8 +2017,6 @@ function sCalc() {
     const inc = Math.round(ex * 1.1);
     const ref = item.hasRef ? Math.round(ex * (sCamSettings.rate / 100) * (1 + sCamSettings.taxRate / 100)) : 0;
     totalEx += ex;
-    totalInc += inc;
-    totalRef += ref;
     items.push({ name:item.name + (qty > 1 ? ` ×${qty}` : ''), ex, inc, ref, hasRef:item.hasRef });
   });
 
@@ -1992,13 +2024,10 @@ function sCalc() {
   if (otherEx > 0) {
     const inc = Math.round(otherEx * 1.1);
     totalEx += otherEx;
-    totalInc += inc;
     items.push({ name:document.getElementById('s-other-name').value || 'その他', ex:otherEx, inc, ref:0, hasRef:false });
   }
-
-  const cardFee = isCard ? Math.round((totalInc - totalRef) * 0.025) : 0;
-  const salonRecv = totalInc - totalRef - cardFee;
-  return { totalEx, totalInc, totalRef, cardFee, salonRecv, items, isCard };
+  const settlement = calcAkkaSettlement(items, document.getElementById('s-pay').value, document.getElementById('s-deposit').value);
+  return { ...settlement, items };
 }
 
 window.sRecalc = () => {
@@ -2008,9 +2037,19 @@ window.sRecalc = () => {
   document.getElementById('ss-inc').textContent = fmt(a.totalInc);
   document.getElementById('ss-ref-label').textContent = `紹介料（税抜×${sCamSettings.rate}%＋消費税${sCamSettings.taxRate}%）`;
   document.getElementById('ss-ref').textContent = fmt(a.totalRef);
-  document.getElementById('ss-fee-row').style.opacity = a.isCard ? '1' : '0.3';
-  document.getElementById('ss-fee').textContent = a.isCard ? `−${fmt(a.cardFee)}` : '¥0';
-  document.getElementById('ss-recv').textContent = fmt(a.salonRecv);
+  document.getElementById('ss-akkanormal').textContent = fmt(a.akkaNormalReceive);
+  document.getElementById('ss-deposit').textContent = `−${fmt(a.deposit)}`;
+  document.getElementById('ss-customer-collection').textContent = fmt(a.customerCollection);
+  document.getElementById('ss-unsettled').textContent = fmt(a.akkaUnsettled);
+  document.getElementById('ss-own-fee-row').style.opacity = a.isCard ? '1' : '0.3';
+  document.getElementById('ss-own-fee').textContent = a.isCard ? `−${fmt(a.ownCardFee)}` : '¥0';
+  document.getElementById('ss-ref-net').textContent = fmt(a.refNet);
+  document.getElementById('ss-akka-fee-row').style.opacity = a.isCard ? '1' : '0.3';
+  document.getElementById('ss-akka-fee').textContent = a.isCard ? `−${fmt(a.akkaCardFee)}` : '¥0';
+  document.getElementById('ss-recv').textContent = fmt(a.transferAmount);
+  const warning = document.getElementById('ss-warning');
+  warning.textContent = a.warnings.join(' ');
+  warning.style.display = a.warnings.length ? '' : 'none';
 };
 
 window.submitSalon = async () => {
@@ -2021,6 +2060,11 @@ window.submitSalon = async () => {
     return;
   }
   const a = sCalc();
+  if (a.customerCollection < 0 || a.akkaUnsettled < 0 || a.transferAmount < 0) {
+    alert('計算結果がマイナスです。デポジットとメニュー金額を確認してください。');
+    return;
+  }
+  if (a.deposit > a.akkaNormalReceive && !confirm('デポジットがAKKA本来受取額を超えています。この内容で登録しますか？')) return;
   const payload = {
     name,
     date,
@@ -2033,12 +2077,21 @@ window.submitSalon = async () => {
     },
     otherName: document.getElementById('s-other-name').value,
     otherValue: parseFloat(document.getElementById('s-other-val').value) || 0,
+    deposit: a.deposit,
+    settlementStatus: document.getElementById('s-status').value,
+    settledDate: document.getElementById('s-settled-date').value,
     items: a.items,
     totalEx: a.totalEx,
     totalInc: a.totalInc,
     totalRef: a.totalRef,
-    cardFee: a.cardFee,
-    salonRecv: a.salonRecv,
+    akkaNormalReceive: a.akkaNormalReceive,
+    customerCollection: a.customerCollection,
+    akkaUnsettled: a.akkaUnsettled,
+    ownCardFee: a.ownCardFee,
+    refNet: a.refNet,
+    akkaCardFee: a.akkaCardFee,
+    transferAmount: a.transferAmount,
+    calculationWarnings: a.warnings,
     updatedAt: new Date().toISOString()
   };
 
@@ -2057,6 +2110,9 @@ function sResetForm() {
   ['s-name', 's-memo', 's-other-name'].forEach(id => { document.getElementById(id).value = ''; });
   document.getElementById('s-date').value = new Date().toISOString().slice(0, 10);
   document.getElementById('s-other-val').value = '';
+  document.getElementById('s-deposit').value = '';
+  document.getElementById('s-status').value = '未精算';
+  document.getElementById('s-settled-date').value = '';
   document.getElementById('s-pay').value = '現金';
   document.getElementById('s-form-title').textContent = '案件情報';
   document.getElementById('s-submit').textContent = '登録する';
@@ -2075,6 +2131,9 @@ window.sEdit = id => {
   document.getElementById('s-memo').value = record.memo || '';
   document.getElementById('s-other-name').value = record.otherName || '';
   document.getElementById('s-other-val').value = record.otherValue || '';
+  document.getElementById('s-deposit').value = record.deposit || '';
+  document.getElementById('s-status').value = record.settlementStatus || '未精算';
+  document.getElementById('s-settled-date').value = record.settledDate || '';
   if (record.selectionState) {
     sSelMenu = { ...(record.selectionState.selMenu || {}) };
     sMenuQty = { ...(record.selectionState.menuQty || {}) };
@@ -2117,7 +2176,6 @@ function buildSalonItemsFromMineRecord(record) {
   const selDressUp = selection.selDressUp ?? null;
   const selMensUp = selection.selMensUp ?? null;
   const bouquet = selection.bouquet || 'dry';
-  const isCardFlow = usesSalonCardFlow(record.pay);
   const items = [];
 
   if (!selection.selP && Array.isArray(record.plans)) {
@@ -2129,14 +2187,11 @@ function buildSalonItemsFromMineRecord(record) {
   const hasSalonInc = Object.keys(selP).some(index => MPLANS[Number(index)]?.hasSalon) || record.isSalonInc;
 
   const pushItem = (name, ex, hasRef) => {
-    const calc = calcLinkedSalonItem(ex, hasRef, isCardFlow);
     items.push({
       name,
       ex,
-      inc: calc.inc,
-      ref: calc.ref,
-      cardFee: calc.cardFee,
-      salonRecv: calc.salonRecv,
+      inc: Math.round(ex * 1.1),
+      ref: hasRef ? Math.round(ex * (sCamSettings.rate / 100) * (1 + sCamSettings.taxRate / 100)) : 0,
       hasRef
     });
   };
@@ -2196,11 +2251,7 @@ function getSalonDisplayRecords() {
     .filter(record => (record.salonEx || 0) > 0 || record.isSalonInc)
     .map(record => {
       const items = buildSalonItemsFromMineRecord(record);
-      const totalEx = items.reduce((sum, item) => sum + (item.ex || 0), 0);
-      const totalInc = items.reduce((sum, item) => sum + (item.inc || 0), 0);
-      const totalRef = items.reduce((sum, item) => sum + (item.ref || 0), 0);
-      const cardFee = items.reduce((sum, item) => sum + (item.cardFee || 0), 0);
-      const salonRecv = items.reduce((sum, item) => sum + (item.salonRecv || 0), 0);
+      const settlement = calcAkkaSettlement(items, record.pay, 0);
       return {
         _id: `mine-${record._id}`,
         source: 'mine',
@@ -2209,29 +2260,21 @@ function getSalonDisplayRecords() {
         pay: record.pay,
         payLabel: usesSalonCardFlow(record.pay) ? (record.pay === 'PayPay' ? 'PayPay' : 'カード') : '現金',
         items,
-        totalEx,
-        totalInc,
-        totalRef,
-        cardFee,
-        salonRecv
+        ...settlement,
+        settlementStatus: 'ONE SHOT連動',
+        settledDate: ''
       };
     });
 
-  const manualRecords = filterMonth(salonRecs, y, m).map(record => ({
-    _id: `salon-${record._id}`,
-    source: 'manual',
-    date: record.date,
-    name: record.name,
-    pay: record.pay,
-    payLabel: record.pay,
-    items: record.items || [],
-    totalEx: record.totalEx || 0,
-    totalInc: record.totalInc || 0,
-    totalRef: record.totalRef || 0,
-    cardFee: record.cardFee || 0,
-    salonRecv: record.salonRecv || 0,
-    rawId: record._id
-  }));
+  const manualRecords = filterMonth(salonRecs, y, m).map(record => {
+    const settlement = calcAkkaSettlement(record.items || [], record.pay, record.deposit || 0);
+    return {
+      _id: `salon-${record._id}`,
+      source: 'manual', date: record.date, name: record.name, pay: record.pay, payLabel: record.pay,
+      items: record.items || [], ...settlement, settlementStatus: record.settlementStatus || '未精算',
+      settledDate: record.settledDate || '', rawId: record._id
+    };
+  });
 
   return [...linkedMineRecords, ...manualRecords].sort((a, b) => a.date.localeCompare(b.date));
 }
@@ -2241,7 +2284,7 @@ function renderSalonList() {
   const tbody = document.getElementById('s-tbody');
 
   if (!records.length) {
-    tbody.innerHTML = '<tr><td colspan="9" class="empty">この月の案件はありません</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" class="empty">この月の案件はありません</td></tr>';
     return;
   }
 
@@ -2252,9 +2295,10 @@ function renderSalonList() {
       <td><div class="chips">${(r.items || []).map(item => `<span class="chip chip-s">${item.name}</span>`).join('')}</div></td>
       <td><span class="tag ${usesSalonCardFlow(r.pay) ? 'tag-card' : 'tag-cash'}">${r.payLabel}</span></td>
       <td style="text-align:right;">${fmt(r.totalInc || 0)}</td>
-      <td style="text-align:right;color:var(--salon);">${fmt(r.totalRef || 0)}</td>
-      <td style="text-align:right;color:var(--red);">${r.cardFee > 0 ? fmt(r.cardFee) : '—'}</td>
-      <td style="text-align:right;">${fmt(r.salonRecv || 0)}</td>
+      <td style="text-align:right;color:var(--salon);">${fmt(r.refNet || 0)}</td>
+      <td style="text-align:right;">${(r.deposit || 0) > 0 ? fmt(r.deposit) : '—'}</td>
+      <td style="text-align:right;">${fmt(r.transferAmount || 0)}</td>
+      <td>${r.settlementStatus === '精算済み' ? `<span class="tag tag-paid">精算済み</span>` : `<span class="tag tag-unpaid">${r.settlementStatus || '未精算'}</span>`}</td>
       <td style="white-space:nowrap;">${r.source === 'manual'
         ? `<button class="icon-btn" onclick="sEdit('${r.rawId}')">✏️</button><button class="icon-btn" onclick="sDel('${r.rawId}')" style="color:var(--red);">✕</button>`
         : '<span class="chip">ONE SHOT連動</span>'}</td>
@@ -2266,8 +2310,8 @@ function renderSalonMetrics() {
   const records = getSalonDisplayRecords();
   document.getElementById('s-count').textContent = `${records.length}件`;
   document.getElementById('s-sales').textContent = fmt(records.reduce((s, r) => s + (r.totalInc || 0), 0));
-  document.getElementById('s-ref').textContent = fmt(records.reduce((s, r) => s + (r.totalRef || 0), 0));
-  document.getElementById('s-recv').textContent = fmt(records.reduce((s, r) => s + (r.salonRecv || 0), 0));
+  document.getElementById('s-ref').textContent = fmt(records.reduce((s, r) => s + (r.refNet || 0), 0));
+  document.getElementById('s-recv').textContent = fmt(records.reduce((s, r) => s + (r.transferAmount || 0), 0));
 }
 
 function renderSalonInvoice() {
@@ -2276,8 +2320,10 @@ function renderSalonInvoice() {
   const camName = sCamSettings.camName || 'カメラマン名未設定';
   const totalInc = records.reduce((s, r) => s + (r.totalInc || 0), 0);
   const totalRef = records.reduce((s, r) => s + (r.totalRef || 0), 0);
-  const totalFee = records.reduce((s, r) => s + (r.cardFee || 0), 0);
-  const totalSalon = records.reduce((s, r) => s + (r.salonRecv || 0), 0);
+  const totalOwnCardFee = records.reduce((s, r) => s + (r.ownCardFee || 0), 0);
+  const totalAkkaCardFee = records.reduce((s, r) => s + (r.akkaCardFee || 0), 0);
+  const totalRefNet = records.reduce((s, r) => s + (r.refNet || 0), 0);
+  const totalSalon = records.reduce((s, r) => s + (r.transferAmount || 0), 0);
   const now = new Date();
   const itemMap = {};
 
@@ -2297,9 +2343,10 @@ function renderSalonInvoice() {
       <td>${r.name}</td>
       <td style="color:${usesSalonCardFlow(r.pay) ? '#534AB7' : '#2e7d32'};font-size:11px;">${r.payLabel}</td>
       <td class="r">${fmt(r.totalInc || 0)}</td>
-      <td class="r" style="color:#2e7d32;">${fmt(r.totalRef || 0)}</td>
-      <td class="r" style="color:#c62828;">${r.cardFee > 0 ? fmt(r.cardFee) : '—'}</td>
-      <td class="r" style="font-weight:600;">${fmt(r.salonRecv || 0)}</td>
+      <td class="r">${(r.deposit || 0) > 0 ? fmt(r.deposit) : '—'}</td>
+      <td class="r" style="color:#2e7d32;">${fmt(r.refNet || 0)}</td>
+      <td class="r" style="font-weight:600;">${fmt(r.transferAmount || 0)}</td>
+      <td>${r.settlementStatus || '未精算'}${r.settledDate ? `<br><span style="font-size:10px;color:#666;">${r.settledDate}</span>` : ''}</td>
     </tr>
   `).join('');
 
@@ -2326,8 +2373,8 @@ function renderSalonInvoice() {
       </div>
       <div style="font-size:12px;font-weight:700;margin-bottom:6px;">案件明細（${records.length}件）</div>
       <table class="inv-table" style="margin-bottom:16px;">
-        <thead><tr><th>日付</th><th>お客様</th><th>支払</th><th style="text-align:right;">売上(税込)</th><th style="text-align:right;">紹介料</th><th style="text-align:right;">手数料</th><th style="text-align:right;">ONE SHOT支払</th></tr></thead>
-        <tbody>${caseRows || '<tr><td colspan="7" style="text-align:center;color:#999;">案件なし</td></tr>'}</tbody>
+        <thead><tr><th>日付</th><th>お客様</th><th>支払</th><th style="text-align:right;">売上(税込)</th><th style="text-align:right;">デポジット</th><th style="text-align:right;">紹介料手取り</th><th style="text-align:right;">AKKA振込</th><th>精算</th></tr></thead>
+        <tbody>${caseRows || '<tr><td colspan="8" style="text-align:center;color:#999;">案件なし</td></tr>'}</tbody>
       </table>
       <div style="font-size:12px;font-weight:700;margin-bottom:6px;">商品別集計</div>
       <table class="inv-table" style="margin-bottom:16px;">
@@ -2336,11 +2383,13 @@ function renderSalonInvoice() {
       </table>
       <div class="inv-total">
         <div class="inv-total-row"><span>売上合計（税込）</span><span>${fmt(totalInc)}</span></div>
-        <div class="inv-total-row" style="color:#2e7d32;"><span>ONE SHOT紹介料合計</span><span>${fmt(totalRef)}</span></div>
-        <div class="inv-total-row" style="color:#c62828;"><span>カード手数料差引</span><span>−${fmt(totalFee)}</span></div>
-        <div class="inv-total-row big"><span>ONE SHOT支払額合計</span><span>${fmt(totalSalon)}</span></div>
+        <div class="inv-total-row" style="color:#2e7d32;"><span>ONE SHOT紹介料（税込）</span><span>${fmt(totalRef)}</span></div>
+        <div class="inv-total-row" style="color:#c62828;"><span>ONE SHOTカード手数料</span><span>−${fmt(totalOwnCardFee)}</span></div>
+        <div class="inv-total-row" style="color:#2e7d32;"><span>ONE SHOT紹介料手取り合計</span><span>${fmt(totalRefNet)}</span></div>
+        <div class="inv-total-row" style="color:#c62828;"><span>AKKAカード手数料</span><span>−${fmt(totalAkkaCardFee)}</span></div>
+        <div class="inv-total-row big"><span>AKKAへの振込総額</span><span>${fmt(totalSalon)}</span></div>
       </div>
-      <div class="inv-note">※ ONE SHOT支払額 ＝ サロン売上（税込）− ONE SHOT紹介料 − カード手数料（カード/PayPayの場合のみ）</div>
+      <div class="inv-note">※ AKKAへの振込額は、紹介料・デポジット・カード手数料を反映した最終精算額です。</div>
     </div>
   `;
 }
