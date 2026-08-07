@@ -2414,7 +2414,6 @@ function renderSalonMetrics() {
 function renderSalonInvoice() {
   const { y, m } = getTabYM('salon');
   const records = getSalonDisplayRecords();
-  const camName = sCamSettings.camName || 'カメラマン名未設定';
   const totalInc = records.reduce((s, r) => s + (r.totalInc || 0), 0);
   const totalRef = records.reduce((s, r) => s + (r.totalRef || 0), 0);
   const totalOwnCardFee = records.reduce((s, r) => s + (r.ownCardFee || 0), 0);
@@ -2427,7 +2426,10 @@ function renderSalonInvoice() {
   records.forEach(r => {
     (r.items || []).forEach(item => {
       const key = item.name.replace(/ ×\d+/, '');
-      if (!itemMap[key]) itemMap[key] = { name:key, ex:0, inc:0, ref:0, hasRef:item.hasRef };
+      const quantityMatch = item.name.match(/ ×(\d+)$/);
+      const quantity = quantityMatch ? Number(quantityMatch[1]) : 1;
+      if (!itemMap[key]) itemMap[key] = { name:key, qty:0, ex:0, inc:0, ref:0, hasRef:item.hasRef };
+      itemMap[key].qty += quantity;
       itemMap[key].ex += item.ex;
       itemMap[key].inc += item.inc;
       itemMap[key].ref += item.ref;
@@ -2441,15 +2443,15 @@ function renderSalonInvoice() {
       <td style="color:${usesSalonCardFlow(r.pay) ? '#534AB7' : '#2e7d32'};font-size:11px;">${r.payLabel}</td>
       <td class="r">${fmt(r.totalInc || 0)}</td>
       <td class="r">${(r.deposit || 0) > 0 ? fmt(r.deposit) : '—'}</td>
-      <td class="r" style="color:#2e7d32;">${fmt(r.refNet || 0)}</td>
+      <td class="r" style="color:#2e7d32;">${fmt(r.totalRef || 0)}</td>
       <td class="r" style="font-weight:600;">${fmt(r.transferAmount || 0)}</td>
-      <td>${r.settlementStatus || '未精算'}${r.settledDate ? `<br><span style="font-size:10px;color:#666;">${r.settledDate}</span>` : ''}</td>
     </tr>
   `).join('');
 
   const itemRows = Object.values(itemMap).map(item => `
     <tr>
       <td>${item.name}${item.hasRef ? '<span style="font-size:10px;background:#e8f5e9;color:#2e7d32;padding:1px 5px;border-radius:3px;margin-left:4px;">報酬あり</span>' : ''}</td>
+      <td class="r">${item.qty}</td>
       <td class="r">${fmt(item.ex)}</td>
       <td class="r">${fmt(item.inc)}</td>
       <td class="r" style="color:#2e7d32;">${item.hasRef ? fmt(item.ref) : '—'}</td>
@@ -2460,33 +2462,33 @@ function renderSalonInvoice() {
     <div class="invoice">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
         <div>
-          <div class="inv-title">紹介料 請求書</div>
+          <div class="inv-title">請求書</div>
           <div class="inv-meta">対象：${y}年${MN[m]}　発行：${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}</div>
         </div>
         <div style="text-align:right;">
-          <div style="font-size:14px;font-weight:700;">${camName} 様</div>
+          <div style="font-size:14px;font-weight:700;">ONE SHOT(ジョー)</div>
           <div style="font-size:12px;color:#666;">報酬率：${sCamSettings.rate}%＋消費税${sCamSettings.taxRate}%</div>
         </div>
       </div>
       <div style="font-size:12px;font-weight:700;margin-bottom:6px;">案件明細（${records.length}件）</div>
       <table class="inv-table" style="margin-bottom:16px;">
-        <thead><tr><th>日付</th><th>お客様</th><th>支払</th><th style="text-align:right;">売上(税込)</th><th style="text-align:right;">デポジット</th><th style="text-align:right;">紹介料手取り</th><th style="text-align:right;">AKKA振込</th><th>精算</th></tr></thead>
-        <tbody>${caseRows || '<tr><td colspan="8" style="text-align:center;color:#999;">案件なし</td></tr>'}</tbody>
+        <thead><tr><th>日付</th><th>お客様</th><th>支払</th><th style="text-align:right;">売上(税込)</th><th style="text-align:right;">デポジット</th><th style="text-align:right;">紹介料</th><th style="text-align:right;">AKKA振込</th></tr></thead>
+        <tbody>${caseRows || '<tr><td colspan="7" style="text-align:center;color:#999;">案件なし</td></tr>'}</tbody>
       </table>
       <div style="font-size:12px;font-weight:700;margin-bottom:6px;">商品別集計</div>
       <table class="inv-table" style="margin-bottom:16px;">
-        <thead><tr><th>商品名</th><th style="text-align:right;">税抜</th><th style="text-align:right;">税込</th><th style="text-align:right;">紹介料</th></tr></thead>
-        <tbody>${itemRows || '<tr><td colspan="4" style="text-align:center;color:#999;">データなし</td></tr>'}</tbody>
+        <thead><tr><th>商品名</th><th style="text-align:right;">個数</th><th style="text-align:right;">税抜</th><th style="text-align:right;">税込</th><th style="text-align:right;">紹介料</th></tr></thead>
+        <tbody>${itemRows || '<tr><td colspan="5" style="text-align:center;color:#999;">データなし</td></tr>'}</tbody>
       </table>
       <div class="inv-total">
         <div class="inv-total-row"><span>売上合計（税込）</span><span>${fmt(totalInc)}</span></div>
         <div class="inv-total-row" style="color:#2e7d32;"><span>ONE SHOT紹介料（税込）</span><span>${fmt(totalRef)}</span></div>
         <div class="inv-total-row" style="color:#c62828;"><span>ONE SHOTカード手数料</span><span>−${fmt(totalOwnCardFee)}</span></div>
-        <div class="inv-total-row" style="color:#2e7d32;"><span>ONE SHOT紹介料手取り合計</span><span>${fmt(totalRefNet)}</span></div>
-        <div class="inv-total-row" style="color:#c62828;"><span>AKKAカード手数料</span><span>−${fmt(totalAkkaCardFee)}</span></div>
-        <div class="inv-total-row big"><span>AKKAへの振込総額</span><span>${fmt(totalSalon)}</span></div>
+        <div class="inv-total-row" style="color:#2e7d32;"><span>ONE SHOT紹介料合計</span><span>${fmt(totalRefNet)}</span></div>
+        <div class="inv-total-row" style="color:#c62828;"><span>AKKA HAKKAカード手数料負担</span><span>−${fmt(totalAkkaCardFee)}</span></div>
+        <div class="inv-total-row big"><span>最終請求額</span><span>${fmt(totalSalon)}</span></div>
       </div>
-      <div class="inv-note">※ AKKAへの振込額は、紹介料・デポジット・カード手数料を反映した最終精算額です。</div>
+      <div class="inv-note">※ AKKA HAKKAへの振込額は、紹介料・デポジット・カード手数料を反映した最終精算額です。</div>
     </div>
   `;
 }
