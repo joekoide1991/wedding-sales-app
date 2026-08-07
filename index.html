@@ -527,6 +527,32 @@ tr:hover td { background: rgba(255,255,255,0.02); }
     </div>
     <div id="salon-invoice-body"></div>
   </div>
+  <div class="card" id="linked-akka-form" style="display:none;">
+    <div class="card-title">ONE SHOT連携案件の精算編集</div>
+    <div id="la-case-info" style="font-size:13px;color:var(--text2);margin-bottom:12px;"></div>
+    <div class="g3" style="margin-bottom:12px;">
+      <div><label>AKKA受領済みデポジット（税込）</label><input type="number" min="0" id="la-deposit" placeholder="0" oninput="recalcLinkedAkka()"></div>
+      <div><label>精算状況</label><select id="la-status"><option value="未精算">未精算</option><option value="精算済み">精算済み</option></select></div>
+      <div><label>精算日</label><input type="date" id="la-settled-date"></div>
+    </div>
+    <div><label>備考</label><input type="text" id="la-memo" placeholder="AKKA精算用の備考" style="margin-bottom:12px;"></div>
+    <div class="sbox">
+      <div class="sbox-title">精算確認</div>
+      <div class="s-row sub"><span>サロンメニュー税込合計</span><span id="la-total">¥0</span></div>
+      <div class="s-row sub"><span>紹介料税込合計</span><span id="la-ref">¥0</span></div>
+      <div class="s-row sub"><span>AKKA本来受取額</span><span id="la-normal">¥0</span></div>
+      <div class="s-row sub"><span>当方のお客様回収額</span><span id="la-customer">¥0</span></div>
+      <div class="s-row sub"><span>AKKA未精算額</span><span id="la-unsettled">¥0</span></div>
+      <div class="s-row sub"><span>ONE SHOT紹介料手取り</span><span style="color:var(--salon);" id="la-ref-net">¥0</span></div>
+      <div class="s-row grand"><span>AKKAへの最終振込額</span><span id="la-transfer">¥0</span></div>
+      <div id="la-warning" style="display:none;margin-top:8px;color:var(--red);font-size:12px;"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button class="btn btn-primary salon btn-block" onclick="saveLinkedAkkaSettlement()">精算情報を保存</button>
+      <button class="btn" onclick="cancelLinkedAkkaSettlement()">キャンセル</button>
+    </div>
+    <div style="font-size:11px;color:var(--text3);margin-top:10px;">※ メニューと支払方法の変更は、ONE SHOT側の案件編集から行ってください。</div>
+  </div>
   <div class="card">
     <div class="card-title">案件一覧</div>
     <div class="table-wrap">
@@ -672,7 +698,7 @@ let sCamSettings = { camName:'', rate:20, taxRate:8, cardRate:2.5 };
 let fSelWP = {}, fSelSP = {}, fSelWO = {}, fSelSO = {}, fOQty = {}, fAttendMemo = {}, fWOptChoices = {}, fEditId = null;
 let fCustomOpts = [], fExps = [];
 let mSelP = {}, mSelO = {}, mSelS = {}, mSelDressUp = null, mSelMensUp = null, mBouquet = 'dry', mSelExtra = {}, mOQty = {}, mEstP = {}, mExps = [], mDiscounts = [], mCustomOpts = [], mEditId = null;
-let sSelMenu = {}, sMenuQty = {}, sEditId = null;
+let sSelMenu = {}, sMenuQty = {}, sEditId = null, linkedAkkaEditingId = null;
 
 const fmt = n => '¥' + Math.round(Number(n) || 0).toLocaleString('ja-JP');
 const getLoginError = () => document.getElementById('login-error');
@@ -2152,8 +2178,76 @@ window.sDel = async id => {
   await deleteDoc(doc(db, 'salon-recs', id));
 };
 
+function getLinkedAkkaSettlement() {
+  const record = myRecs.find(item => item._id === linkedAkkaEditingId);
+  if (!record) return null;
+  return calcAkkaSettlement(buildSalonItemsFromMineRecord(record), record.pay, document.getElementById('la-deposit').value);
+}
+
+window.recalcLinkedAkka = () => {
+  const a = getLinkedAkkaSettlement();
+  if (!a) return;
+  document.getElementById('la-total').textContent = fmt(a.totalInc);
+  document.getElementById('la-ref').textContent = fmt(a.totalRef);
+  document.getElementById('la-normal').textContent = fmt(a.akkaNormalReceive);
+  document.getElementById('la-customer').textContent = fmt(a.customerCollection);
+  document.getElementById('la-unsettled').textContent = fmt(a.akkaUnsettled);
+  document.getElementById('la-ref-net').textContent = fmt(a.refNet);
+  document.getElementById('la-transfer').textContent = fmt(a.transferAmount);
+  const warning = document.getElementById('la-warning');
+  warning.textContent = a.warnings.join(' ');
+  warning.style.display = a.warnings.length ? '' : 'none';
+};
+
+window.editLinkedAkkaSettlement = id => {
+  const record = myRecs.find(item => item._id === id);
+  if (!record) return;
+  linkedAkkaEditingId = id;
+  const akka = record.akkaSettlement || {};
+  document.getElementById('la-case-info').textContent = `${record.date}　${record.name} 様　/　${(buildSalonItemsFromMineRecord(record) || []).map(item => item.name).join('・')}`;
+  document.getElementById('la-deposit').value = akka.deposit || '';
+  document.getElementById('la-status').value = akka.status || '未精算';
+  document.getElementById('la-settled-date').value = akka.settledDate || '';
+  document.getElementById('la-memo').value = akka.memo || '';
+  document.getElementById('linked-akka-form').style.display = '';
+  window.recalcLinkedAkka();
+  document.getElementById('linked-akka-form').scrollIntoView({ behavior:'smooth' });
+};
+
+window.cancelLinkedAkkaSettlement = () => {
+  linkedAkkaEditingId = null;
+  document.getElementById('linked-akka-form').style.display = 'none';
+};
+
+window.saveLinkedAkkaSettlement = async () => {
+  const a = getLinkedAkkaSettlement();
+  if (!a || !linkedAkkaEditingId) return;
+  if (a.customerCollection < 0 || a.akkaUnsettled < 0 || a.transferAmount < 0) {
+    alert('計算結果がマイナスです。デポジットを確認してください。');
+    return;
+  }
+  if (a.deposit > a.akkaNormalReceive && !confirm('デポジットがAKKA本来受取額を超えています。この内容で保存しますか？')) return;
+  await updateDoc(doc(db, 'my-recs', linkedAkkaEditingId), {
+    akkaSettlement: {
+      deposit: a.deposit,
+      status: document.getElementById('la-status').value,
+      settledDate: document.getElementById('la-settled-date').value,
+      memo: document.getElementById('la-memo').value
+    },
+    updatedAt: new Date().toISOString()
+  });
+  cancelLinkedAkkaSettlement();
+};
+
 function usesSalonCardFlow(pay) {
   return pay === 'カード' || pay === 'PayPay';
+}
+
+function getSalonPayLabel(pay) {
+  if (pay === 'PayPay') return 'PayPay';
+  if (pay === 'カード') return 'カード';
+  if (pay === '振込') return '振込';
+  return '現金';
 }
 
 function calcLinkedSalonItem(ex, hasRef, isCardFlow) {
@@ -2251,18 +2345,21 @@ function getSalonDisplayRecords() {
     .filter(record => (record.salonEx || 0) > 0 || record.isSalonInc)
     .map(record => {
       const items = buildSalonItemsFromMineRecord(record);
-      const settlement = calcAkkaSettlement(items, record.pay, 0);
+      const akka = record.akkaSettlement || {};
+      const settlement = calcAkkaSettlement(items, record.pay, akka.deposit || 0);
       return {
         _id: `mine-${record._id}`,
         source: 'mine',
         date: record.date,
         name: record.name,
         pay: record.pay,
-        payLabel: usesSalonCardFlow(record.pay) ? (record.pay === 'PayPay' ? 'PayPay' : 'カード') : '現金',
+        payLabel: getSalonPayLabel(record.pay),
         items,
         ...settlement,
-        settlementStatus: 'ONE SHOT連動',
-        settledDate: ''
+        settlementStatus: akka.status || '未精算',
+        settledDate: akka.settledDate || '',
+        rawId: record._id,
+        akkaMemo: akka.memo || ''
       };
     });
 
@@ -2301,7 +2398,7 @@ function renderSalonList() {
       <td>${r.settlementStatus === '精算済み' ? `<span class="tag tag-paid">精算済み</span>` : `<span class="tag tag-unpaid">${r.settlementStatus || '未精算'}</span>`}</td>
       <td style="white-space:nowrap;">${r.source === 'manual'
         ? `<button class="icon-btn" onclick="sEdit('${r.rawId}')">✏️</button><button class="icon-btn" onclick="sDel('${r.rawId}')" style="color:var(--red);">✕</button>`
-        : '<span class="chip">ONE SHOT連動</span>'}</td>
+        : `<button class="btn btn-sm" onclick="editLinkedAkkaSettlement('${r.rawId}')">精算編集</button>`}</td>
     </tr>
   `).join('');
 }
