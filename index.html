@@ -250,7 +250,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
     <div class="metric"><div class="metric-label">現金差引</div><div class="metric-value" id="f-cash">¥0</div></div>
   </div>
   <div class="card" id="friend-form" style="display:none;">
-    <div class="card-title" id="f-form-title">新規案件 — 友人ブランド</div>
+    <div class="card-title" id="f-form-title">Massu photo studio✴︎</div>
     <div class="g3" style="margin-bottom:12px;">
       <div><label>お客様名</label><input type="text" id="f-name" placeholder="山田 太郎 様"></div>
       <div><label>撮影日</label><input type="date" id="f-date"></div>
@@ -278,18 +278,18 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       <div><label>リピート割（%）</label><input type="number" id="f-repeat" min="0" max="100" step="1" placeholder="0" oninput="fRecalc()"></div>
       <div></div>
     </div>
-    <div class="card-title" style="margin-top:4px;">ウェディング系プラン</div>
+    <div class="card-title" style="margin-top:4px;">撮影プラン</div>
     <div class="menu-grid" id="f-wplan-grid" style="margin-bottom:12px;"></div>
-    <div class="card-title">星空系プラン <span class="badge badge-est">報酬50%</span></div>
-    <div class="menu-grid" id="f-splan-grid" style="margin-bottom:12px;"></div>
-    <div class="card-title">ウェディング系オプション</div>
+    <div class="card-title">オプション</div>
     <div class="menu-grid" id="f-wopt-grid" style="margin-bottom:12px;"></div>
-    <div class="card-title">星空系オプション <span class="badge badge-est">報酬50%</span></div>
-    <div class="menu-grid" id="f-sopt-grid" style="margin-bottom:12px;"></div>
-    <div class="card-title">手入力オプション</div>
+    <div class="card-title">追加オプション</div>
     <div id="f-custom-opt-list"></div>
     <button class="btn btn-sm" onclick="addFCustomOpt()" style="margin-top:6px;">＋ オプション追加</button>
-    <div class="card-title" style="margin-top:12px;">追加経費</div>
+    <div class="card-title" style="margin-top:12px;">星空プラン <span class="badge badge-est">報酬50%</span></div>
+    <div class="menu-grid" id="f-splan-grid" style="margin-bottom:12px;"></div>
+    <div class="card-title">星空オプション <span class="badge badge-est">報酬50%</span></div>
+    <div class="menu-grid" id="f-sopt-grid" style="margin-bottom:12px;"></div>
+    <div class="card-title" style="margin-top:12px;">経費</div>
     <div id="f-exp-list"></div>
     <button class="btn btn-sm" onclick="addFExp()" style="margin-top:6px;">＋ 経費追加</button>
     <div class="sbox">
@@ -331,9 +331,9 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       </div>
       <div class="sbox">
         <div class="sbox-title">現金差引</div>
-        <div class="s-row sub"><span>自分受取→友人分</span><span style="color:var(--red);" id="ft-tof">¥0</span></div>
-        <div class="s-row sub"><span>友人受取→自分報酬</span><span style="color:var(--green);" id="ft-tome">¥0</span></div>
-        <div class="s-row total"><span id="ft-cash-label">現金差引</span><span id="ft-cash-final">¥0</span></div>
+        <div class="s-row sub"><span>ジョー受取→Massu photo studio✴︎</span><span style="color:var(--red);" id="ft-tof">¥0</span></div>
+        <div class="s-row sub"><span>Massu photo studio✴︎受取→ジョー報酬</span><span style="color:var(--green);" id="ft-tome">¥0</span></div>
+        <div class="s-row total"><span id="ft-cash-label">現金取引</span><span id="ft-cash-final">¥0</span></div>
       </div>
     </div>
   </div>
@@ -368,6 +368,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
           <option value="振込">銀行振込</option>
           <option value="カード">クレジットカード（2.5%）</option>
           <option value="PayPay">PayPay（1.98%）</option>
+          <option value="オンライン">オンライン（3.6%）</option>
         </select>
       </div>
       <div><label>メモ</label><input type="text" id="m-memo" placeholder="備考"></div>
@@ -387,10 +388,12 @@ tr:hover td { background: rgba(255,255,255,0.02); }
         <div class="menu-item" id="mbq-dry" onclick="mSelBouquet('dry')"><div class="mi-name">ドライフラワー <span class="badge badge-si">基準</span></div><div class="mi-price">税抜¥3,500</div></div>
         <div class="menu-item" id="mbq-art" onclick="mSelBouquet('art')"><div class="mi-name">アーティシャルフラワー <span class="badge badge-si">基準</span></div><div class="mi-price">税抜¥5,000</div></div>
       </div>
-      <div class="card-title">ドレスグレードアップ（基準：C 税抜30,000円）</div>
-      <div class="menu-grid" id="m-dress-grid" style="margin-bottom:10px;"></div>
-      <div class="card-title">メンズグレードアップ（基準：C 税抜30,000円）</div>
-      <div class="menu-grid" id="m-mens-grid" style="margin-bottom:10px;"></div>
+      <div class="card-title">ドレス選択</div>
+      <div id="m-dress-select-list-inc" style="margin-bottom:8px;"></div>
+      <button class="btn btn-sm" onclick="addMineGarment('dress')">＋ ドレス追加</button>
+      <div class="card-title" style="margin-top:12px;">メンズ選択</div>
+      <div id="m-mens-select-list-inc" style="margin-bottom:8px;"></div>
+      <button class="btn btn-sm" onclick="addMineGarment('mens')">＋ メンズ追加</button>
       <div class="card-title">追加サロンメニュー</div>
       <div class="menu-grid" id="m-extra-grid" style="margin-bottom:10px;"></div>
       <div><label>その他サロン費用（税抜・報酬なし）</label>
@@ -412,6 +415,12 @@ tr:hover td { background: rgba(255,255,255,0.02); }
     </div>
     <div id="m-salon-normal-section">
       <div class="card-title">サロンメニュー</div>
+      <div class="card-title">ドレス選択</div>
+      <div id="m-dress-select-list-normal" style="margin-bottom:8px;"></div>
+      <button class="btn btn-sm" onclick="addMineGarment('dress')">＋ ドレス追加</button>
+      <div class="card-title" style="margin-top:12px;">メンズ選択</div>
+      <div id="m-mens-select-list-normal" style="margin-bottom:8px;"></div>
+      <button class="btn btn-sm" onclick="addMineGarment('mens')">＋ メンズ追加</button>
       <div class="menu-grid" id="m-salon-grid" style="margin-bottom:10px;"></div>
       <div><label>その他サロン費用（税抜・報酬なし）</label>
         <div class="g2" style="margin-top:6px;"><input type="text" id="m-so-name2" placeholder="内容"><input type="number" id="m-so-val2" placeholder="税抜金額" oninput="mRecalc()"></div>
@@ -589,7 +598,7 @@ const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
 
 const WPLANS = [
-  { name:'ウェディングショート', price:34800 }, { name:'ウェディングショート送迎', price:36800 },
+  { name:'ウェディングショート', price:34800 }, { name:'ウェディングショート送迎', price:36182 },
   { name:'ウェディングスタンダード', price:54800 }, { name:'ウェディングプレミアム', price:98000 },
   { name:'ウェディングサンセット', price:54800 }, { name:'ウェディングスタ＆サン', price:106600 },
   { name:'ウェディングプレ＆サン', price:149800 }, { name:'カジュアル', price:29800 },
@@ -619,8 +628,8 @@ const WOPTS = [
   { name:'離島出張11-3', price:9800, reward:true }, { name:'お急ぎ21', price:5000, reward:true },
   { name:'お急ぎ7', price:10000, reward:true }, { name:'サロンスタジオ', price:26800, rewardBase:24800, reward:true, special:true },
   { name:'カジュアル延長', price:9800, reward:true, qty:true },
-  { name:'花束代行', price:5000, reward:true }, { name:'アテンド1ロケ', price:6800, reward:false },
-  { name:'アテンド2ロケ', price:13600, reward:false }, { name:'ブーケA', price:5000, reward:false },
+  { name:'花束代行', price:5000, reward:true }, { name:'アテンド1ロケ', price:9800, reward:false },
+  { name:'アテンドカスタム', price:0, reward:false, est:true }, { name:'ブーケA', price:4500, reward:false },
   { name:'ブーケB', price:3500, reward:false }, { name:'アルバムA', price:29800, reward:false },
   { name:'アルバムA増刷', price:19370, reward:false, qty:true }, { name:'アルバムB', price:49800, reward:false },
   { name:'アルバムB増刷', price:32370, reward:false, qty:true }, { name:'アルバムC', price:59800, reward:false },
@@ -643,14 +652,15 @@ const MPLANS = [
   { name:'ウェディングライト【サロン込】', priceInc:140000, est:false, hasSalon:true, shootEx:40000 },
   { name:'ウェディングベーシック【サロン込】', priceInc:160000, est:false, hasSalon:true, shootEx:60000 },
   { name:'ウェディングサンセット【サロン込】', priceInc:155000, est:false, hasSalon:true, shootEx:55000 },
-  { name:'ウェディング1Day【サロン込】', priceInc:198000, est:false, hasSalon:true, shootEx:90000 },
+  { name:'ウェディング1Day【サロン込】', priceInc:192000, est:false, hasSalon:true, shootEx:90000 },
   { name:'ウェディング中国ベーシック', priceInc:330000, est:false, hasSalon:true, shootEx:60000 },
   { name:'ウェディング中国1Day', priceInc:396000, est:false, hasSalon:true, shootEx:90000 },
 ];
 const MOPTS = [
-  { name:'ドローン A', ex:20000, qty:false }, { name:'ドローン B', ex:12000, qty:false },
+  { name:'ドローン A', ex:20000, qty:false, choices:[{ label:'通常', inc:22000 }, { label:'50%', inc:11000 }], defaultChoice:'通常' },
+  { name:'ドローン B', ex:12000, qty:false, choices:[{ label:'通常', inc:13200 }, { label:'50%', inc:6600 }], defaultChoice:'通常' },
   { name:'動画撮影', ex:35000, qty:false }, { name:'動画撮制', ex:60000, qty:false },
-  { name:'ビューティー補正', ex:35000, qty:false }, { name:'ビューティー補正単枚', ex:3500, qty:true },
+  { name:'ビューティー補正', ex:30000, qty:false }, { name:'ビューティー補正単枚', ex:3500, qty:true },
   { name:'チャペル撮影', ex:15000, qty:false }, { name:'離島出張4-10', ex:15000, qty:false },
   { name:'離島出張11-3', ex:10000, qty:false }, { name:'予備日確保', ex:0, est:true, qty:false },
   { name:'アルバム制作', ex:50000, qty:false }, { name:'アルバム増刷', ex:32500, qty:true },
@@ -679,6 +689,15 @@ const MDRESS_UP = [
 const MMENS_UP = [
   { name:'メンズ B', ex:50000, hasRef:true }, { name:'メンズ A', ex:80000, hasRef:true }
 ];
+const MDRESSES = [
+  { name:'ドレス C', ex:30000, hasRef:true }, { name:'ドレス C5', ex:50000, hasRef:true },
+  { name:'ドレス B', ex:80000, hasRef:true }, { name:'ドレス A', ex:130000, hasRef:true },
+  { name:'ドレス S15', ex:150000, hasRef:true }, { name:'ドレス S18', ex:180000, hasRef:true },
+  { name:'ドレス S30', ex:300000, hasRef:true }
+];
+const MMENSES = [
+  { name:'メンズ C', ex:30000, hasRef:true }, { name:'メンズ B', ex:50000, hasRef:true }, { name:'メンズ A', ex:80000, hasRef:true }
+];
 const MEXTRA = [
   { name:'ヌーブラ', ex:2000, hasRef:false }, { name:'ヘアセット着付', ex:13000, hasRef:true },
   { name:'ヘアチェンジ', ex:13000, hasRef:true },
@@ -700,9 +719,9 @@ let salonRecs = [];
 // AKKA HAKKA settlement rates are centralized here so they can be adjusted from Settings.
 let sCamSettings = { camName:'', rate:20, taxRate:8, cardRate:2.5 };
 
-let fSelWP = {}, fSelSP = {}, fSelWO = {}, fSelSO = {}, fOQty = {}, fAttendMemo = {}, fWOptChoices = {}, fEditId = null;
+let fSelWP = {}, fSelSP = {}, fSelWO = {}, fSelSO = {}, fOQty = {}, fAttendMemo = {}, fWOptChoices = {}, fEstWO = {}, fEditId = null;
 let fCustomOpts = [], fExps = [];
-let mSelP = {}, mSelO = {}, mSelS = {}, mSelDressUp = null, mSelMensUp = null, mBouquet = 'dry', mSelExtra = {}, mOQty = {}, mEstP = {}, mExps = [], mDiscounts = [], mCustomOpts = [], mEditId = null;
+let mSelP = {}, mSelO = {}, mSelS = {}, mSelDressUp = null, mSelMensUp = null, mDressChoices = [], mMensChoices = [], mOptChoices = {}, mBouquet = 'dry', mSelExtra = {}, mOQty = {}, mEstP = {}, mExps = [], mDiscounts = [], mCustomOpts = [], mEditId = null;
 let sSelMenu = {}, sMenuQty = {}, sEditId = null, linkedAkkaEditingId = null;
 
 const fmt = n => '¥' + Math.round(Number(n) || 0).toLocaleString('ja-JP');
@@ -922,13 +941,16 @@ function buildFriendGrids() {
       const isStar = type === 'sp' || type === 'so';
       const cls = selObj[i] ? (isStar ? 'sel-s' : 'sel-f') : '';
       const badge = item.reward === false ? '<span class="badge badge-nr">報酬なし</span>' : '';
-      const displayPrice = type === 'wo' ? getWOptPrice(item, i) : (item.price || item.rewardBase || 0);
+      const displayPrice = type === 'wo' ? (item.est ? (fEstWO[i] || 0) : getWOptPrice(item, i)) : (item.price || item.rewardBase || 0);
       const qtyHtml = item.qty ? `<div class="qty-wrap" onclick="event.stopPropagation()"><button class="qty-btn" onclick="fChQty(event,'${type}',${i},-1)">−</button><span id="fq-${type}-${i}" style="font-size:12px;min-width:14px;text-align:center;">${fOQty[type + i] || 1}</span><button class="qty-btn" onclick="fChQty(event,'${type}',${i},1)">＋</button></div>` : '';
       const memoHtml = item.name.includes('アテンド')
         ? `<input class="est-input" type="text" maxlength="10" placeholder="メモ(10文字)" value="${fAttendMemo[type + i] || ''}" onclick="event.stopPropagation()" oninput="fAttendMemo['${type + i}']=this.value">`
         : '';
       const choiceHtml = type === 'wo' && item.choices
         ? `<select class="est-input" onclick="event.stopPropagation()" onchange="fChangeWOptChoice(${i}, this.value)">${item.choices.map(choice => `<option value="${choice.label}" ${((fWOptChoices[i] || item.defaultChoice) === choice.label) ? 'selected' : ''}>${choice.label} ${fmt(choice.price)}</option>`).join('')}</select>`
+        : '';
+      const estHtml = type === 'wo' && item.est
+        ? `<input class="est-input" type="number" min="0" placeholder="金額" id="fe-wo-${i}" value="${fEstWO[i] || ''}" onclick="event.stopPropagation()" oninput="fSetEstimate(${i}, this.value)">`
         : '';
 
       return `<div class="menu-item ${cls}" id="fi-${type}-${i}" onclick="fTog('${type}',${i})">
@@ -937,6 +959,7 @@ function buildFriendGrids() {
         ${qtyHtml}
         ${memoHtml}
         ${choiceHtml}
+        ${estHtml}
       </div>`;
     }).join('');
   };
@@ -975,6 +998,7 @@ function restoreFriendSelections(record) {
     fSelWO = { ...(record.selectionState.selWO || {}) };
     fSelSO = { ...(record.selectionState.selSO || {}) };
     fOQty = { ...(record.selectionState.oQty || {}) };
+    fEstWO = { ...(record.selectionState.estWO || {}) };
     return;
   }
 
@@ -983,6 +1007,7 @@ function restoreFriendSelections(record) {
   fSelWO = {};
   fSelSO = {};
   fOQty = {};
+  fEstWO = {};
 
   (record.wPlans || []).forEach(name => {
     const i = WPLANS.findIndex(item => item.name === name);
@@ -1067,6 +1092,17 @@ window.fChangeWOptChoice = (index, value) => {
   fRecalc();
 };
 
+window.fSetEstimate = (index, value) => {
+  fEstWO[index] = parseFloat(value) || 0;
+  fRecalc();
+};
+
+function getFriendEstimateValue(index) {
+  const input = document.getElementById(`fe-wo-${index}`);
+  if (input && input.value !== '') return parseFloat(input.value) || 0;
+  return parseFloat(fEstWO[index]) || 0;
+}
+
 window.fChQty = (e, type, i, d) => {
   e.stopPropagation();
   fOQty[type + i] = Math.max(1, (fOQty[type + i] || 1) + d);
@@ -1085,7 +1121,9 @@ function fCalc() {
   WOPTS.forEach((o, i) => {
     if (!fSelWO[i]) return;
   const q = o.qty ? (fOQty['wo' + i] || 1) : 1;
-const selectedPrice = o.choices
+const selectedPrice = o.est
+  ? getFriendEstimateValue(i)
+  : o.choices
   ? (o.choices.find(choice => choice.label === (fWOptChoices[i] || o.defaultChoice))?.price || o.price)
   : o.price;
 const cp = selectedPrice * q;
@@ -1179,6 +1217,7 @@ function fResetForm() {
   fOQty = {};
   fAttendMemo = {};
   fWOptChoices = {};
+  fEstWO = {};
   fCustomOpts = [];
   fExps = [];
   buildFriendGrids();
@@ -1190,7 +1229,7 @@ function fResetForm() {
   document.getElementById('f-pay').value = '振込';
   document.getElementById('f-set').value = '0';
   document.getElementById('f-repeat').value = '';
-  document.getElementById('f-form-title').textContent = '新規案件 — 友人ブランド';
+  document.getElementById('f-form-title').textContent = 'Massu photo studio✴︎';
   document.getElementById('f-submit').textContent = 'この案件を登録する';
   document.getElementById('f-cancel').style.display = 'none';
   fRecalc();
@@ -1232,7 +1271,8 @@ window.submitFriend = async () => {
       selSP: cloneMap(fSelSP),
       selWO: cloneMap(fSelWO),
       selSO: cloneMap(fSelSO),
-      oQty: cloneMap(fOQty)
+      oQty: cloneMap(fOQty),
+      estWO: cloneMap(fEstWO)
     },
     attendMemo: Object.fromEntries(
       Object.entries(fAttendMemo).filter(([, value]) => value && value.trim())
@@ -1242,6 +1282,7 @@ window.submitFriend = async () => {
     sPlans: Object.keys(fSelSP).map(i => SPLANS[Number(i)].name),
   wOpts: Object.keys(fSelWO).map(i => {
   const option = WOPTS[Number(i)];
+  if (option.est) return `${option.name}(${fmt(fEstWO[Number(i)] || 0)})`;
   if (option.choices) {
     const selected = fWOptChoices[Number(i)] || option.defaultChoice;
     return `${option.name}(${selected})`;
@@ -1347,18 +1388,20 @@ function renderFriendSettle() {
   document.getElementById('ft-final').textContent = fmt(trReward);
   document.getElementById('ft-tof').textContent = `-${fmt(cToF)}`;
   document.getElementById('ft-tome').textContent = `+${fmt(cToMe)}`;
-  document.getElementById('ft-cash-label').textContent = cashNet >= 0 ? '友人から受取' : '友人へ手渡し';
+  document.getElementById('ft-cash-label').textContent = '現金取引';
   const el = document.getElementById('ft-cash-final');
   el.textContent = fmt(Math.abs(cashNet));
   el.style.color = cashNet >= 0 ? 'var(--green)' : 'var(--orange)';
 }
 
 function buildMineGrids() {
+  const isGarment = item => item.name.startsWith('ドレス ') || item.name.startsWith('メンズ ');
   const buildGrid = (items, gridId, selObj, selCls, type, isSalon) => {
     const grid = document.getElementById(gridId);
     if (!grid) return;
 
     grid.innerHTML = items.map((item, i) => {
+      if (gridId === 'm-salon-grid' && isGarment(item)) return '';
       const selected = selObj[i];
       const badge = item.hasSalon
         ? '<span class="badge badge-si">サロン込</span>'
@@ -1369,7 +1412,10 @@ function buildMineGrids() {
             : item.hasRef
               ? '<span class="badge badge-ref">報酬あり</span>'
               : '';
-      const priceLabel = isSalon
+      const selectedChoice = item.choices?.find(choice => choice.label === (mOptChoices[i] || item.defaultChoice));
+      const priceLabel = selectedChoice
+        ? fmt(selectedChoice.inc)
+        : isSalon
         ? `税抜${fmt(item.ex)}`
         : item.hasSalon
           ? fmt(item.priceInc)
@@ -1382,6 +1428,9 @@ function buildMineGrids() {
       const qtyHtml = item.qty
         ? `<div class="qty-wrap" onclick="event.stopPropagation()"><button class="qty-btn" onclick="mChQty(event,'${type}',${i},-1)">−</button><span id="mq-${type}-${i}" style="font-size:12px;min-width:14px;text-align:center;">${mOQty[type + i] || 1}</span><button class="qty-btn" onclick="mChQty(event,'${type}',${i},1)">＋</button></div>`
         : '';
+      const choiceHtml = item.choices
+        ? `<select class="est-input" onclick="event.stopPropagation()" onchange="mChangeOptChoice(${i}, this.value)">${item.choices.map(choice => `<option value="${choice.label}" ${((mOptChoices[i] || item.defaultChoice) === choice.label) ? 'selected' : ''}>${choice.label} ${fmt(choice.inc)}</option>`).join('')}</select>`
+        : '';
       const diff = isSalon && type === 'du'
         ? `<span style="color:var(--red);font-size:11px;"> +${fmt((item.ex - 30000) * 1.1)}</span>`
         : isSalon && type === 'mu'
@@ -1393,6 +1442,7 @@ function buildMineGrids() {
         <div class="mi-price">${priceLabel}${diff}</div>
         ${estInput}
         ${qtyHtml}
+        ${choiceHtml}
       </div>`;
     }).join('');
   };
@@ -1400,13 +1450,61 @@ function buildMineGrids() {
   buildGrid(MPLANS, 'm-plan-grid', mSelP, 'sel-m', 'pl', false);
   buildGrid(MOPTS, 'm-opt-grid', mSelO, 'sel-m', 'op', false);
   buildGrid(MSALON, 'm-salon-grid', mSelS, 'sel-s', 'sl', true);
-  buildGrid(MDRESS_UP, 'm-dress-grid', {}, 'sel-m', 'du', true);
-  buildGrid(MMENS_UP, 'm-mens-grid', {}, 'sel-m', 'mu', true);
   buildGrid(MEXTRA, 'm-extra-grid', mSelExtra, 'sel-s', 'ex', true);
+  renderMineGarmentSelectors();
   mSelBouquet(mBouquet);
   if (mSelDressUp !== null) document.getElementById(`mi-du-${mSelDressUp}`)?.classList.add('sel-m');
   if (mSelMensUp !== null) document.getElementById(`mi-mu-${mSelMensUp}`)?.classList.add('sel-m');
 }
+
+function getMineGarmentChoices(kind, hasSalonInc) {
+  const selected = kind === 'dress' ? mDressChoices : mMensChoices;
+  if (selected.length) return selected;
+  return hasSalonInc ? [0] : [];
+}
+
+function renderMineGarmentSelectors() {
+  const hasSalonInc = Object.keys(mSelP).some(k => MPLANS[Number(k)]?.hasSalon);
+  const render = (kind, containerId) => {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const options = kind === 'dress' ? MDRESSES : MMENSES;
+    const selected = getMineGarmentChoices(kind, hasSalonInc);
+    container.innerHTML = selected.length ? selected.map((choiceIndex, rowIndex) => `
+      <div class="exp-row">
+        <select onchange="changeMineGarment('${kind}', ${rowIndex}, this.value)" style="flex:1;">
+          ${options.map((item, index) => `<option value="${index}" ${index === choiceIndex ? 'selected' : ''}>${item.name}（税込${fmt(Math.round(item.ex * 1.1))}）</option>`).join('')}
+        </select>
+        <button class="exp-del" onclick="removeMineGarment('${kind}', ${rowIndex})" ${hasSalonInc && rowIndex === 0 && selected.length === 1 ? 'style="visibility:hidden;"' : ''}>✕</button>
+      </div>
+    `).join('') : '<div style="font-size:12px;color:var(--text3);">未選択</div>';
+  };
+  render('dress', hasSalonInc ? 'm-dress-select-list-inc' : 'm-dress-select-list-normal');
+  render('mens', hasSalonInc ? 'm-mens-select-list-inc' : 'm-mens-select-list-normal');
+}
+
+window.addMineGarment = kind => {
+  const list = kind === 'dress' ? mDressChoices : mMensChoices;
+  if (!list.length && Object.keys(mSelP).some(k => MPLANS[Number(k)]?.hasSalon)) list.push(0);
+  list.push(0);
+  renderMineGarmentSelectors();
+  mRecalc();
+};
+
+window.changeMineGarment = (kind, rowIndex, value) => {
+  const list = kind === 'dress' ? mDressChoices : mMensChoices;
+  if (!list.length && Object.keys(mSelP).some(k => MPLANS[Number(k)]?.hasSalon)) list.push(0);
+  list[rowIndex] = Number(value);
+  renderMineGarmentSelectors();
+  mRecalc();
+};
+
+window.removeMineGarment = (kind, rowIndex) => {
+  const list = kind === 'dress' ? mDressChoices : mMensChoices;
+  list.splice(rowIndex, 1);
+  renderMineGarmentSelectors();
+  mRecalc();
+};
 
 function restoreMineSelections(record) {
   if (record.selectionState) {
@@ -1415,6 +1513,15 @@ function restoreMineSelections(record) {
     mSelS = { ...(record.selectionState.selS || {}) };
     mSelDressUp = record.selectionState.selDressUp ?? null;
     mSelMensUp = record.selectionState.selMensUp ?? null;
+    // Older records used the individual salon-menu cards. Convert those choices
+    // into the new garment selectors when a record is opened for editing.
+    mDressChoices = Array.isArray(record.selectionState.dressChoices)
+      ? [...record.selectionState.dressChoices]
+      : getLegacyMineGarmentChoices('dress', mSelS);
+    mMensChoices = Array.isArray(record.selectionState.mensChoices)
+      ? [...record.selectionState.mensChoices]
+      : getLegacyMineGarmentChoices('mens', mSelS);
+    mOptChoices = { ...(record.selectionState.optChoices || {}) };
     mBouquet = record.selectionState.bouquet || 'dry';
     mSelExtra = { ...(record.selectionState.selExtra || {}) };
     mOQty = { ...(record.selectionState.oQty || {}) };
@@ -1423,6 +1530,9 @@ function restoreMineSelections(record) {
   }
 
   mSelP = {};
+  mDressChoices = [];
+  mMensChoices = [];
+  mOptChoices = {};
   (record.plans || []).forEach(name => {
     const i = MPLANS.findIndex(item => item.name === name);
     if (i >= 0) mSelP[i] = true;
@@ -1470,8 +1580,17 @@ window.mTog = (type, i, cls) => {
     const hasSalon = Object.keys(mSelP).some(k => MPLANS[Number(k)].hasSalon);
     document.getElementById('m-salon-inc-section').style.display = hasSalon ? '' : 'none';
     document.getElementById('m-salon-normal-section').style.display = hasSalon ? 'none' : '';
-    if (hasSalon) buildMineGrids();
+    buildMineGrids();
   }
+  if (type === 'op' && MOPTS[i]?.choices && !mOptChoices[i]) {
+    mOptChoices[i] = MOPTS[i].defaultChoice;
+  }
+  mRecalc();
+};
+
+window.mChangeOptChoice = (index, value) => {
+  mOptChoices[index] = value;
+  buildMineGrids();
   mRecalc();
 };
 
@@ -1492,7 +1611,7 @@ window.mSelBouquet = type => {
 
 function mFeeRate() {
   const pay = document.getElementById('m-pay').value;
-  return pay === 'カード' ? 0.025 : pay === 'PayPay' ? 0.0198 : 0;
+  return pay === 'カード' ? 0.025 : pay === 'PayPay' ? 0.0198 : pay === 'オンライン' ? 0.036 : 0;
 }
 
 function mIsCP() {
@@ -1503,6 +1622,33 @@ function getMineEstimateValue(key) {
   const input = document.getElementById(`me-${key.slice(0, 2)}-${key.slice(2)}`);
   if (input && input.value !== '') return parseFloat(input.value) || 0;
   return parseFloat(mEstP[key]) || 0;
+}
+
+function getMineOptionInc(option, index) {
+  if (!option.choices) return option.est ? getMineEstimateValue('op' + index) : option.ex * 1.1;
+  const selected = mOptChoices[index] || option.defaultChoice;
+  return option.choices.find(choice => choice.label === selected)?.inc ?? option.ex * 1.1;
+}
+
+function getMineGarmentItems(kind, hasSalonInc) {
+  const options = kind === 'dress' ? MDRESSES : MMENSES;
+  let selected = getMineGarmentChoices(kind, hasSalonInc);
+  if (!selected.length && hasSalonInc) {
+    const legacy = kind === 'dress' ? mSelDressUp : mSelMensUp;
+    selected = [legacy === null ? 0 : legacy + 1];
+  }
+  const items = selected.map(index => options[index] || options[0]);
+  const discountEx = items.length >= 2 ? Math.round(Math.min(...items.map(item => item.ex)) * 0.5) : 0;
+  return { items, discountEx };
+}
+
+function getLegacyMineGarmentChoices(kind, selS = {}) {
+  const options = kind === 'dress' ? MDRESSES : MMENSES;
+  const prefix = kind === 'dress' ? 'ドレス ' : 'メンズ ';
+  return Object.keys(selS)
+    .filter(index => selS[index] && MSALON[Number(index)]?.name.startsWith(prefix))
+    .map(index => options.findIndex(item => item.name === MSALON[Number(index)].name))
+    .filter(index => index >= 0);
 }
 
 function mCalcSalonItem(ex, hasRef) {
@@ -1535,7 +1681,7 @@ function mCalc() {
   MOPTS.forEach((o, i) => {
     if (!mSelO[i]) return;
     const q = o.qty ? (mOQty['op' + i] || 1) : 1;
-    const amount = o.est ? getMineEstimateValue('op' + i) : o.ex * 1.1;
+    const amount = getMineOptionInc(o, i);
     shootInc += amount * q;
   });
   shootInc += mCustomOpts.reduce((sum, item) => sum + (item.amount || 0), 0);
@@ -1554,18 +1700,20 @@ function mCalc() {
       planShootEx += plan.shootEx;
     });
 
-    const dressUpInc = mSelDressUp !== null ? Math.round((MDRESS_UP[mSelDressUp].ex - 30000) * 1.1) : 0;
-    const mensUpInc = mSelMensUp !== null ? Math.round((MMENS_UP[mSelMensUp].ex - 30000) * 1.1) : 0;
+    const dresses = getMineGarmentItems('dress', true);
+    const mens = getMineGarmentItems('mens', true);
+    const dressUpInc = Math.round((dresses.items.reduce((sum, item) => sum + item.ex, 0) - dresses.discountEx - 30000) * 1.1);
+    const mensUpInc = Math.round((mens.items.reduce((sum, item) => sum + item.ex, 0) - mens.discountEx - 30000) * 1.1);
     const customerPlanTotal = planFixed + dressUpInc + mensUpInc;
     const bouquetEx = mBouquet === 'art' ? 5000 : 3500;
-    const actualDressEx = mSelDressUp !== null ? MDRESS_UP[mSelDressUp].ex : 30000;
-    const actualMensEx = mSelMensUp !== null ? MMENS_UP[mSelMensUp].ex : 30000;
     const salonItems = [
-      { ex:actualDressEx, hasRef:true },
-      { ex:actualMensEx, hasRef:true },
+      ...dresses.items.map(item => ({ name:item.name, ex:item.ex, hasRef:true })),
+      ...mens.items.map(item => ({ name:item.name, ex:item.ex, hasRef:true })),
       { ex:25000, hasRef:true },
       { ex:bouquetEx, hasRef:true }
     ];
+    if (dresses.discountEx) salonItems.push({ name:'ドレス2着割引', ex:-dresses.discountEx, hasRef:true });
+    if (mens.discountEx) salonItems.push({ name:'メンズ2着割引', ex:-mens.discountEx, hasRef:true });
   MEXTRA.forEach((extra, i) => {
   if (!mSelExtra[i]) return;
   salonItems.push({ ex:extra.ex, hasRef:extra.hasRef });
@@ -1588,7 +1736,7 @@ function mCalc() {
     const optionsInc = Object.keys(mSelO).reduce((sum, i) => {
       const option = MOPTS[Number(i)];
       const q = option.qty ? (mOQty['op' + i] || 1) : 1;
-      const amount = option.est ? getMineEstimateValue('op' + i) : option.ex * 1.1;
+      const amount = getMineOptionInc(option, Number(i));
       return sum + amount * q;
     }, 0);
 
@@ -1627,7 +1775,31 @@ const profit = received - totalSalonBack - otherExp - discountTotal;
     };
   }
 
+  const normalDresses = getMineGarmentItems('dress', false);
+  const normalMens = getMineGarmentItems('mens', false);
+  [...normalDresses.items, ...normalMens.items].forEach(item => {
+    const result = mCalcSalonItem(item.ex, item.hasRef);
+    salonCustEx += item.ex;
+    totalRef += result.referral;
+    totalSalonBack += result.salonBack;
+    totalSalonFee += result.salonFeeShare;
+  });
+  if (normalDresses.discountEx) {
+    const result = mCalcSalonItem(-normalDresses.discountEx, true);
+    salonCustEx -= normalDresses.discountEx;
+    totalRef += result.referral;
+    totalSalonBack += result.salonBack;
+    totalSalonFee += result.salonFeeShare;
+  }
+  if (normalMens.discountEx) {
+    const result = mCalcSalonItem(-normalMens.discountEx, true);
+    salonCustEx -= normalMens.discountEx;
+    totalRef += result.referral;
+    totalSalonBack += result.salonBack;
+    totalSalonFee += result.salonFeeShare;
+  }
   MSALON.forEach((item, i) => {
+    if (item.name.startsWith('ドレス ') || item.name.startsWith('メンズ ')) return;
     if (!mSelS[i]) return;
     const result = mCalcSalonItem(item.ex, item.hasRef);
     salonCustEx += item.ex;
@@ -1678,7 +1850,7 @@ window.mRecalc = () => {
   document.getElementById('ms-tax').textContent = fmt(a.tax);
   document.getElementById('ms-total').textContent = fmt(a.totalInc);
   const pay = document.getElementById('m-pay').value;
-  document.getElementById('ms-fee-label').textContent = pay === 'カード' ? 'カード手数料2.5%' : pay === 'PayPay' ? 'PayPay手数料1.98%' : '決済手数料';
+  document.getElementById('ms-fee-label').textContent = pay === 'カード' ? 'カード手数料2.5%' : pay === 'PayPay' ? 'PayPay手数料1.98%' : pay === 'オンライン' ? 'オンライン手数料3.6%' : '決済手数料';
   document.getElementById('ms-fee').textContent = a.myFee > 0 ? `−${fmt(a.myFee)}` : '¥0';
   document.getElementById('ms-salon-back').textContent = fmt(a.totalSalonBack);
   document.getElementById('ms-ref').textContent = fmt(a.totalRef);
@@ -1790,6 +1962,9 @@ function mResetForm() {
   mSelS = {};
   mSelDressUp = null;
   mSelMensUp = null;
+  mDressChoices = [];
+  mMensChoices = [];
+  mOptChoices = {};
   mBouquet = 'dry';
   mSelExtra = {};
   mOQty = {};
@@ -1842,6 +2017,9 @@ window.submitMine = async () => {
       selS: cloneMap(mSelS),
       selDressUp: mSelDressUp,
       selMensUp: mSelMensUp,
+      dressChoices: [...mDressChoices],
+      mensChoices: [...mMensChoices],
+      optChoices: cloneMap(mOptChoices),
       bouquet: mBouquet,
       selExtra: cloneMap(mSelExtra),
       oQty: cloneMap(mOQty),
@@ -2295,15 +2473,39 @@ function buildSalonItemsFromMineRecord(record) {
     });
   };
 
+  const getRecordGarments = kind => {
+    const options = kind === 'dress' ? MDRESSES : MMENSES;
+    const savedKey = kind === 'dress' ? 'dressChoices' : 'mensChoices';
+    const legacyUpgrade = kind === 'dress' ? selDressUp : selMensUp;
+    let indexes = Array.isArray(selection[savedKey]) ? [...selection[savedKey]] : [];
+
+    if (!indexes.length && !hasSalonInc) indexes = getLegacyMineGarmentChoices(kind, selS);
+    if (!indexes.length && hasSalonInc) {
+      indexes = [legacyUpgrade === null ? 0 : legacyUpgrade + 1];
+    }
+
+    const garments = indexes.map(index => options[index] || options[0]);
+    const discountEx = garments.length >= 2
+      ? Math.round(Math.min(...garments.map(item => item.ex)) * 0.5)
+      : 0;
+    return { garments, discountEx };
+  };
+
+  const dresses = getRecordGarments('dress');
+  const mens = getRecordGarments('mens');
+  const pushGarments = () => {
+    dresses.garments.forEach(item => pushItem(item.name, item.ex, true));
+    mens.garments.forEach(item => pushItem(item.name, item.ex, true));
+    if (dresses.discountEx) pushItem('ドレス2着割引', -dresses.discountEx, true);
+    if (mens.discountEx) pushItem('メンズ2着割引', -mens.discountEx, true);
+  };
+
   if (hasSalonInc) {
-    const dress = selDressUp !== null ? MDRESS_UP[selDressUp] : { name:'ドレス C', ex:30000, hasRef:true };
-    const mens = selMensUp !== null ? MMENS_UP[selMensUp] : { name:'メンズ C', ex:30000, hasRef:true };
     const bouquetItem = bouquet === 'art'
       ? { name:'アーティシャルフラワー', ex:5000, hasRef:true }
       : { name:'ドライフラワー', ex:3500, hasRef:true };
 
-    pushItem(dress.name, dress.ex, true);
-    pushItem(mens.name, mens.ex, true);
+    pushGarments();
     pushItem('ヘアメイク', 25000, true);
     pushItem(bouquetItem.name, bouquetItem.ex, bouquetItem.hasRef);
 
@@ -2315,7 +2517,9 @@ function buildSalonItemsFromMineRecord(record) {
       pushItem(record.otherSalonName || 'その他サロン費用', Number(record.otherSalonValue), false);
     }
   } else {
+    pushGarments();
     MSALON.forEach((item, index) => {
+      if (item.name.startsWith('ドレス ') || item.name.startsWith('メンズ ')) return;
       if (selS[index]) pushItem(item.name, item.ex, item.hasRef);
     });
 
