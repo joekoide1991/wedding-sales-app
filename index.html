@@ -212,10 +212,39 @@ tr:hover td { background: rgba(255,255,255,0.02); }
     </div>
   </div>
   <div class="card">
+    <div class="card-title" id="d-year-title">年間集計</div>
+    <div class="metrics">
+      <div class="metric"><div class="metric-label">年間総売上（税込）</div><div class="metric-value" id="d-y-total-sales">¥0</div></div>
+      <div class="metric"><div class="metric-label">年間手取り収入</div><div class="metric-value" style="color:var(--green);" id="d-y-total-profit">¥0</div></div>
+      <div class="metric"><div class="metric-label">年間案件数</div><div class="metric-value" id="d-y-total-count">0件</div></div>
+      <div class="metric"><div class="metric-label">年間未入金</div><div class="metric-value" style="color:var(--orange);" id="d-y-unpaid">0件</div></div>
+    </div>
+    <div class="brand-cards" style="margin-bottom:0;">
+      <div class="brand-card m">
+        <div class="brand-name m">ONE SHOT</div>
+        <div class="s-row sub"><span>案件数</span><span id="d-y-m-count">0件</span></div>
+        <div class="s-row sub"><span>売上</span><span id="d-y-m-sales">¥0</span></div>
+        <div class="s-row sub"><span>利益</span><span style="color:var(--mine);" id="d-y-m-profit">¥0</span></div>
+      </div>
+      <div class="brand-card f">
+        <div class="brand-name f">Massu photo studio</div>
+        <div class="s-row sub"><span>案件数</span><span id="d-y-f-count">0件</span></div>
+        <div class="s-row sub"><span>売上</span><span id="d-y-f-sales">¥0</span></div>
+        <div class="s-row sub"><span>報酬</span><span style="color:var(--friend);" id="d-y-f-reward">¥0</span></div>
+      </div>
+      <div class="brand-card s">
+        <div class="brand-name s">AKKA HAKKA</div>
+        <div class="s-row sub"><span>案件数</span><span id="d-y-s-count">0件</span></div>
+        <div class="s-row sub"><span>売上</span><span id="d-y-s-sales">¥0</span></div>
+        <div class="s-row sub"><span>紹介料</span><span style="color:var(--salon);" id="d-y-s-ref">¥0</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
     <div class="card-title">手取り収入内訳</div>
     <div class="s-row sub"><span>ONE SHOT 利益</span><span style="color:var(--mine);" id="d-inc-m">¥0</span></div>
     <div class="s-row sub"><span>Massu photo studio 報酬</span><span style="color:var(--friend);" id="d-inc-f">¥0</span></div>
-    <div class="s-row sub"><span>AKKA HAKKA 紹介料</span><span style="color:var(--salon);" id="d-inc-s">¥0</span></div>
+    <div class="s-row sub"><span>AKKA HAKKA 紹介料（ONE SHOT利益に含む）</span><span style="color:var(--salon);" id="d-inc-s">¥0</span></div>
     <div class="s-row total"><span>合計手取り</span><span style="color:var(--green);" id="d-inc-total">¥0</span></div>
   </div>
   <div class="card">
@@ -740,6 +769,9 @@ function filterMonth(recs, y, m) {
     return d.getFullYear() === y && d.getMonth() === m;
   });
 }
+function filterYear(recs, y) {
+  return recs.filter(r => new Date(r.date).getFullYear() === y);
+}
 
 window.switchTab = (tab) => {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -874,15 +906,16 @@ function renderDash() {
   const { y, m } = getTabYM('dash');
   const ff = filterMonth(friendRecs, y, m);
   const fm = filterMonth(myRecs, y, m);
-  const fs = filterMonth(salonRecs, y, m);
+  const fs = getSalonDisplayRecords({ y, m });
   const fSales = ff.reduce((s, r) => s + (r.totalCustomer || 0), 0);
   const fReward = ff.reduce((s, r) => s + (r.myReward || 0), 0);
   const mSales = fm.reduce((s, r) => s + (r.totalCustomer || 0), 0);
   const mProfit = fm.reduce((s, r) => s + (r.profit || 0), 0);
   const sSales = fs.reduce((s, r) => s + (r.totalInc || 0), 0);
   const sRef = fs.reduce((s, r) => s + (r.totalRef || 0), 0);
-  const totalSales = fSales + mSales + sSales;
-  const totalProfit = fReward + mProfit + sRef;
+  // AKKA HAKKA is a breakdown of ONE SHOT salon sales, so it is not added to the totals.
+  const totalSales = fSales + mSales;
+  const totalProfit = fReward + mProfit;
   const unpaid = ff.filter(r => r.paid === '未入金').length + fm.filter(r => r.paid === '未入金').length;
 
   document.getElementById('d-total-sales').textContent = fmt(totalSales);
@@ -902,6 +935,32 @@ function renderDash() {
   document.getElementById('d-inc-m').textContent = fmt(mProfit);
   document.getElementById('d-inc-s').textContent = fmt(sRef);
   document.getElementById('d-inc-total').textContent = fmt(totalProfit);
+
+  const yFriend = filterYear(friendRecs, y);
+  const yMine = filterYear(myRecs, y);
+  const ySalon = getSalonDisplayRecords(records => filterYear(records, y));
+  const yFriendSales = yFriend.reduce((s, r) => s + (r.totalCustomer || 0), 0);
+  const yFriendReward = yFriend.reduce((s, r) => s + (r.myReward || 0), 0);
+  const yMineSales = yMine.reduce((s, r) => s + (r.totalCustomer || 0), 0);
+  const yMineProfit = yMine.reduce((s, r) => s + (r.profit || 0), 0);
+  const ySalonSales = ySalon.reduce((s, r) => s + (r.totalInc || 0), 0);
+  const ySalonRef = ySalon.reduce((s, r) => s + (r.totalRef || 0), 0);
+  const yUnpaid = yFriend.filter(r => r.paid === '未入金').length + yMine.filter(r => r.paid === '未入金').length;
+
+  document.getElementById('d-year-title').textContent = `${y}年 年間集計`;
+  document.getElementById('d-y-total-sales').textContent = fmt(yFriendSales + yMineSales);
+  document.getElementById('d-y-total-profit').textContent = fmt(yFriendReward + yMineProfit);
+  document.getElementById('d-y-total-count').textContent = `${yFriend.length + yMine.length + ySalon.length}件`;
+  document.getElementById('d-y-unpaid').textContent = `${yUnpaid}件`;
+  document.getElementById('d-y-f-count').textContent = `${yFriend.length}件`;
+  document.getElementById('d-y-f-sales').textContent = fmt(yFriendSales);
+  document.getElementById('d-y-f-reward').textContent = fmt(yFriendReward);
+  document.getElementById('d-y-m-count').textContent = `${yMine.length}件`;
+  document.getElementById('d-y-m-sales').textContent = fmt(yMineSales);
+  document.getElementById('d-y-m-profit').textContent = fmt(yMineProfit);
+  document.getElementById('d-y-s-count').textContent = `${ySalon.length}件`;
+  document.getElementById('d-y-s-sales').textContent = fmt(ySalonSales);
+  document.getElementById('d-y-s-ref').textContent = fmt(ySalonRef);
 
   const all = [
     ...ff.map(r => ({ date:r.date, brand:'f', name:r.name, sales:r.totalCustomer || 0, income:r.myReward || 0, paid:r.paid })),
@@ -2548,9 +2607,11 @@ function buildSalonItemsFromMineRecord(record) {
   return items;
 }
 
-function getSalonDisplayRecords() {
-  const { y, m } = getTabYM('salon');
-  const linkedMineRecords = filterMonth(myRecs, y, m)
+function getSalonDisplayRecords(period = getTabYM('salon')) {
+  const filterRecords = typeof period === 'function'
+    ? period
+    : records => filterMonth(records, period.y, period.m);
+  const linkedMineRecords = filterRecords(myRecs)
     .filter(record => (record.salonEx || 0) > 0 || record.isSalonInc)
     .map(record => {
       const items = buildSalonItemsFromMineRecord(record);
@@ -2572,7 +2633,7 @@ function getSalonDisplayRecords() {
       };
     });
 
-  const manualRecords = filterMonth(salonRecs, y, m).map(record => {
+  const manualRecords = filterRecords(salonRecs).map(record => {
     const settlement = calcAkkaSettlement(record.items || [], record.pay, record.deposit || 0);
     return {
       _id: `salon-${record._id}`,
