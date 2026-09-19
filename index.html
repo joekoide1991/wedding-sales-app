@@ -126,6 +126,13 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 .brand-name.f { color: var(--friend); }
 .brand-name.m { color: var(--mine); }
 .brand-name.s { color: var(--salon); }
+.dash-details > summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; }
+.dash-details > summary::-webkit-details-marker { display: none; }
+.dash-details > summary::after { content: '＋ 開く'; color: var(--text3); font-size: 12px; font-weight: 400; }
+.dash-details[open] > summary::after { content: '− 閉じる'; }
+.payment-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 600px) { .payment-summary { grid-template-columns: 1fr; } }
+.payment-item { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg2); font-size: 13px; }
 .si-panel { background: rgba(52,211,153,0.05); border: 1px solid rgba(52,211,153,0.2); border-radius: var(--radius-sm); padding: 14px; margin-top: 12px; }
 .si-title { font-size: 11px; color: var(--salon); font-weight: 600; margin-bottom: 8px; }
 .exp-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
@@ -239,27 +246,23 @@ tr:hover td { background: rgba(255,255,255,0.02); }
         <div class="s-row sub"><span>紹介料</span><span style="color:var(--salon);" id="d-y-s-ref">¥0</span></div>
       </div>
     </div>
+    <div class="card-title" id="d-payment-year-title" style="margin-top:18px;">年間 支払い方法別集計</div>
+    <div class="payment-summary" id="d-pay-year"></div>
   </div>
-  <div class="card">
-    <div class="card-title">手取り収入内訳</div>
-    <div class="s-row sub"><span>ONE SHOT 利益</span><span style="color:var(--mine);" id="d-inc-m">¥0</span></div>
-    <div class="s-row sub"><span>Massu photo studio 報酬</span><span style="color:var(--friend);" id="d-inc-f">¥0</span></div>
-    <div class="s-row sub"><span>AKKA HAKKA 紹介料（ONE SHOT利益に含む）</span><span style="color:var(--salon);" id="d-inc-s">¥0</span></div>
-    <div class="s-row total"><span>合計手取り</span><span style="color:var(--green);" id="d-inc-total">¥0</span></div>
-  </div>
-  <div class="card">
-    <div class="card-title">全案件一覧</div>
-    <div style="margin:10px 0 15px 0;">
-      <button class="btn btn-sm" onclick="downloadCSV('mine')">ONE SHOT CSV</button>
-      <button class="btn btn-sm" onclick="downloadCSV('friend')">Massu CSV</button>
-      <button class="btn btn-sm" onclick="downloadCSV('salon')">AKKA CSV</button>
-    </div>
+  <details class="card dash-details">
+    <summary class="card-title">全案件一覧</summary>
     <div class="table-wrap">
       <table>
         <thead><tr><th>日付</th><th>窓口</th><th>お客様</th><th style="text-align:right;">売上</th><th style="text-align:right;">手取り</th><th>入金</th></tr></thead>
         <tbody id="d-all-tbody"></tbody>
       </table>
     </div>
+  </details>
+  <div class="card">
+    <div class="card-title">CSV出力</div>
+    <button class="btn btn-sm" onclick="downloadCSV('mine')">ONE SHOT CSV</button>
+    <button class="btn btn-sm" onclick="downloadCSV('friend')">Massu CSV</button>
+    <button class="btn btn-sm" onclick="downloadCSV('salon')">AKKA CSV</button>
   </div>
 </div>
 
@@ -772,6 +775,45 @@ function filterMonth(recs, y, m) {
 function filterYear(recs, y) {
   return recs.filter(r => new Date(r.date).getFullYear() === y);
 }
+function getDashboardPaymentLabel(pay, brand) {
+  if (brand === 'friend') {
+    return {
+      '振込': 'Massu振込（ジョー受取額）',
+      '現金_自分': '現金（ジョー受取）',
+      '現金_友人': '現金（Massu受取）'
+    }[pay] || pay || '未設定';
+  }
+  return {
+    'カード': 'クレジットカード',
+    '振込': 'ONE SHOT銀行振込',
+    '現金': '現金',
+    'PayPay': 'PayPay',
+    'オンライン': 'オンライン'
+  }[pay] || pay || '未設定';
+}
+function renderDashboardPaymentSummary(elementId, friendRecords, mineRecords) {
+  const totals = new Map();
+  const addRecords = (records, brand) => records.forEach(record => {
+    const label = getDashboardPaymentLabel(record.pay, brand);
+    const amount = brand === 'friend' && record.pay === '振込'
+      ? (record.myReward || 0)
+      : (record.totalCustomer || 0);
+    totals.set(label, (totals.get(label) || 0) + amount);
+  });
+  addRecords(friendRecords, 'friend');
+  addRecords(mineRecords, 'mine');
+
+  const order = ['現金', '現金（ジョー受取）', '現金（Massu受取）', 'ONE SHOT銀行振込', 'Massu振込（ジョー受取額）', 'クレジットカード', 'PayPay', 'オンライン', '未設定'];
+  const rows = [...totals.entries()].sort(([a], [b]) => {
+    const ai = order.indexOf(a);
+    const bi = order.indexOf(b);
+    return (ai < 0 ? order.length : ai) - (bi < 0 ? order.length : bi) || a.localeCompare(b, 'ja');
+  });
+  const element = document.getElementById(elementId);
+  element.innerHTML = rows.length
+    ? rows.map(([label, total]) => `<div class="payment-item"><span>${label}</span><strong>${fmt(total)}</strong></div>`).join('')
+    : '<div class="empty" style="grid-column:1 / -1;padding:12px;">該当する案件はありません</div>';
+}
 
 window.switchTab = (tab) => {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -920,7 +962,7 @@ function renderDash() {
 
   document.getElementById('d-total-sales').textContent = fmt(totalSales);
   document.getElementById('d-total-profit').textContent = fmt(totalProfit);
-  document.getElementById('d-total-count').textContent = `${ff.length + fm.length + fs.length}件`;
+  document.getElementById('d-total-count').textContent = `${ff.length + fm.length}件`;
   document.getElementById('d-unpaid').textContent = `${unpaid}件`;
   document.getElementById('d-f-count').textContent = `${ff.length}件`;
   document.getElementById('d-f-sales').textContent = fmt(fSales);
@@ -931,11 +973,6 @@ function renderDash() {
   document.getElementById('d-s-count').textContent = `${fs.length}件`;
   document.getElementById('d-s-sales').textContent = fmt(sSales);
   document.getElementById('d-s-ref').textContent = fmt(sRef);
-  document.getElementById('d-inc-f').textContent = fmt(fReward);
-  document.getElementById('d-inc-m').textContent = fmt(mProfit);
-  document.getElementById('d-inc-s').textContent = fmt(sRef);
-  document.getElementById('d-inc-total').textContent = fmt(totalProfit);
-
   const yFriend = filterYear(friendRecs, y);
   const yMine = filterYear(myRecs, y);
   const ySalon = getSalonDisplayRecords(records => filterYear(records, y));
@@ -950,7 +987,7 @@ function renderDash() {
   document.getElementById('d-year-title').textContent = `${y}年 年間集計`;
   document.getElementById('d-y-total-sales').textContent = fmt(yFriendSales + yMineSales);
   document.getElementById('d-y-total-profit').textContent = fmt(yFriendReward + yMineProfit);
-  document.getElementById('d-y-total-count').textContent = `${yFriend.length + yMine.length + ySalon.length}件`;
+  document.getElementById('d-y-total-count').textContent = `${yFriend.length + yMine.length}件`;
   document.getElementById('d-y-unpaid').textContent = `${yUnpaid}件`;
   document.getElementById('d-y-f-count').textContent = `${yFriend.length}件`;
   document.getElementById('d-y-f-sales').textContent = fmt(yFriendSales);
@@ -961,6 +998,8 @@ function renderDash() {
   document.getElementById('d-y-s-count').textContent = `${ySalon.length}件`;
   document.getElementById('d-y-s-sales').textContent = fmt(ySalonSales);
   document.getElementById('d-y-s-ref').textContent = fmt(ySalonRef);
+  document.getElementById('d-payment-year-title').textContent = `${y}年 支払い方法別集計`;
+  renderDashboardPaymentSummary('d-pay-year', yFriend, yMine);
 
   const all = [
     ...ff.map(r => ({ date:r.date, brand:'f', name:r.name, sales:r.totalCustomer || 0, income:r.myReward || 0, paid:r.paid })),
