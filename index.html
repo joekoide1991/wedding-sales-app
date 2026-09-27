@@ -630,11 +630,12 @@ const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
 
 const WPLANS = [
-  { name:'ウェディングショート', price:34800 }, { name:'ウェディングショート送迎', price:36182 },
+  { name:'（旧）ウェディングショート', price:34800 }, { name:'ウェディングショート送迎', price:36182 },
   { name:'ウェディングスタンダード', price:54800 }, { name:'ウェディングプレミアム', price:98000 },
   { name:'ウェディングサンセット', price:54800 }, { name:'ウェディングスタ＆サン', price:106600 },
   { name:'ウェディングプレ＆サン', price:149800 }, { name:'カジュアル', price:29800 },
   { name:'チャペル単体', price:34800 }, { name:'プロポーズ', price:44800 },
+  { name:'ウェディングショート', price:39800 },
 ];
 const SPLANS = [
   { name:'星空ウェディング', price:62800 }, { name:'星空プロポーズ', price:44800 }, { name:'星空カジュアル', price:34800 },
@@ -656,7 +657,7 @@ const WOPTS = [
 }, { name:'スリム美肌補正(歯)', price:36600, reward:true },
 
   { name:'動画撮影', price:34800, reward:true }, { name:'動画撮制', price:51800, reward:true },
-  { name:'動画撮制＋サン', price:71600, reward:true }, { name:'離島出張4-10', price:14800, reward:true },
+  { name:'動画撮制＋サン', price:71600, reward:true }, { name:'離島出張4-10', price:12800, reward:true },
   { name:'離島出張11-3', price:9800, reward:true }, { name:'お急ぎ21', price:5000, reward:true },
   { name:'お急ぎ7', price:10000, reward:true }, { name:'サロンスタジオ', price:26800, rewardBase:24800, reward:true, special:true },
   { name:'カジュアル延長', price:9800, reward:true, qty:true },
@@ -1108,7 +1109,9 @@ function restoreFriendSelections(record) {
   fEstWO = {};
 
   (record.wPlans || []).forEach(name => {
-    const i = WPLANS.findIndex(item => item.name === name);
+    // Records saved before the rename used the original short-plan name.
+    const planName = name === 'ウェディングショート' ? '（旧）ウェディングショート' : name;
+    const i = WPLANS.findIndex(item => item.name === planName);
     if (i >= 0) fSelWP[i] = true;
   });
   (record.sPlans || []).forEach(name => {
