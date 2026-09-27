@@ -630,12 +630,12 @@ const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
 
 const WPLANS = [
-  { name:'（旧）ウェディングショート', price:34800 }, { name:'ウェディングショート送迎', price:36182 },
+  { name:'（旧）ウェディングショート', price:34800, displayOrder:0 }, { name:'ウェディングショート送迎', price:36182, hidden:true },
   { name:'ウェディングスタンダード', price:54800 }, { name:'ウェディングプレミアム', price:98000 },
   { name:'ウェディングサンセット', price:54800 }, { name:'ウェディングスタ＆サン', price:106600 },
   { name:'ウェディングプレ＆サン', price:149800 }, { name:'カジュアル', price:29800 },
   { name:'チャペル単体', price:34800 }, { name:'プロポーズ', price:44800 },
-  { name:'ウェディングショート', price:39800 },
+  { name:'ウェディングショート', price:39800, displayOrder:1 },
 ];
 const SPLANS = [
   { name:'星空ウェディング', price:62800 }, { name:'星空プロポーズ', price:44800 }, { name:'星空カジュアル', price:34800 },
@@ -1036,7 +1036,12 @@ function buildFriendGrids() {
 
   const build = (items, gridId, type, selObj) => {
     const grid = document.getElementById(gridId);
-    grid.innerHTML = items.map((item, i) => {
+    const displayItems = items
+      .map((item, index) => ({ item, index }))
+      // Keep a discontinued plan visible only when opening an old record that used it.
+      .filter(({ item, index }) => !item.hidden || selObj[index])
+      .sort((a, b) => (a.item.displayOrder ?? a.index) - (b.item.displayOrder ?? b.index));
+    grid.innerHTML = displayItems.map(({ item, index: i }) => {
       const isStar = type === 'sp' || type === 'so';
       const cls = selObj[i] ? (isStar ? 'sel-s' : 'sel-f') : '';
       const badge = item.reward === false ? '<span class="badge badge-nr">報酬なし</span>' : '';
