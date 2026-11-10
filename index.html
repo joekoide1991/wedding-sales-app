@@ -2752,7 +2752,6 @@ function renderSalonInvoice() {
       itemMap[key].ref += item.ref;
     });
   });
-
   const caseRows = records.map(r => `
     <tr>
       <td>${r.date.slice(5).replace('-', '/')}</td>
@@ -2775,6 +2774,26 @@ function renderSalonInvoice() {
     </tr>
   `).join('');
 
+  const customerDetailRows = records.map(r => {
+    const menuLines = (r.items || []).map(item => {
+      const referralBadge = item.hasRef
+        ? '<span style="font-size:10px;background:#e8f5e9;color:#2e7d32;padding:1px 5px;border-radius:3px;margin-left:4px;">報酬あり</span>'
+        : '';
+      const itemInc = item.inc || Math.round((item.ex || 0) * 1.1);
+      return '<div style="display:flex;justify-content:space-between;gap:12px;padding:2px 0;">'
+        + '<span>' + item.name + referralBadge + '</span>'
+        + '<span style="white-space:nowrap;">' + fmt(itemInc) + '</span>'
+        + '</div>';
+    }).join('') || '—';
+    return '<tr>'
+      + '<td>' + r.date.slice(5).replace('-', '/') + '</td>'
+      + '<td>' + r.name + '</td>'
+      + '<td style="min-width:260px;">' + menuLines + '</td>'
+      + '<td class="r">' + fmt(r.totalInc || 0) + '</td>'
+      + '<td class="r" style="color:#2e7d32;">' + fmt(r.totalRef || 0) + '</td>'
+      + '</tr>';
+  }).join('');
+
   document.getElementById('salon-invoice-body').innerHTML = `
     <div class="invoice">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
@@ -2792,10 +2811,10 @@ function renderSalonInvoice() {
         <thead><tr><th>日付</th><th>お客様</th><th>支払</th><th style="text-align:right;">売上(税込)</th><th style="text-align:right;">デポジット</th><th style="text-align:right;">紹介料</th><th style="text-align:right;">AKKA振込</th></tr></thead>
         <tbody>${caseRows || '<tr><td colspan="7" style="text-align:center;color:#999;">案件なし</td></tr>'}</tbody>
       </table>
-      <div style="font-size:12px;font-weight:700;margin-bottom:6px;">商品別集計</div>
+      <div style="font-size:12px;font-weight:700;margin-bottom:6px;">お客様別メニュー内訳</div>
       <table class="inv-table" style="margin-bottom:16px;">
-        <thead><tr><th>商品名</th><th style="text-align:right;">個数</th><th style="text-align:right;">税抜</th><th style="text-align:right;">税込</th><th style="text-align:right;">紹介料</th></tr></thead>
-        <tbody>${itemRows || '<tr><td colspan="5" style="text-align:center;color:#999;">データなし</td></tr>'}</tbody>
+        <thead><tr><th>日付</th><th>お客様</th><th>購入商品（税込）</th><th style="text-align:right;">売上(税込)</th><th style="text-align:right;">紹介料</th></tr></thead>
+        <tbody>${customerDetailRows || '<tr><td colspan="5" style="text-align:center;color:#999;">データなし</td></tr>'}</tbody>
       </table>
       <div class="inv-total">
         <div class="inv-total-row"><span>売上合計（税込）</span><span>${fmt(totalInc)}</span></div>
